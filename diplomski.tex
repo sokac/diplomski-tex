@@ -1,0 +1,71 @@
+\documentclass[times, utf8, numeric, diplomski]{ferit}
+
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{chains,arrows.meta,fit,backgrounds}
+\usepackage{fancyvrb}
+\usepackage{listings}
+\lstset{
+    language=Bash,
+    tabsize=2,
+    showstringspaces=false,
+    columns=flexible,
+    basicstyle={\footnotesize\ttfamily},
+    breaklines=true,
+    frame=single,
+    captionpos=b,
+}
+
+
+\begin{document}
+\thesisnumber{000} % TODO broj rada
+\title{Sustav za kontinuirani razvoj aplikacija}
+
+\author{Josip Šokčević}
+% TODO exclude numeration
+\maketitle
+
+\izvornik{}
+
+\zahvala{}
+TODO
+
+\tableofcontents
+
+\include{01uvod}
+
+\include{02infrastruktura}
+
+\chapter{Web aplikacija i sustava kontinuiranog razvoja}
+
+\section{Izrada Go web aplikacija}
+
+\section{Jenkins posao}
+
+\chapter{Posluživanje korisnika}
+
+\section{Pokretanje Docker slike}
+
+\section{Preusmjeravanje korisnika na novu aplikaciju}
+
+\section{Vraćanje na staru aplikaciju}
+
+\chapter{Zaključak}
+Zaključak TODO
+
+\bibliography{literatura}
+\bibliographystyle{ferit}
+
+\begin{sazetak}
+Sažetak na hrvatskom jeziku.
+\kljucnerijeci{Ključne riječi, odvojene zarezima.}
+\end{sazetak}
+
+\engtitle{Continuous deployment}
+\begin{abstract}
+Abstract.
+
+\keywords{Keywords, comma separated.}
+\end{abstract}
+
+\end{document}

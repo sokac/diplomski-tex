@@ -1,0 +1,457 @@
+\chapter{Infrastruktura kontinuiranog razvoja aplikacija}
+Za izradu sustava za kontinuiran razvoj aplikacije potrebna je infrastruktura koja to omogućuje.
+Postoji velik izbor aplikacija i servisa, koji se mogu koristiti za kontinuiran razvoj aplikacije.
+Na primjer, za verzioniranje koda može se korisitit Git, SVN, Mercurial, Microsoft TFS, a za
+kontinuiranu integraciju programskog koda Jenkins, Hudson, TeamCity.
+
+\section{Git - sustav kontrole verzija}
+Sustav kontrole verzija je sustav koji sprema promjene datoteka kroz vrijeme. Najčešće se koristi za
+pohranjivanje programskog koda, no takav sustav može se koristiti i za druge stvari kao što su
+pisanje knjige, dokumenata, dizajn i slično.
+
+Prilikom izgradnje programske podrške u pravilu je potrebno imati sustav verzija, pogotovo ako više
+injženjera radi na istom projektu. Korisnik u bilo kojem trenutnku može zapisati trenutno stanje
+mape (engl.~directory) u sustav. Na primjer, korisnik može zapisati kad je određena cjelina
+aplikacija isprogramirana, kada je popravljena greška (engl.~bug) ili kada su dodani novi testovi
+jedinica. Korisnik može pregledati povijest u bilo kojem trenutku, vratiti mapu u prijašnje stanje,
+usporediti izmjene imeđu zapisa. To je samo mali dio operacija koje korisnik može odraditi.
+
+\subsection{Vrste sustava kontrole verzija}
+Prije nego što su ovakvi sustavi postali popularni i industrijski standard, korisnici su ručno
+kopirali mapu ili datoteku te ju spremili kao rezervu (engl.~backup). Takav proces podložan je
+greškama te ne pruža puno funkcionalnosti. Jedno od prvih riješenja bio je RCS (engl. Revision
+Control System)\citep{chacon2014pro}, koji omogućuje pohranjivanje razlike datoteka (engl.~patch
+set) između revizija. Korisnik može vratiti datoteku u prijašnje stanje tako da sustav primjeni
+razliku datoteka, kao što
+je prikazano na slici~\ref{fig:02rcs}.
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[
+        scale=0.7,
+        start chain=1 going below,
+        start chain=2 going right,
+        node distance=6mm,
+        text centered,
+        box/.style={
+            rectangle,
+            rounded corners,
+            draw=black,
+            very thick,
+            minimum height=12mm,
+            fill=yellow!10
+        },
+        version/.style={
+            fill=blue!10
+        },
+        l1/.style={
+            text width=8cm,
+            on chain=1,
+            scale=0.9,
+        },
+        l2/.style={
+            text width=8cm,
+            on chain=2,
+            scale=0.9,
+        },
+    ]
+
+        \node [text width=8cm] (computer) {Računalo};
+
+        % Lijevo
+        \node [l1, below=of computer] (fs) {Datotečni sustav};
+        \node [l1, minimum height=12mm] (empty) {};
+        \node [box, l1] (file) {Datoteka};
+
+        % Desno
+        \chainin (fs); % Start right of file
+        \node [l2] (rcs) {RCS - Revision Control System};
+        \chainin (empty); % Start right of file
+        \node [box, version, l2] (version3) {Verzija 3};
+        \node [box, version, l2, continue chain=going below] (version2) {Verzija 2};
+        \node [box, version, l2] (version1) {Verzija 1};
+
+        \draw[<-] (file.east) -- (version2.west);
+        \draw[<-] (version3) -- (version2);
+        \draw[<-] (version2) -- (version1);
+
+        \begin{scope}[on background layer]
+            \node [draw=black!50, fill=yellow!5, fit={(computer) (version1) (fs)}] {};
+        \end{scope}
+
+    \end{tikzpicture}
+    \caption{Primjer lokalnog sustava kontrole verzija}%
+    \label{fig:02rcs}
+\end{figure}
+
+RCS postaje problematičan ukoliko je potrebno rad na više računala, to jest ukoliko više injženjera
+radi na projektu. Kako bi se riješio taj problem, osmišljen je centralizirani sustavi kontrole
+verzija (CVCS, engl.~Centralized Version Control System), prikazan na slici~\ref{fig:02CVCS}. Takvi
+sustavi, kao što su CSV, Subversion, Perforce, imaju centralno računalo koji sadržava sve verzije
+datoteka. Klijenti se spajaju na sustav kako bi kopirali datoteke ili pohranili novu verziju.
+Administratori u pravilu mogu ograničiti radnje po korisničkom računu.
+
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[
+        scale=1.0,
+        node distance=4mm,
+        text width=4cm,
+        text centered,
+        box/.style={
+            rectangle,
+            rounded corners,
+            minimum height=12mm,
+            draw=black,
+            very thick,
+            fill=yellow!10
+        },
+        version/.style={
+            fill=blue!10
+        },
+    ]
+
+        % Centralno racunalo
+        \node [start chain=going below, text width=4.4cm] (server) {CVCS poslužitelj};
+        \node [on chain, below=of computer] (db) {Baza verzija};
+        \node [box, version, on chain] (version3) {Verzija 3};
+        \node [box, version, on chain] (version2) {Verzija 2};
+        \node [box, version, on chain] (version1) {Verzija 1};
+        \node [on chain] (sp1) {};
+        \draw[<-] (version3) -- (version2);
+        \draw[<-] (version2) -- (version1);
+
+
+        \begin{scope}[on background layer]
+            \node [draw=black!50, fill=yellow!5, fit={(server) (sp1)}] (serverbox) {};
+        \end{scope}
+        \begin{scope}[on background layer]
+            \node [draw=black!50, fill=white!50, fit={(db) (version1)}] (dbbox) {};
+        \end{scope}
+
+        % Klijent A
+        \node [start chain=going below, right=3cm of serverbox.north east] (hidden1) {};
+        \node [on chain, below=of hidden1] (client1) {Računalo A};
+        \node [box, on chain, below=of client1] (file1) {Datoteka};
+
+        \begin{scope}[on background layer]
+            \node [draw=black!50, fill=yellow!5, fit={(client1) (file1)}] (client1box) {};
+        \end{scope}
+
+        % Klijent B
+        \node [start chain=going below, below=of client1box] (hidden2) {};
+        \node [on chain, below=of hidden2] (client2) {Računalo B};
+        \node [box, on chain, below=of client2] (file2) {Datoteka};
+
+        \begin{scope}[on background layer]
+            \node [draw=black!50, fill=yellow!5, fit={(client2) (file2)}] (client2box) {};
+        \end{scope}
+
+        \draw [<-] (file1.west) -- (dbbox);
+        \draw [<-] (file2.west) -- (dbbox);
+    \end{tikzpicture}
+
+    \caption{Primjer centraliziranog sustava kontrole verzija}%
+    \label{fig:02CVCS}
+\end{figure}
+
+Centrali sustavi kontrole verzija imaju velike nedostatke. Kako se radi o centralom sustavu, ispadom
+centralog računala, sustav postaje nedostupan te korisnici ne mogu raditi. U slučaju gubitka
+podataka na centralon računalu, na primjer zbog kvara tvrdog diska (engl.~hard drive), informacije o
+svim revizijama su uništene, te jedino podaci koji su dostupni su oni na lokalnim računalima
+korisnika. Zbog takvih nedostataka, distribuirani sustavi kontrole verzija su osmišljeni.
+
+Distriburani sustavi kontrole verzija (DVSC, engl.~Distributed Version Control System) je sustav
+gdje korisnik dohvaća datoteke, ali i svu povijest. Stoga, ukoliko poslužitelj postane nedostupan,
+korisnik i dalje može koristiti sve funkcije takvog sustava. Isto tako, ukoliko poslužitelj postane
+trajno nedostupan, korisnik može pokrenuti vlastiti poslužitelj sa podacima spremljenim na lokalnom
+računalu bez ikakvih gubitaka. Arhitektura takvog distribuiranog sustava dana je slikom
+\ref{fig:02DVCS}.
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[
+        scale=1.0,
+        node distance=3mm,
+        text width=3.5cm,
+        text centered,
+        box/.style={
+            minimum height=6mm,
+            rectangle,
+            rounded corners,
+            draw=black,
+            very thick,
+            text centered,
+            fill=yellow!10
+        },
+        title/.style={
+            text width=3.7cm,
+            text centered,
+        },
+        version/.style={
+            fill=blue!10
+        },
+    ]
+
+        % Posluzitelj
+        \node [title, start chain=going below] (server) {DVCS poslužitelj};
+        \node [on chain, below=of computer] (db) {Baza verzija};
+        \node [box, version, on chain] (version3) {Verzija 3};
+        \node [box, version, on chain] (version2) {Verzija 2};
+        \node [box, version, on chain] (version1) {Verzija 1};
+        \node [on chain] (sp1) {};
+        \draw[<-] (version3) -- (version2);
+        \draw[<-] (version2) -- (version1);
+
+
+        \begin{scope}[on background layer]
+            \node [draw=black!50, fill=yellow!5, fit={(server) (sp1)}] (serverbox) {};
+        \end{scope}
+        \begin{scope}[on background layer]
+            \node [draw=black!50, fill=white!50, fit={(db) (version1)}] (dbbox) {};
+        \end{scope}
+
+        % Klijent A
+        \node [right=3cm of serverbox.north east] (hidden1) {};
+        \node [above=39mm of hidden1] (hidden11) {};
+        \node [title, on chain, below=of hidden11] (client1) {Računalo A};
+        \node [box, on chain, below=of client1] (file1) {Datoteka};
+
+        \node [on chain] (c1db) {Baza verzija};
+        \node [box, version, on chain] (c1version3) {Verzija 3};
+        \node [box, version, on chain] (c1version2) {Verzija 2};
+        \node [box, version, on chain] (c1version1) {Verzija 1};
+        \node [on chain] (c1sp1) {};
+        \draw[<-] (c1version3) -- (c1version2);
+        \draw[<-] (c1version2) -- (c1version1);
+
+        \begin{scope}[on background layer]
+            \node [draw=black!50, fill=yellow!5, fit={(client1) (c1sp1)}] (client1box) {};
+        \end{scope}
+        \begin{scope}[on background layer]
+            \node [draw=black!50, fill=white!50, fit={(c1db) (c1version1)}] (c1dbbox) {};
+        \end{scope}
+        \draw[->] (c1dbbox) -- (file1);
+
+        % Klijent B
+        \node [start chain=going below, below=of client1box] (hidden2) {};
+        \node [title, on chain, below=of hidden2] (client2) {Računalo B};
+        \node [box, on chain, below=of client2] (file2) {Datoteka};
+
+        \node [on chain] (c2db) {Baza verzija};
+        \node [box, version, on chain] (c2version3) {Verzija 3};
+        \node [box, version, on chain] (c2version2) {Verzija 2};
+        \node [box, version, on chain] (c2version1) {Verzija 1};
+        \node [on chain] (c2sp1) {};
+        \draw[<-] (c2version3) -- (c2version2);
+        \draw[<-] (c2version2) -- (c2version1);
+
+        \begin{scope}[on background layer]
+            \node [draw=black!50, fill=yellow!5, fit={(client2) (c2sp1)}] (client2box) {};
+        \end{scope}
+        \begin{scope}[on background layer]
+            \node [draw=black!50, fill=white!50, fit={(c2db) (c2version1)}] (c2dbbox) {};
+        \end{scope}
+
+        \draw [<->] (client1box.west) -- (serverbox);
+        \draw [<->] (client2box.west) -- (serverbox);
+        \draw [<->] (client2box.north) -- (client1box.south);
+        \draw[->] (c2dbbox) -- (file2);
+    \end{tikzpicture}
+
+    \caption{Primjer distribuiranog sustava kontrole verzija}%
+    \label{fig:02DVCS}
+\end{figure}
+
+\subsection{Osnove Git-a}
+Git je distribuirani sustav za kontrolu verzije. Za razliku od većine drugih VSC koji spremaju
+razliku između verzija, Git sprema cijele datoteke koje su promjenjene od zadnje verzije. Na
+primjer, ako korisnik promjeni datoteku tako što doda novu liniju koda, klasični VSC sustavi će
+spremiti informaciju o toj razlici, dok će Git spremiti cijelu datoteku. Spremanje cijele datoteke
+zauzima diskovni prostor, no omogućuje brže operacije kada je potrebno pogledati povijest i kako su
+datoteke izgledala u bilo kojem trenutku.
+
+Zbog svoje distribuirane naravi, korisnik može korisitit Git i kada nije povezan na mrežu. Većina
+operacija, kao što su \textit{git-commit}, \textit{git-merge}, \textit{git-checkout},
+\textit{git-log}, izvršavaju se na lokalnom računalu. Kada je računalo ponovno povezano na mreži,
+korisnik može odabrati da dohvati nove datoteke ili pak da pošalje svoje izmjenjene datoteke.
+
+Git ima tri moguća stanja datoteka: predan (engl.~committed), izmjenjen (engl.~modified) i priređen
+(engl.~staged). Predane datoteke su one datoteke koje su spremljene u lokalnu bazu, to jest bazu na
+lokalnom računalu. Izmjenjene datoteke su one datoteke koje su izmjenjene na lokalnom računalu, no
+nisu spremljene u lokalnoj Git bazi podataka. Priređene datoteke su izmjenjene datoteke koje se
+dodaju u sljedećem unosu u Git bazu.
+
+Jedna od značajki Git-a su grane (engl.~branch) koje omogućuju razvoj novih funkcija programa van
+glavne grane. Prilikom razvoja, manji djelovi koda se često spremaju (tzv.~\textit{git-commit}) i
+povremeno šalju na server (tzv.~\textit{git-push}). Kada je nova funkcija isprogramirana i
+testirana, takva grana se spaja (tzv.~\textit{git-merge}) na glavnu granu. U slučaju sukoba datoteka
+(engl.~conflict), korisnik je obaviješten te mora ručno riješiti takav sukob datoteka i ponovno
+testirati aplikaciju.
+
+Korištenje Git uvelike je pojednostavljeno ukoliko se korisnik odluči koristiti servis kao što je
+GitHub, Gitlab ili Bitbucket. Takvi servisi omogućuju jednostavno kreiranje Git baze te operacije
+spajanja \textit{git-merge}. Također, većina integriranih sustava za razvoj (IDE, engl.~Integrated
+Development Environment) podržava Git operacije, tako da korisnik ne mora koristiti komadnu liniju.
+
+\subsection{Korištenje Git-a i GitHub}
+Git operacije se često izvode preko komandne linije. Kreiranje novog Git projekta obavlja se preko
+komande \textit{git-init}. Git-init stvara praznu Git bazu podataka. Nakon toga, toga korisnik može
+prirediti datoteke koje će se spremiti u bazu preko operacije \textit{git-add}. Kada je sve spremno
+za trajno spremanje u Git bazu, pokreće se operacija \textit{git-commit} koja predaje datoteke u
+lokalnu Git bazu. Primjer stvaranja Git projekta te spremanja prikazan je programskim
+kodom~\ref{02init}.
+
+\lstset{caption={Kreiranje Git projekta i prvo predavanje}, label=02init}
+\begin{lstlisting}
+git init
+git add main.go // Pretpostavka da main.go postoji unutar direktorija
+git add LICENSE // Pretpostavka da LICENSE postoji unutar direktorija
+git commit -m "Prvi commit"
+\end{lstlisting}
+
+Takva baza spremljena je na lokalnom računalu te samim time je nedostupna drugim računalima. Kako bi
+takva baza postala dostupna drugim računalima, potrebno je poslati bazu na Git poslužitelj. Jedan
+od najpolularnijih servisa koji pruža Git poslužitelj kao uslugu je GitHub.
+
+GitHub je servis istoimene firme koja pruža Git kao uslugu. U travnju 2017. godine, GitHub je
+objavio da je registrirano skoro 20 milijuna korisnika i 57 milijuna Git projekata
+\citep{github2017}. Korisnik se more registrirati na github.com kako bi mogao koristiti usluge
+GitHub. Nakon uspješne registracije, Git projekt se može kreirati kao što je vidljivo na
+slici~\ref{fig:02hgreg}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{img/02/gh.png}
+    \caption{Registracija Git projekta na github.com}%
+    \label{fig:02hgreg}
+\end{figure}
+
+Kada je napravljen projekt na GitHub-u, u lokalnu bazu registrira se udaljen Git proslužitelj pomoću
+\textit{git-remote} operacije te se lokalna baza može poslati na udaljeno pomoću operacije
+\textit{git-push}. Važno je zapamtiti da operacija \textit{git-commit} ne šalje izmjene na udaljeno
+računalo, nego isključivo \textit{git-push}.  Operacija \textit{git-push} šalje samo razliku između
+lokalnih predanih datoteka te udaljenih datoteka.  Primjer dodavanja udaljenog servera i slanje
+izmjena dan je programskim kodom~\ref{02remote}
+
+\begin{minipage}{\linewidth}
+\lstset{caption={Dodavanje poslužitelja i slanje izmjena}, label=02remote}
+\begin{lstlisting}
+git remote add origin git@github.com:sokac/diplomski-go.git
+git push -u origin master
+\end{lstlisting}
+\end{minipage}
+
+\subsection{Git grananje}
+Većina VSC sustava podržava neku vrstu grananja. Grananje omogućuje korisniku da izađe iz glavne
+grane razvoja, često nazvanu \textit{master}, te nastavi razvoj u potpuno drugoj grani. Korisnik u
+bilo kojem trenutku može izabrati u kojoj grani želi biti. Također, korisnik može spojiti dvije
+grane u bilo kojem trenutku.
+
+Git ima prednost nad drugim VSC sustavima jer su stvaranje i mjenjanje grana izuzetno brze
+operacije. Samim time, Git potiče na često korištenje grana. Kreiranje grane obavlja se operacijom
+\textit{git-branch}, koja kreira novu granu. Takva grana ima iste datoteke kao i grana prije nego
+što je operacija kreiranja grane bila pozvana. Operacija \textit{git-checkout} koristi se za
+prebacivanje u drugu granu. Trenutna grana zapisana je u specijalnoj referenci koja se zove
+\textit{HEAD}. Na slici~\ref{fig:02gitexample} prikazan je Git projekt s dvije grane,
+\textit{master} i \textit{development}, gdje grana \textit{development} sadrži više predanih
+izmjena. Prilikom pokretanja \textit{git checkout master}, \textit{HEAD} pokazivač se pomiče na
+\textit{master} granu te se datoteke mjenjaju na sadržaj u tom trenutku, kao što je prikazano na
+slici~\ref{fig:02gitexample2}. Ukoliko korisnik preda izmjene unutar grane \textit{master}, tada
+dolazi do razdvajanja grana, jer grana \textit{master} ima datoteke koje ne postoje u povijesti
+grane \textit{development} i obrnuto. Git operacija \textit{git-merge} omogućava spajanje grana i u
+takvom slučaju.
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[
+        scale=1.0,
+        node distance=3mm,
+        text width=3.5cm,
+        text centered,
+        box/.style={
+            minimum height=6mm,
+            rectangle,
+            rounded corners,
+            draw=black,
+            very thick,
+            text centered,
+            fill=yellow!10
+        },
+        head/.style={
+            fill=orange!40
+        },
+        version/.style={
+            fill=blue!10
+        },
+    ]
+        \node [box, version] (c1version1) {Verzija 1};
+        \node [box, version, right=of c1version1] (c1version2) {Verzija 2};
+        \node [box, version, right=of c1version2] (c1version3) {Verzija 3};
+        \node [box, above=of c1version2] (master) {master};
+        \node [box, below=of c1version3] (development) {development};
+        \node [box, head, below=of development] (head) {HEAD};
+        \draw [<-] (c1version1) -- (c1version2);
+        \draw [<-] (c1version2) -- (c1version3);
+        \draw [->] (development) -- (c1version3);
+        \draw [->] (master) -- (c1version2);
+        \draw [->] (head) -- (development);
+
+    \end{tikzpicture}
+
+    \caption{Primjer Git grana}%
+    \label{fig:02gitexample}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[
+        scale=1.0,
+        node distance=3mm,
+        text width=3.5cm,
+        text centered,
+        box/.style={
+            minimum height=6mm,
+            rectangle,
+            rounded corners,
+            draw=black,
+            very thick,
+            text centered,
+            fill=yellow!10
+        },
+        head/.style={
+            fill=orange!40
+        },
+        version/.style={
+            fill=blue!10
+        },
+    ]
+        \node [box, version] (c1version1) {Verzija 1};
+        \node [box, version, right=of c1version1] (c1version2) {Verzija 2};
+        \node [box, version, right=of c1version2] (c1version3) {Verzija 3};
+        \node [box, above=of c1version2] (master) {master};
+        \node [box, below=of c1version3] (development) {development};
+        \node [box, head, above=of master] (head) {HEAD};
+        \draw [<-] (c1version1) -- (c1version2);
+        \draw [<-] (c1version2) -- (c1version3);
+        \draw [->] (development) -- (c1version3);
+        \draw [->] (master) -- (c1version2);
+        \draw [->] (head) -- (master);
+
+    \end{tikzpicture}
+
+    \caption{Primjer pomicanja Git grane}%
+    \label{fig:02gitexample2}
+\end{figure}
+
+\section{Jenkins}
+Kontinuirana integracija (CI, engl.~Continuous Integration) je način razvoja aplikacije gdje se
+radne verzije programa spajaju s glavnom verzijom barem jednom dnevno~\citep{fowler2006continuous}.
+Ekstremnija verzija takvog načina razvoja nazvana je ekstremno programiranje (XP, engl.~Extreme
+Programming), gdje se radna verzija spaja u glavnu verziju barem jednom u dva do tri
+sata~\citep{beck1999embracing}.
+
+\section{Docker}
+
+\section{Nginx}

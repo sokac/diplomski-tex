@@ -1,0 +1,8 @@
+reference
+etc
+literature-creative-common-license
+*.toc
+*.pdf
+*.log
+*.blg
+*.aux
