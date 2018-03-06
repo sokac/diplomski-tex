@@ -1,7 +1,7 @@
 \chapter{Infrastruktura kontinuiranog razvoja aplikacija}
 Za izradu sustava za kontinuiran razvoj aplikacije potrebna je infrastruktura koja to omogućuje.
 Postoji velik izbor aplikacija i servisa, koji se mogu koristiti za kontinuiran razvoj aplikacije.
-Na primjer, za verzioniranje koda može se korisitit Git, SVN, Mercurial, Microsoft TFS, a za
+Na primjer, za verzioniranje koda može se koristiti Git, SVN, Mercurial, Microsoft TFS, a za
 kontinuiranu integraciju programskog koda Jenkins, Hudson, TeamCity.
 
 \section{Git - sustav kontrole verzija}
@@ -10,16 +10,16 @@ pohranjivanje programskog koda, no takav sustav može se koristiti i za druge st
 pisanje knjige, dokumenata, dizajn i slično.
 
 Prilikom izgradnje programske podrške u pravilu je potrebno imati sustav verzija, pogotovo ako više
-injženjera radi na istom projektu. Korisnik u bilo kojem trenutnku može zapisati trenutno stanje
+inženjera radi na istom projektu. Korisnik u bilo kojem trenutku može zapisati trenutno stanje
 mape (engl.~directory) u sustav. Na primjer, korisnik može zapisati kad je određena cjelina
 aplikacija isprogramirana, kada je popravljena greška (engl.~bug) ili kada su dodani novi testovi
 jedinica. Korisnik može pregledati povijest u bilo kojem trenutku, vratiti mapu u prijašnje stanje,
-usporediti izmjene imeđu zapisa. To je samo mali dio operacija koje korisnik može odraditi.
+usporediti izmjene između zapisa. To je samo mali dio operacija koje korisnik može odraditi.
 
 \subsection{Vrste sustava kontrole verzija}
 Prije nego što su ovakvi sustavi postali popularni i industrijski standard, korisnici su ručno
 kopirali mapu ili datoteku te ju spremili kao rezervu (engl.~backup). Takav proces podložan je
-greškama te ne pruža puno funkcionalnosti. Jedno od prvih riješenja bio je RCS (engl. Revision
+greškama te ne pruža puno funkcionalnosti. Jedno od prvih rješenja bio je RCS (engl. Revision
 Control System)~\citep{chacon2014pro}, koji omogućuje pohranjivanje razlike datoteka (engl.~patch
 set) između revizija. Korisnik može vratiti datoteku u prijašnje stanje tako da sustav primjeni
 razliku datoteka, kao što
@@ -84,7 +84,7 @@ je prikazano na slici~\ref{fig:02rcs}.
     \label{fig:02rcs}
 \end{figure}
 
-RCS postaje problematičan ukoliko je potrebno rad na više računala, to jest ukoliko više injženjera
+RCS postaje problematičan ukoliko je potrebno rad na više računala, to jest ukoliko više inženjera
 radi na projektu. Kako bi se riješio taj problem, osmišljen je centralizirani sustavi kontrole
 verzija (CVCS, engl.~Centralized Version Control System), prikazan na slici~\ref{fig:02CVCS}. Takvi
 sustavi, kao što su CSV, Subversion, Perforce, imaju centralno računalo koji sadržava sve verzije
@@ -157,12 +157,12 @@ Administratori u pravilu mogu ograničiti radnje po korisničkom računu.
 \end{figure}
 
 Centrali sustavi kontrole verzija imaju velike nedostatke. Kako se radi o centralom sustavu, ispadom
-centralog računala, sustav postaje nedostupan te korisnici ne mogu raditi. U slučaju gubitka
-podataka na centralon računalu, na primjer zbog kvara tvrdog diska (engl.~hard drive), informacije o
+centralnog računala, sustav postaje nedostupan te korisnici ne mogu raditi. U slučaju gubitka
+podataka na centralnim računalu, na primjer zbog kvara tvrdog diska (engl.~hard drive), informacije o
 svim revizijama su uništene, te jedino podaci koji su dostupni su oni na lokalnim računalima
 korisnika. Zbog takvih nedostataka, distribuirani sustavi kontrole verzija su osmišljeni.
 
-Distriburani sustavi kontrole verzija (DVSC, engl.~Distributed Version Control System) je sustav
+Distribuirani sustavi kontrole verzija (DVSC, engl.~Distributed Version Control System) je sustav
 gdje korisnik dohvaća datoteke, ali i svu povijest. Stoga, ukoliko poslužitelj postane nedostupan,
 korisnik i dalje može koristiti sve funkcije takvog sustava. Isto tako, ukoliko poslužitelj postane
 trajno nedostupan, korisnik može pokrenuti vlastiti poslužitelj sa podacima spremljenim na lokalnom
@@ -267,25 +267,25 @@ računalu bez ikakvih gubitaka. Arhitektura takvog distribuiranog sustava dana j
 \subsection{Osnove Git-a}
 Git je distribuirani sustav otvorenog koda za kontrolu verzije. Prema anketi Stack Overflow iz 2017,
 od 30.730 ispitanika, 69.2\% se izjasnilo da koristi Git~\citep{StackOverflow2017Survey}. Za razliku
-od većine drugih VSC, Git sprema cijele datoteke koje su promjenjene od zadnje verzije. Na primjer,
+od većine drugih VSC, Git sprema cijele datoteke koje su promijenjene od zadnje verzije. Na primjer,
 ako korisnik promjeni datoteku tako što doda novu liniju koda, klasični VSC sustavi će spremiti
 informaciju o toj razlici, dok će Git spremiti cijelu datoteku. Spremanje cijele datoteke zauzima
 diskovni prostor, no omogućuje brže operacije kada je potrebno pogledati povijest i kako su datoteke
 izgledala u bilo kojem trenutku.
 
-Zbog svoje distribuirane naravi, korisnik može korisitit Git i kada nije povezan na mrežu. Većina
+Zbog svoje distribuirane naravi, korisnik može koristiti Git i kada nije povezan na mrežu. Većina
 operacija, kao što su \textit{git-commit}, \textit{git-merge}, \textit{git-checkout},
 \textit{git-log}, izvršavaju se na lokalnom računalu. Kada je računalo ponovno povezano na mreži,
-korisnik može odabrati da dohvati nove datoteke ili pak da pošalje svoje izmjenjene datoteke.
+korisnik može odabrati da dohvati nove datoteke ili pak da pošalje svoje izmijenjene datoteke.
 
-Git ima tri moguća stanja datoteka: predan (engl.~committed), izmjenjen (engl.~modified) i priređen
+Git ima tri moguća stanja datoteka: predan (engl.~committed), izmijenjen (engl.~modified) i priređen
 (engl.~staged). Predane datoteke su one datoteke koje su spremljene u lokalnu bazu, to jest bazu na
-lokalnom računalu. Izmjenjene datoteke su one datoteke koje su izmjenjene na lokalnom računalu, no
-nisu spremljene u lokalnoj Git bazi podataka. Priređene datoteke su izmjenjene datoteke koje se
+lokalnom računalu. Izmijenjene datoteke su one datoteke koje su izmijenjene na lokalnom računalu, no
+nisu spremljene u lokalnoj Git bazi podataka. Priređene datoteke su izmijenjene datoteke koje se
 dodaju u sljedećem unosu u Git bazu.
 
 Jedna od značajki Git-a su grane (engl.~branch) koje omogućuju razvoj novih funkcija programa van
-glavne grane. Prilikom razvoja, manji djelovi koda se često spremaju (tzv.~\textit{git-commit}) i
+glavne grane. Prilikom razvoja, manji dijelovi koda se često spremaju (tzv.~\textit{git-commit}) i
 povremeno šalju na server (tzv.~\textit{git-push}). Kada je nova funkcija isprogramirana i
 testirana, takva grana se spaja (tzv.~\textit{git-merge}) na glavnu granu. U slučaju sukoba datoteka
 (engl.~conflict), korisnik je obaviješten te mora ručno riješiti takav sukob datoteka i ponovno
@@ -294,7 +294,7 @@ testirati aplikaciju.
 Korištenje Git uvelike je pojednostavljeno ukoliko se korisnik odluči koristiti servis kao što je
 GitHub, Gitlab ili Bitbucket. Takvi servisi omogućuju jednostavno kreiranje Git baze te operacije
 spajanja \textit{git-merge}. Također, većina integriranih sustava za razvoj (IDE, engl.~Integrated
-Development Environment) podržava Git operacije, tako da korisnik ne mora koristiti komadnu liniju.
+Development Environment) podržava Git operacije, tako da korisnik ne mora koristiti komandu liniju.
 
 \subsection{Korištenje Git-a i GitHub}
 Git operacije se često izvode preko komandne linije. Kreiranje novog Git projekta obavlja se preko
@@ -314,7 +314,7 @@ git commit -m "Prvi commit"
 
 Takva baza spremljena je na lokalnom računalu te samim time je nedostupna drugim računalima. Kako bi
 takva baza postala dostupna drugim računalima, potrebno je poslati bazu na Git poslužitelj. Jedan
-od najpolularnijih servisa koji pruža Git poslužitelj kao uslugu je GitHub.
+od najpopularnijih servisa koji pruža Git poslužitelj kao uslugu je GitHub.
 
 GitHub je servis istoimene firme koja pruža Git kao uslugu. U travnju 2017. godine, GitHub je
 objavio da je registrirano skoro 20 milijuna korisnika i 57 milijuna Git
@@ -329,7 +329,7 @@ slici~\ref{fig:02hgreg}.
     \label{fig:02hgreg}
 \end{figure}
 
-Kada je napravljen projekt na GitHub-u, u lokalnu bazu registrira se udaljen Git proslužitelj pomoću
+Kada je napravljen projekt na GitHub-u, u lokalnu bazu registrira se udaljen Git poslužitelj pomoću
 \textit{git-remote} operacije te se lokalna baza može poslati na udaljeno pomoću operacije
 \textit{git-push}. Važno je zapamtiti da operacija \textit{git-commit} ne šalje izmjene na udaljeno
 računalo, nego isključivo \textit{git-push}.  Operacija \textit{git-push} šalje samo razliku između
@@ -350,7 +350,7 @@ grane razvoja, često nazvanu \textit{master}, te nastavi razvoj u potpuno drugo
 bilo kojem trenutku može izabrati u kojoj grani želi biti. Također, korisnik može spojiti dvije
 grane u bilo kojem trenutku.
 
-Git ima prednost nad drugim VSC sustavima jer su stvaranje i mjenjanje grana izuzetno brze
+Git ima prednost nad drugim VSC sustavima jer su stvaranje i mijenjanje grana izuzetno brze
 operacije. Samim time, Git potiče na često korištenje grana. Kreiranje grane obavlja se operacijom
 \textit{git-branch}, koja kreira novu granu. Takva grana ima iste datoteke kao i grana prije nego
 što je operacija kreiranja grane bila pozvana. Operacija \textit{git-checkout} koristi se za
@@ -358,7 +358,7 @@ prebacivanje u drugu granu. Trenutna grana zapisana je u specijalnoj referenci k
 \textit{HEAD}. Na slici~\ref{fig:02gitexample} prikazan je Git projekt s dvije grane,
 \textit{master} i \textit{development}, gdje grana \textit{development} sadrži više predanih
 izmjena. Prilikom pokretanja \textit{git checkout master}, \textit{HEAD} pokazivač se pomiče na
-\textit{master} granu te se datoteke mjenjaju na sadržaj u tom trenutku, kao što je prikazano na
+\textit{master} granu te se datoteke mijenjaju na sadržaj u tom trenutku, kao što je prikazano na
 slici~\ref{fig:02gitexample2}. Ukoliko korisnik preda izmjene unutar grane \textit{master}, tada
 dolazi do razdvajanja grana, jer grana \textit{master} ima datoteke koje ne postoje u povijesti
 grane \textit{development} i obrnuto. Git operacija \textit{git-merge} omogućava spajanje grana i u
@@ -449,10 +449,10 @@ takvom slučaju.
 \section{Jenkins}
 Timovi koji koriste stare metode, kao što su Grantt dijagrame i model vodopada
 (engl.~\textit{waterfall model}), moraju odvojiti poveći dio vremena za fazu integracije. U toj fazi
-razvoja računalne podrške, injženjeri i timovi spajaju djelove koda na kojima su radili mjesecima.
-Prilikom spajanja djelova koda, često dolazi do sukoba datoteka i programskih sučelja koji
-injženjeri ručno moraju riješiti. Taj proces zna potrajati tjednima kako bi se suboki riješili i
-program ponovno testirao. U takvom sustavu, faza integracija izuzetno je stresna za injženjere i
+razvoja računalne podrške, inženjeri i timovi spajaju dijelove koda na kojima su radili mjesecima.
+Prilikom spajanja dijelova koda, često dolazi do sukoba datoteka i programskih sučelja koji
+inženjeri ručno moraju riješiti. Taj proces zna potrajati tjednima kako bi se suboki riješili i
+program ponovno testirao. U takvom sustavu, faza integracija izuzetno je stresna za inženjere i
 voditelje timove. Ta faza često odgađa objavljivanje nove verzije aplikacije, a samim time i gubitak
 povjerenja krajnjih korisnika. Iz tih razloga, nastala je potreba za kontinuiranom integracijom.
 
@@ -463,13 +463,13 @@ Programming), gdje se radna verzija spaja u glavnu verziju barem jednom u dva do
 sata~\citep{beck1999embracing}. Kako bi to bilo moguće potrebna je dobra infrastruktura koja
 omogućava brzo otkrivanje grešaka prilikom razvoja. Također, pomaže prilikom dijagnostike te
 omogućava brzu izgradnju aplikacije. Svaki profesionalni razvojni tim treba koristiti takav sustav
-kako bi bio što unčikovitiji i konkurentniji.
+kako bi bio što učinkovitiji i konkurentniji.
 
-Pojednostavno, sustav kontinuirane integracije nadgleda sve promjene nad sustav kontrole verzija.
-Kada je promjena očitana, sustav pokreće proces testiranja jedinica i izgradenje aplikacije
-(engl.~\textit{compile}). U slučaju greške, sustav obavještava injženjera o pogrešci kako bi se
-mogla ispraviti što prije. Osim toga, sustav mora biti u mogućnosti proizvesti izvječća o
-kvaliteti koda, kao što je pokrivenost testiranja jedinice, razne statistike poput vrijeme
+Pojednostavljeno, sustav kontinuirane integracije nadgleda sve promjene nad sustav kontrole verzija.
+Kada je promjena očitana, sustav pokreće proces testiranja jedinica i izgradnje aplikacije
+(engl.~\textit{compile}). U slučaju greške, sustav obavještava inženjera o pogrešci kako bi se
+mogla ispraviti što prije. Osim toga, sustav mora biti u mogućnosti proizvesti izvješća o
+kvaliteti koda, kao što je pokrivenosti testiranja jedinice, razne statistike poput vrijeme
 izgradnje, učestalost grešaka.
 
 Ukoliko je sustav kontinuirane integracije pouzdan, može se automatizirati i sustav objavljivanja
@@ -485,17 +485,17 @@ grafičkog sučelja, mogućnost proširenja preko dodataka (engl.~\textit{plugin
 značajki. Uvođenje Jenkins alata može se uvesti postepeno u poduzećima koji nemaju nikakav
 sustav~\citep{smart2011jenkins}. Prvo je potrebno uvesti sustav koji će na dnevnoj bazi izgrađivati
 aplikaciju. Druga faza je uvođenje automatskog testiranja prije izgrađivanja aplikacije, također na
-dnevnoj razini. Sljedeća faza je uvođenje metrika vezano za kvalitetu koda (pokrivenost jedinica,
+dnevnoj razini. Sljedeća faza je uvođenje metrika vezano za kvalitetu koda (pokrivenosti jedinica,
 brzina testova i izgradnje) te automatska izgradnja dokumentacije. Četvrta faza je dodatno
 testiranje, kao što je testiranje funkcionalnosti. Takvo testiranje odvija se nakon što je
 aplikacija izgrađena. Peta faza je gdje se aplikacija koja je prošla dodatno testiranje automatski
-objavljuje. Takvu aplikaciju mogu korisitit osobe koje nisu injženjeri, kao što su timovi za
+objavljuje. Takvu aplikaciju mogu koristiti osobe koje nisu inženjeri, kao što su timovi za
 testiranje kvalitete. Zadnja faza sustava je kontinuirano objavljivanje aplikacije krajnjim
 korisnicima.
 
 Jenkins se sastoji od Jenkins poslova (engl.~\textit{Jenkins Jobs}), Jenkins građe
 (engl.~\textit{Jenkins build}), %XXX dobar prijevod?
-parametera, Jenkins linije (engl.~\textit{Jenkins Pipeline}) i dodataka.
+parametara, Jenkins linije (engl.~\textit{Jenkins Pipeline}) i dodataka.
 
 \subsection{Jenkins poslovi}
 Jenkins posao je skup pravila prema kojem se izgrađuje aplikacija. Sastoji se od naziva posla,
@@ -514,7 +514,7 @@ slikom~\ref{fig:02jenkinsjob}
 
 \subsection{Jenkins parametri}
 Jenkins parametri se najčešće koriste za Jenkins poslove. Jenkins podržava velik broj tipova
-parametara, kao što su riječi, brojevi, izbornici, jednobitni podaci (da/ne odgovor). Parametri se
+parametara, kao što su riječi, brojevi, izbornici, jedno-bitni podaci (da/ne odgovor). Parametri se
 mogu automatski predavati poslu ili ručno. Primjer automatskog predavanja parametara je kada jedan
 Jenkins posao pokreće drugi te predaje informacije o prethodnom izvršavanju. Primjer ručnog
 predavanja parametara je kada korisnik odabere verziju koju želi pokrenuti.
@@ -532,8 +532,8 @@ se linija prekida ukoliko jedan od paralelnih poslova bude neuspješan. Pomoću 
 (engl.~\textit{Post-Build}, korisnici mogu biti obaviješteni o rezultatima građe.
 
 \subsection{Jenkins dodaci}
-Jedna od velik prednosti Jenkins alata jest upravo u dodacima. Dodaci mogu mjenjati vizualno web
-sučelje, mjenjati način povezivanja Jenkins gazde s Jenkins slugom, dodati podršku za nove
+Jedna od velik prednosti Jenkins alata jest upravo u dodacima. Dodaci mogu mijenjati vizualno web
+sučelje, mijenjati način povezivanja Jenkins gazde s Jenkins slugom, dodati podršku za nove
 programske jezike i VSC. U službenom Jenkins repositoriju registrirano je preko tisuću različitih
 dodataka~\citep{JenkisPlugins}.
 
@@ -542,7 +542,7 @@ dodataka~\citep{JenkisPlugins}.
 Docker je projekt otvorenog koda koji pojednostavljuje objavljivanje programa tako što koristi
 programske kontejnere (engl.~\textit{Software Containers}). Docker kontejner pakira program unutar
 cjelokupnog datotečnog sustava koji ima sve potrebne komponente kako bi se takav program mogao
-izvoditi - od dinamičkih modula, biblioteka, sve do programskog sučelja operativnog sustava. Stoga,
+izvoditi - od dinamičkih modula, biblioteka, sve do programskog sučelja operativnoga sustava. Stoga,
 Docker garantira da će izvršavanje takvog sustava bit uvijek jednako, neovisno o računalo na kojem
 se izvodi.
 
@@ -652,11 +652,11 @@ slici~\ref{fig:02docker} prikazana  Docker arhitektura.
 \section{Nginx}
 Nginx je web poslužitelj otvorenog koda napisan u C programskom kodu koji se često koristi kao
 balansiranje opterećenja (engl.~\textit{Load Balancer}) i obrnuti posrednik (engl.~\textit{reverse
-proxy}). Nastao je s ciljem da ima bolje performance nego Apache web poslužitelj, a u tome je uspio.
-Prema analizi iz 2017. godine, Nginx i dalje ima bolje performance nego
+proxy}). Nastao je s ciljem da ima bolje performanse nego Apache web poslužitelj, a u tome je uspio.
+Prema analizi iz 2017. godine, Nginx i dalje ima bolje performanse nego
 Apache~\citep{nguyen2017comparative}. Poduzeće Netcraft, koji se bavi istraživanjem web stranica i
 servisa, obavlja istraživanje svakih mjesec dana. U veljači 2018. godine svaka četvrta internet
-stranica bila je posluživana preko Nginx poslužitelja~\citep{Netcraft2018}.
+stranica bila je posluživanja preko Nginx poslužitelja~\citep{Netcraft2018}.
 
 Nginx kao~\citep{soni2016load}. TODO
 
