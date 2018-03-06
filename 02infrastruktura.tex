@@ -20,7 +20,7 @@ usporediti izmjene imeđu zapisa. To je samo mali dio operacija koje korisnik mo
 Prije nego što su ovakvi sustavi postali popularni i industrijski standard, korisnici su ručno
 kopirali mapu ili datoteku te ju spremili kao rezervu (engl.~backup). Takav proces podložan je
 greškama te ne pruža puno funkcionalnosti. Jedno od prvih riješenja bio je RCS (engl. Revision
-Control System)\citep{chacon2014pro}, koji omogućuje pohranjivanje razlike datoteka (engl.~patch
+Control System)~\citep{chacon2014pro}, koji omogućuje pohranjivanje razlike datoteka (engl.~patch
 set) između revizija. Korisnik može vratiti datoteku u prijašnje stanje tako da sustav primjeni
 razliku datoteka, kao što
 je prikazano na slici~\ref{fig:02rcs}.
@@ -265,12 +265,13 @@ računalu bez ikakvih gubitaka. Arhitektura takvog distribuiranog sustava dana j
 \end{figure}
 
 \subsection{Osnove Git-a}
-Git je distribuirani sustav za kontrolu verzije. Za razliku od većine drugih VSC koji spremaju
-razliku između verzija, Git sprema cijele datoteke koje su promjenjene od zadnje verzije. Na
-primjer, ako korisnik promjeni datoteku tako što doda novu liniju koda, klasični VSC sustavi će
-spremiti informaciju o toj razlici, dok će Git spremiti cijelu datoteku. Spremanje cijele datoteke
-zauzima diskovni prostor, no omogućuje brže operacije kada je potrebno pogledati povijest i kako su
-datoteke izgledala u bilo kojem trenutku.
+Git je distribuirani sustav otvorenog koda za kontrolu verzije. Prema anketi Stack Overflow iz 2017,
+od 30.730 ispitanika, 69.2\% se izjasnilo da koristi Git~\citep{StackOverflow2017Survey}. Za razliku
+od većine drugih VSC, Git sprema cijele datoteke koje su promjenjene od zadnje verzije. Na primjer,
+ako korisnik promjeni datoteku tako što doda novu liniju koda, klasični VSC sustavi će spremiti
+informaciju o toj razlici, dok će Git spremiti cijelu datoteku. Spremanje cijele datoteke zauzima
+diskovni prostor, no omogućuje brže operacije kada je potrebno pogledati povijest i kako su datoteke
+izgledala u bilo kojem trenutku.
 
 Zbog svoje distribuirane naravi, korisnik može korisitit Git i kada nije povezan na mrežu. Većina
 operacija, kao što su \textit{git-commit}, \textit{git-merge}, \textit{git-checkout},
@@ -316,14 +317,14 @@ takva baza postala dostupna drugim računalima, potrebno je poslati bazu na Git 
 od najpolularnijih servisa koji pruža Git poslužitelj kao uslugu je GitHub.
 
 GitHub je servis istoimene firme koja pruža Git kao uslugu. U travnju 2017. godine, GitHub je
-objavio da je registrirano skoro 20 milijuna korisnika i 57 milijuna Git projekata
-\citep{github2017}. Korisnik se more registrirati na github.com kako bi mogao koristiti usluge
-GitHub. Nakon uspješne registracije, Git projekt se može kreirati kao što je vidljivo na
+objavio da je registrirano skoro 20 milijuna korisnika i 57 milijuna Git
+projekata~\citep{github2017}. Korisnik se more registrirati na github.com kako bi mogao koristiti
+usluge GitHub. Nakon uspješne registracije, Git projekt se može kreirati kao što je vidljivo na
 slici~\ref{fig:02hgreg}.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{img/02/gh.png}
+    \includegraphics[width=0.7\linewidth]{img/02/gh.png}
     \caption{Registracija Git projekta na github.com}%
     \label{fig:02hgreg}
 \end{figure}
@@ -446,12 +447,217 @@ takvom slučaju.
 \end{figure}
 
 \section{Jenkins}
+Timovi koji koriste stare metode, kao što su Grantt dijagrame i model vodopada
+(engl.~\textit{waterfall model}), moraju odvojiti poveći dio vremena za fazu integracije. U toj fazi
+razvoja računalne podrške, injženjeri i timovi spajaju djelove koda na kojima su radili mjesecima.
+Prilikom spajanja djelova koda, često dolazi do sukoba datoteka i programskih sučelja koji
+injženjeri ručno moraju riješiti. Taj proces zna potrajati tjednima kako bi se suboki riješili i
+program ponovno testirao. U takvom sustavu, faza integracija izuzetno je stresna za injženjere i
+voditelje timove. Ta faza često odgađa objavljivanje nove verzije aplikacije, a samim time i gubitak
+povjerenja krajnjih korisnika. Iz tih razloga, nastala je potreba za kontinuiranom integracijom.
+
 Kontinuirana integracija (CI, engl.~Continuous Integration) je način razvoja aplikacije gdje se
 radne verzije programa spajaju s glavnom verzijom barem jednom dnevno~\citep{fowler2006continuous}.
 Ekstremnija verzija takvog načina razvoja nazvana je ekstremno programiranje (XP, engl.~Extreme
 Programming), gdje se radna verzija spaja u glavnu verziju barem jednom u dva do tri
-sata~\citep{beck1999embracing}.
+sata~\citep{beck1999embracing}. Kako bi to bilo moguće potrebna je dobra infrastruktura koja
+omogućava brzo otkrivanje grešaka prilikom razvoja. Također, pomaže prilikom dijagnostike te
+omogućava brzu izgradnju aplikacije. Svaki profesionalni razvojni tim treba koristiti takav sustav
+kako bi bio što unčikovitiji i konkurentniji.
+
+Pojednostavno, sustav kontinuirane integracije nadgleda sve promjene nad sustav kontrole verzija.
+Kada je promjena očitana, sustav pokreće proces testiranja jedinica i izgradenje aplikacije
+(engl.~\textit{compile}). U slučaju greške, sustav obavještava injženjera o pogrešci kako bi se
+mogla ispraviti što prije. Osim toga, sustav mora biti u mogućnosti proizvesti izvječća o
+kvaliteti koda, kao što je pokrivenost testiranja jedinice, razne statistike poput vrijeme
+izgradnje, učestalost grešaka.
+
+Ukoliko je sustav kontinuirane integracije pouzdan, može se automatizirati i sustav objavljivanja
+aplikacija. Ukoliko se takva aplikacija automatski objavljuje i dostavlja krajnjim korisnicima, radi
+se o sustavu za kontinuirani razvoj i objavu aplikacija (engl.~Continuous Deployment). Kod takvog
+sustava iznimno je bitno da je proces nadogradnje aplikacije jednostavan, a poželjno i skriven, od
+krajnjeg korisnika. Stoga se najčešće primjenjuje na mrežnim aplikacijama, kao što su internet
+aplikacije i stranice.
+
+Jenkins, izvorno nazvan Hudson, je alat za kontinuiranu integraciju otvorenog koda napisan u
+programskom jeziku Java. Postao je iznimno popularan zbog jednostavnosti korištenja, jednostavnog
+grafičkog sučelja, mogućnost proširenja preko dodataka (engl.~\textit{plugins}) te mnogih drugih
+značajki. Uvođenje Jenkins alata može se uvesti postepeno u poduzećima koji nemaju nikakav
+sustav~\citep{smart2011jenkins}. Prvo je potrebno uvesti sustav koji će na dnevnoj bazi izgrađivati
+aplikaciju. Druga faza je uvođenje automatskog testiranja prije izgrađivanja aplikacije, također na
+dnevnoj razini. Sljedeća faza je uvođenje metrika vezano za kvalitetu koda (pokrivenost jedinica,
+brzina testova i izgradnje) te automatska izgradnja dokumentacije. Četvrta faza je dodatno
+testiranje, kao što je testiranje funkcionalnosti. Takvo testiranje odvija se nakon što je
+aplikacija izgrađena. Peta faza je gdje se aplikacija koja je prošla dodatno testiranje automatski
+objavljuje. Takvu aplikaciju mogu korisitit osobe koje nisu injženjeri, kao što su timovi za
+testiranje kvalitete. Zadnja faza sustava je kontinuirano objavljivanje aplikacije krajnjim
+korisnicima.
+
+Jenkins se sastoji od Jenkins poslova (engl.~\textit{Jenkins Jobs}), Jenkins građe
+(engl.~\textit{Jenkins build}), %XXX dobar prijevod?
+parametera, Jenkins linije (engl.~\textit{Jenkins Pipeline}) i dodataka.
+
+\subsection{Jenkins poslovi}
+Jenkins posao je skup pravila prema kojem se izgrađuje aplikacija. Sastoji se od naziva posla,
+opisa, definira parametre potrebne za pokretanje izgradnje aplikacije, instrukcija kako se izgrađuje
+aplikacija te listu akcija nakon što je posao završen~\citep{pathania2016learning}. Jenkins posao ne
+ovisi o programskom jeziku aplikacije koja se izgrađuje, niti o VCS. Posao se može programirati, ali
+i izgraditi koristeći grafičko web sučelje. Primjer izgradnje posla preko web sučelja prikazan je
+slikom~\ref{fig:02jenkinsjob}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{img/02/jenkins_job.png}
+    \caption{Izgradnja Jenkins posla}%
+    \label{fig:02jenkinsjob}
+\end{figure}
+
+\subsection{Jenkins parametri}
+Jenkins parametri se najčešće koriste za Jenkins poslove. Jenkins podržava velik broj tipova
+parametara, kao što su riječi, brojevi, izbornici, jednobitni podaci (da/ne odgovor). Parametri se
+mogu automatski predavati poslu ili ručno. Primjer automatskog predavanja parametara je kada jedan
+Jenkins posao pokreće drugi te predaje informacije o prethodnom izvršavanju. Primjer ručnog
+predavanja parametara je kada korisnik odabere verziju koju želi pokrenuti.
+
+\subsection{Jenkins građa}
+Većina Jenkins poslova sadrže barem jednu Jenkins građu. Jenkins građa je jedinica posla koja se
+izvršava kada se posao izvršava. Može biti jednostavna Linux Bash ili Windows batch naredba, a preko
+dodataka može izvršavati i kompleksne stvari kao što su Python skripte, preuzimanje Android
+dodataka. Jedan Jenkins posao može imati više Jenkins građi.
+
+\subsection{Jenkins linija}
+Jenkins linija omogućuje umrežavanje više Jenkins poslova. Linija može pokrenuti Jenkins poslove
+sekvencijalno ili paralelno te može sadržavati logiku. Na primjer, Jenkins linija može odlučiti da
+se linija prekida ukoliko jedan od paralelnih poslova bude neuspješan. Pomoću akcija nakon građe
+(engl.~\textit{Post-Build}, korisnici mogu biti obaviješteni o rezultatima građe.
+
+\subsection{Jenkins dodaci}
+Jedna od velik prednosti Jenkins alata jest upravo u dodacima. Dodaci mogu mjenjati vizualno web
+sučelje, mjenjati način povezivanja Jenkins gazde s Jenkins slugom, dodati podršku za nove
+programske jezike i VSC. U službenom Jenkins repositoriju registrirano je preko tisuću različitih
+dodataka~\citep{JenkisPlugins}.
+
 
 \section{Docker}
+Docker je projekt otvorenog koda koji pojednostavljuje objavljivanje programa tako što koristi
+programske kontejnere (engl.~\textit{Software Containers}). Docker kontejner pakira program unutar
+cjelokupnog datotečnog sustava koji ima sve potrebne komponente kako bi se takav program mogao
+izvoditi - od dinamičkih modula, biblioteka, sve do programskog sučelja operativnog sustava. Stoga,
+Docker garantira da će izvršavanje takvog sustava bit uvijek jednako, neovisno o računalo na kojem
+se izvodi.
+
+Konceptno, Docker je sličan virtualizaciji, kao što je VMWare i VirtualBox. No, za razliku od njih,
+Docker ima prednosti u tome što je brži i koristi manje resursa~\citep{leszko2017continuous}. Na
+slici~\ref{fig:02vm} prikazana je arhitektura kod tipične virtualizacije, dok je na
+slici~\ref{fig:02docker} prikazana  Docker arhitektura.
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[
+        scale=1.0,
+        node distance=1mm,
+        text width=3.5cm,
+        text centered,
+        box/.style={
+            minimum height=8mm,
+            rectangle,
+            draw=black,
+            very thick,
+            text centered,
+        },
+        box1/.style={
+            fill=yellow!10,
+        },
+        box2/.style={
+            fill=blue!10,
+        },
+        box3/.style={
+            fill=green!10,
+        },
+        os/.style={
+            minimum height=16mm,
+        },
+        big/.style={
+            fill=orange!40,
+            text width = 11.8cm,
+        },
+    ]
+        \node [box, big] (server) {Poslužitelj};
+        \node [box, big, above=of server] (os) {Operativni sustav};
+        \node [box, big, above=of os] (vmm) {VMM - Virtual Machine Monitor};
+
+        \node [box, box2, os, above=3mm of vmm] (g2os) {OS gosta};
+        \node [box, box2, above=of g2os] (g2bib) {Biblioteke};
+        \node [box, box2, above=of g2bib] (g2app) {Aplikacija 2};
+
+        \node [box, box1, os, left=3mm of g2os] (g1os) {OS gosta};
+        \node [box, box1, above=of g1os] (g1bib) {Biblioteke};
+        \node [box, box1, above=of g1bib] (g1app) {Aplikacija 1};
+
+        \node [box, box3, os, right=3mm of g2os] (g3os) {OS gosta};
+        \node [box, box3, above=of g3os] (g3bib) {Biblioteke};
+        \node [box, box3, above=of g3bib] (g3app) {Aplikacija 3};
+    \end{tikzpicture}
+
+    \caption{Arhitektura virtualizacije}%
+    \label{fig:02vm}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[
+        scale=1.0,
+        node distance=1mm,
+        text width=3.5cm,
+        text centered,
+        box/.style={
+            minimum height=8mm,
+            rectangle,
+            draw=black,
+            very thick,
+            text centered,
+        },
+        box1/.style={
+            fill=yellow!10,
+        },
+        box2/.style={
+            fill=blue!10,
+        },
+        box3/.style={
+            fill=green!10,
+        },
+        big/.style={
+            fill=orange!40,
+            text width = 11.8cm,
+        },
+    ]
+        \node [box, big] (server) {Poslužitelj};
+        \node [box, big, above=of server] (os) {Operativni sustav};
+        \node [box, big, above=of os] (docker) {Docker engine};
+
+        \node [box, box2, above=3mm of docker] (g2bib) {Biblioteke};
+        \node [box, box2, above=of g2bib] (g2app) {Aplikacija 2};
+
+        \node [box, box1, left=3mm of g2bib] (g1bib) {Biblioteke};
+        \node [box, box1, above=of g1bib] (g1app) {Aplikacija 1};
+
+        \node [box, box3, right=3mm of g2bib] (g3bib) {Biblioteke};
+        \node [box, box3, above=of g3bib] (g3app) {Aplikacija 3};
+    \end{tikzpicture}
+
+    \caption{Docker arhitektura}%
+    \label{fig:02docker}
+\end{figure}
 
 \section{Nginx}
+Nginx je web poslužitelj otvorenog koda napisan u C programskom kodu koji se često koristi kao
+balansiranje opterećenja (engl.~\textit{Load Balancer}) i obrnuti posrednik (engl.~\textit{reverse
+proxy}). Nastao je s ciljem da ima bolje performance nego Apache web poslužitelj, a u tome je uspio.
+Prema analizi iz 2017. godine, Nginx i dalje ima bolje performance nego
+Apache~\citep{nguyen2017comparative}. Poduzeće Netcraft, koji se bavi istraživanjem web stranica i
+servisa, obavlja istraživanje svakih mjesec dana. U veljači 2018. godine svaka četvrta internet
+stranica bila je posluživana preko Nginx poslužitelja~\citep{Netcraft2018}.
+
+Nginx kao~\citep{soni2016load}. TODO
+
+

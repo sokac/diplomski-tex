@@ -1,15 +1,23 @@
 \chapter{Uvod}
 Razvoj aplikacija uvelike se promjenio s razvojem novih tehnologija, a pogotovo u zadnjem desetljeću
-s razvojem oblaka (engl. cloud). Sve je veći broj poduzeća koji se bave razvojem aplikacija te imaju
-potrebu što prije objaviti nadogradnje aplikacija. Stare metode objavljivanja aplikacija traju
-dugo te vrijeme potrebno za objavu raste s rastom broja injženjera. Osim što su skupe, podložne su i
-ljudskim greškama.  Stoga se sve više poduzeća odlučuje za kontinuirani razvoj aplikacija.
+s razvojem oblaka (engl.\textit{cloud}). Sve je veći broj poduzeća koji se bave razvojem aplikacija
+te imaju potrebu što prije objaviti nadogradnje aplikacija. Stare metode objavljivanja aplikacija
+traju dugo te vrijeme potrebno za objavu raste s rastom broja injženjera. Osim što su skupe,
+podložne su i ljudskim greškama. Stoga se sve više poduzeća odlučuje za kontinuirani razvoj
+aplikacija.
 
-Korištenjem kontinuiranog razvoja aplikacija te brzog razvoja (engl. agile development) moguće je
-objavljivati nadogradnje više puta dnevno bez potrebe za inženjerom objave (engl. release engineer).
-Takav sustav mora biti u mogućnosti otkriti promjene na sustavu za reviziju koda, pokrenuti
-testove jedinice, kompajlirati aplikaciju, provesti dodatna testiranja te poslužiti takvu aplikaciju
-krajnjim korisnicima.
+Korištenjem kontinuiranog razvoja aplikacija te brzog razvoja (engl.\textit{agile development})
+moguće je objavljivati nadogradnje više puta dnevno~\citep{abrahamsson2017agile} bez potrebe za
+inženjerom objave (engl.~\textit{release engineer}). Takav sustav mora biti u mogućnosti otkriti
+promjene na sustavu za reviziju koda, pokrenuti testove jedinice, kompajlirati aplikaciju, provesti
+dodatna testiranja te poslužiti takvu aplikaciju krajnjim korisnicima.
+
+Poduzeće Facebook objavio je članak~\citep{rossi2016continuous} o korištenju kontinuiranog razvoja
+gdje nepobitno dokazuju da brzina objavljivanja novog koda ne opada sa povećanjem broj injženjera
+razvojnih timova i kvaliteta koda ne opada. Broj grešaka (engl.~\textit{bugs}) u kodu linearno raste
+s brojem objavljivanja koda, kao što je i očekivano. Također, neovisno o broju inježenjera, u
+prosjeku se pojavljuje jedna greška srednjeg prioriteta na oko 3000 pojedinačnih objava koda.
+Facebook tvrdi da je jedan od razloga kontinuirano testiranje.
 
 U drugom poglavlju opisana je jedna od infrastruktura kontinuiranog razvoja aplikacija. Opisan je
 Git sustav za reviziju koda, Jenkins aplikacija za kontinuiranu integraciju programskog koda,
