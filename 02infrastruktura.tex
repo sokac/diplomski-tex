@@ -540,7 +540,7 @@ dodataka~\citep{JenkisPlugins}.
 
 \section{Docker}
 Docker je projekt otvorenog koda koji pojednostavljuje objavljivanje programa tako što koristi
-programske kontejnere (engl.~\textit{Software Containers}). Docker kontejner pakira program unutar
+programske kontejnere (engl.~\textit{Software Containers}). Docker slika pakira program unutar
 cjelokupnog datotečnog sustava koji ima sve potrebne komponente kako bi se takav program mogao
 izvoditi - od dinamičkih modula, biblioteka, sve do programskog sučelja operativnoga sustava. Stoga,
 Docker garantira da će izvršavanje takvog sustava bit uvijek jednako, neovisno o računalo na kojem
@@ -649,15 +649,32 @@ slici~\ref{fig:02docker} prikazana  Docker arhitektura.
     \label{fig:02docker}
 \end{figure}
 
+\subsection{Docker osnove}
+Docker slika (engl.~\textit{Docker Image}) je preslika datotečnog sustava koja se sastoji od niza
+Docker slojeva (engl.~\textit{Docker layers}). Slojevi predstavljaju promjene u datotečnom sustavu
+naspram prijašnjeg sloja. Docker kontejner koristi Docker sliku te pokreće određenu aplikaciju koja
+se već nalazi unutar Docker slike. Promjene unutar Docker kontejnera, kao što je zapis novih
+datoteka, ne mijenjaju Docker sliku koja je korištena za pokretanje tog kontejnera. Kada se Docker
+kontejner zaustavi i obriše, svi podaci su također obrisani.
+
+Docker slike mogu se spremiti u Docker repositorij koji može biti privatni ili javni. Jedan od
+najčešće korištenih je službeni repositorij firme koja stoji iza Docker-a - Docker, Inc, a koji se
+nalazi na Web stranici \textit{https://hub.docker.com}. 
+
+
 \section{Nginx}
 Nginx je web poslužitelj otvorenog koda napisan u C programskom kodu koji se često koristi kao
 balansiranje opterećenja (engl.~\textit{Load Balancer}) i obrnuti posrednik (engl.~\textit{reverse
-proxy}). Nastao je s ciljem da ima bolje performanse nego Apache web poslužitelj, a u tome je uspio.
-Prema analizi iz 2017. godine, Nginx i dalje ima bolje performanse nego
-Apache~\citep{nguyen2017comparative}. Poduzeće Netcraft, koji se bavi istraživanjem web stranica i
-servisa, obavlja istraživanje svakih mjesec dana. U veljači 2018. godine svaka četvrta internet
-stranica bila je posluživanja preko Nginx poslužitelja~\citep{Netcraft2018}.
+proxy}). Nastao je s ciljem da ima bolje performanse nego Apache web poslužitelj.  Prema analizi iz
+2017. godine, Nginx i dalje ima bolje performanse nego Apache~\citep{nguyen2017comparative}.
+Poduzeće Netcraft, koji se bavi istraživanjem web stranica i servisa, obavlja istraživanje svakih
+mjesec dana. U veljači 2018. godine svaka četvrta internet stranica bila je posluživanja preko Nginx
+poslužitelja~\citep{Netcraft2018}.
 
-Nginx kao~\citep{soni2016load}. TODO
-
-
+Balansiranje opterećenja je potreban ukoliko jedan poslužitelj aplikacije nema dovoljno resursa kako
+bi poslužio sve klijente~\citep{soni2016load}. Nginx podržava pet algoritama balansiranja te je na
+korisniku da utvrdi koji je najbolji za aplikaciju. Prilikom korištenja balancera opterećenja, Nginx
+služi kao obrnuti posrednik. Klijenti se spajaju na Nginx koji zatim odlučuje, ovisno o definiranim
+pravilima, gdje će proslijediti takav zahtjev. Nginx ima mogućnost dodati i uređivati određene
+informacije na takav zahjev. Nakon primitka odgovora, Nginx također ima mogućost promjene
+informacija. Takav obrađeni odgovor se zatim šalje klijentu.
