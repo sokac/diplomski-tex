@@ -1,0 +1,30 @@
+\chapter{Objava nove verzije programa}
+
+\section{Nova verzija programa}
+% mozda posebno poglavlje
+U drugoj iteraciji poboljšana je vremenska kompleknost tako što je uklonjena rekurzija te dodana
+memoizacija. Nova vremenska kompleknost je $O(N)$, dok je memorijska kompleknost $O(1)$. Nova
+verzija prikazana je kodom~\ref{03fibv2}.
+
+\lstset{caption={Fibonacci v2}, label=03fibv2}
+\begin{lstlisting}
+func fibonacci(n uint64) uint64 {
+	if n == 0 {
+		return 0
+	}
+	a := uint64(0)
+	b := uint64(1)
+
+	for n > 1 {
+		tmp := a + b
+		a = b
+		b = tmp
+		n--
+	}
+	return b
+}
+\end{lstlisting}
+
+\section{Preusmjeravanje korisnika na novu aplikaciju}
+
+\section{Vraćanje na staru aplikaciju}
