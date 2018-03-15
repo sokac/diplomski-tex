@@ -342,7 +342,7 @@
   \renewcommand{\maketitle}{%
     % Postavi margine na veličine za naslovnu stranicu
     \addtolength{\voffset}{0.5cm}%
-    \addtolength{\hoffset}{0.5cm}%
+    \addtolength{\hoffset}{-0.25cm}%
     \addtolength{\marginparwidth}{0.5cm}%
     \addtolength{\textwidth}{-1cm}%
     \addtolength{\textheight}{-1cm}%
@@ -360,15 +360,6 @@
       \end{center}
       \vfill
       \begin{center}
-        \if@radzavrsni
-          {\large \strzavrsni{}.~\@thesisnumber \par}
-        \else \if@raddiplomski
-          {\large \strdiplomski{}.~\@thesisnumber \par}
-        \else \if@radproizvoljni
-          {\large \@tiprada \par}
-        \else
-          {\large\bfseries \strseminar\ \par}
-        \fi\fi\fi
         \if@radseminar \vskip 3em
         \else \vskip 1em
         \fi
@@ -400,7 +391,7 @@
     \if@fontlmodern\renewcommand{\sfdefault}{lmr}\fi
     % Vrati margine na postavke za ostale stranice
     \addtolength{\voffset}{-0.5cm}%
-    \addtolength{\hoffset}{-0.5cm}%
+    \addtolength{\hoffset}{0.25cm}%
     \addtolength{\marginparwidth}{-0.5cm}%
     \addtolength{\textwidth}{1cm}%
     \addtolength{\textheight}{1cm}%
