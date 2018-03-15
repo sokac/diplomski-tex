@@ -106,7 +106,7 @@ Pomoću ~\textit{junit} skripte, Jenkins objavljuje rezultate testova, kao i vri
 U trećoj fazi aplikacija se kompajlira i objavljuje sprema unutar Docker slike. Treća i druga faza
 dijele istu baznu Docker sliku. Stoga, inženjer može biti siguran da su sve biblioteke dostupne
 ukoliko su pokrivene testovima jedinice. Docker slika se označuje s trenutnom verzijom izgradnje
-(engl.~\textit{build number}) te se objavljuje na Docker repositorij. Kako bi se slika mogla
+(\textit{engl. build number}) te se objavljuje na Docker repositorij. Kako bi se slika mogla
 objaviti, potrebno je podesiti Docker autorizaciju unutar Jenkins sustava.
 
 U zadnjoj fazi, Docker slika se označuje sa specijalnom oznakom \textit{latest}. Ta oznaka označuje
@@ -120,7 +120,7 @@ prazno stanje. Ukoliko kontenjer postoji, potrebno je učitati informacije o por
 servis počinje periodički provjeravati je li objavljanje nova verzija aplikacije.  Ukoliko postoji
 nova verzija, servis mora preuzeti Docker sliku i pokrenuti Docker kontenjer na portu koji već nije
 zauzet. Nakon pokretanja, periodički se provjerava ispravnost aplikacija pomoću provjere zdravlja
-(engl.~\textit{health check}). Kada aplikacija bude zdrava, obaviještava se Nginx o novoj aplikaciji
+(\textit{engl. health check}). Kada aplikacija bude zdrava, obaviještava se Nginx o novoj aplikaciji
 te se preusmjerava promet. Dijagram toka prikazan je slikom~\ref{fig:03servismanagement}.
 
 \begin{figure}[h]
