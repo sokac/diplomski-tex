@@ -1,7 +1,7 @@
 \chapter{Infrastruktura kontinuiranog razvoja aplikacija}
 Za izradu sustava za kontinuiran razvoj aplikacije potrebna je infrastruktura koja to omogućuje.
 Postoji velik izbor aplikacija i servisa, koji se mogu koristiti za kontinuiran razvoj aplikacije.
-Na primjer, za verzioniranje koda može se koristiti Git, SVN, Mercurial, Microsoft TFS, a za
+Na primjer, za verzioniranje koda može se koristiti Git, Subversion, Mercurial, Microsoft TFS, a za
 kontinuiranu integraciju programskog koda Jenkins, Hudson, TeamCity.
 
 \section{Git - sustav kontrole verzija}
@@ -55,10 +55,10 @@ da sustav primjeni razliku datoteka, kao što je prikazano na slici~\ref{fig:02r
         },
     ]
 
-        \node [text width=8cm] (computer) {Računalo};
-
+        \node [text width=8cm] (e1) {};
+        \node [text width=8cm, right=of e1] (e2) {};
         % Lijevo
-        \node [l1, below=of computer] (fs) {Datotečni sustav};
+        \node [l1, below=of e1] (fs) {Datotečni sustav};
         \node [l1, minimum height=12mm] (empty) {};
         \node [box, l1] (file) {Datoteka};
 
@@ -75,7 +75,8 @@ da sustav primjeni razliku datoteka, kao što je prikazano na slici~\ref{fig:02r
         \draw[<-] (version2) -- (version1);
 
         \begin{scope}[on background layer]
-            \node [draw=black!50, fill=yellow!5, fit={(computer) (version1) (fs)}] {};
+            \node [draw=black!50, fill=yellow!5, fit={(e1) (version1) (fs)}] (f) {};
+            \node [text width=8cm, fit={(e1) (e2)}, yshift=-2mm] (computer) {Računalo};
         \end{scope}
 
     \end{tikzpicture}
@@ -265,12 +266,12 @@ dana je slikom \ref{fig:02DVCS}.
 
 \subsection{Osnove Git-a}
 Git je distribuirani sustav otvorenog koda za kontrolu verzije. Prema anketi Stack Overflow iz 2017,
-od 30.730 ispitanika, 69.2\% se izjasnilo da koristi Git~\citep{StackOverflow2017Survey}. Za razliku
-od većine drugih VSC, Git sprema cijele datoteke koje su promijenjene od zadnje verzije. Na primjer,
-ako korisnik promjeni datoteku tako što doda novu liniju koda, klasični VSC sustavi će spremiti
-informaciju o toj razlici, dok će Git spremiti cijelu datoteku. Spremanje cijele datoteke zauzima
-diskovni prostor, no omogućuje brže operacije kada je potrebno pogledati povijest i kako su datoteke
-izgledala u bilo kojem trenutku.
+od 30.730 ispitanika, 69.2\% se izjasnilo da koristi Git~\citep{StackOverflow2017Survey}, a prati ga
+Subversion s 9.1\% i Microsoft TFS s 7.3\%. Za razliku od većine drugih VSC, Git sprema cijele
+datoteke koje su promijenjene od zadnje verzije. Na primjer, ako korisnik promjeni datoteku tako što
+doda novu liniju koda, klasični VSC sustavi će spremiti informaciju o toj razlici, dok će Git
+spremiti cijelu datoteku. Spremanje cijele datoteke zauzima diskovni prostor, no omogućuje brže
+operacije kada je potrebno pogledati povijest i kako su datoteke izgledala u bilo kojem trenutku.
 
 Zbog svoje distribuirane naravi, korisnik može koristiti Git i kada nije povezan na mrežu. Većina
 operacija, kao što su \textit{git-commit}, \textit{git-merge}, \textit{git-checkout},
@@ -485,7 +486,7 @@ internet aplikacije i stranice.
 Jenkins, izvorno nazvan Hudson, je alat za kontinuiranu integraciju otvorenog koda napisan u
 programskom jeziku Java. Postao je iznimno popularan zbog jednostavnosti korištenja, jednostavnog
 grafičkog sučelja, mogućnost proširenja preko dodataka (\textit{engl. plugins}) te mnogih drugih
-značajki. Uvođenje Jenkins alata može se uvesti postepeno u poduzećima koji nemaju nikakav
+značajki. Uvođenje Jenkins alata može se uvesti postepeno u firmama koji nemaju nikakav
 sustav~\citep{smart2011jenkins}. Prvo je potrebno uvesti sustav koji će na dnevnoj bazi izgrađivati
 aplikaciju. Druga faza je uvođenje automatskog testiranja prije izgrađivanja aplikacije, također na
 dnevnoj razini. Sljedeća faza je uvođenje metrika vezano za kvalitetu koda (pokrivenosti jedinica,
@@ -670,7 +671,7 @@ Nginx je web poslužitelj otvorenog koda napisan u C programskom kodu koji se č
 balansiranje opterećenja (\textit{engl. Load Balancer}) i obrnuti posrednik (\textit{engl. reverse
 proxy}). Nastao je s ciljem da ima bolje performanse nego Apache web poslužitelj.  Prema analizi iz
 2017. godine, Nginx i dalje ima bolje performanse nego Apache~\citep{nguyen2017comparative}.
-Poduzeće Netcraft, koji se bavi istraživanjem web stranica i servisa, obavlja istraživanje svakih
+Firma Netcraft, koja se bavi istraživanjem web stranica i servisa, obavlja istraživanje svakih
 mjesec dana. U veljači 2018. godine svaka četvrta internet stranica bila je posluživanja preko Nginx
 poslužitelja~\citep{Netcraft2018}.
 
