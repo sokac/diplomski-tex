@@ -305,7 +305,7 @@ operacije \textit{git-add}. Kada je sve spremno za trajno spremanje u Git bazu, 
 spremanja prikazan je programskim kodom~\ref{02init}.
 
 \lstset{caption={Kreiranje Git projekta i prvo predavanje}, label=02init}
-\begin{lstlisting}
+\begin{lstlisting}[float=h]
 git init
 git add main.go // Pretpostavka da main.go postoji unutar direktorija
 git add LICENSE // Pretpostavka da LICENSE postoji unutar direktorija
@@ -336,13 +336,11 @@ računalo, nego isključivo \textit{git-push}.  Operacija \textit{git-push} šal
 lokalnih predanih datoteka te udaljenih datoteka.  Primjer dodavanja udaljenog servera i slanje
 izmjena dan je programskim kodom~\ref{02remote}
 
-\begin{minipage}{\linewidth}
 \lstset{caption={Dodavanje poslužitelja i slanje izmjena}, label=02remote}
-\begin{lstlisting}
+\begin{lstlisting}[float=h]
 git remote add origin git@github.com:sokac/diplomski-go.git
 git push -u origin master
 \end{lstlisting}
-\end{minipage}
 
 \subsection{Git grananje}
 Većina VSC sustava podržava neku vrstu grananja. Grananje omogućuje korisniku da izađe iz glavne
@@ -498,10 +496,9 @@ testiranje kvalitete. Zadnja faza sustava je kontinuirano objavljivanje aplikaci
 korisnicima.
 
 Jenkins se sastoji od Jenkins poslova (\textit{engl. Jenkins Jobs}), Jenkins građe (\textit{engl.
-Jenkins build}), %XXX dobar prijevod?  parametara, Jenkins linije (\textit{engl. Jenkins Pipeline})
-i dodataka.
+Jenkins build}), parametara, Jenkins linije (\textit{engl. Jenkins Pipeline}) i dodataka.
 
-\subsection{Jenkins poslovi}
+\subsection{Jenkins arhitektura}
 Jenkins posao je skup pravila prema kojem se izgrađuje aplikacija. Sastoji se od naziva posla,
 opisa, definira parametre potrebne za pokretanje izgradnje aplikacije, instrukcija kako se izgrađuje
 aplikacija te listu akcija nakon što je posao završen~\citep{pathania2016learning}. Jenkins posao ne
@@ -516,39 +513,81 @@ slikom~\ref{fig:02jenkinsjob}
     \label{fig:02jenkinsjob}
 \end{figure}
 
-\subsection{Jenkins parametri}
 Jenkins parametri se najčešće koriste za Jenkins poslove. Jenkins podržava velik broj tipova
 parametara, kao što su riječi, brojevi, izbornici, jedno-bitni podaci (da/ne odgovor). Parametri se
 mogu automatski predavati poslu ili ručno. Primjer automatskog predavanja parametara je kada jedan
 Jenkins posao pokreće drugi te predaje informacije o prethodnom izvršavanju. Primjer ručnog
 predavanja parametara je kada korisnik odabere verziju koju želi pokrenuti.
 
-\subsection{Jenkins građa}
 Većina Jenkins poslova sadrže barem jednu Jenkins građu. Jenkins građa je jedinica posla koja se
 izvršava kada se posao izvršava. Može biti jednostavna Linux Bash ili Windows batch naredba, a preko
 dodataka može izvršavati i kompleksne stvari kao što su Python skripte, preuzimanje Android
 dodataka. Jedan Jenkins posao može imati više Jenkins građi.
 
-\subsection{Jenkins linija}
 Jenkins linija omogućuje umrežavanje više Jenkins poslova. Linija može pokrenuti Jenkins poslove
 sekvencijalno ili paralelno te može sadržavati logiku. Na primjer, Jenkins linija može odlučiti da
 se linija prekida ukoliko jedan od paralelnih poslova bude neuspješan. Pomoću akcija nakon građe
-(\textit{engl. Post-Build}, korisnici mogu biti obaviješteni o rezultatima građe.
+(\textit{engl. Post-Build}), korisnici mogu biti obaviješteni o rezultatima građe.
 
-\subsection{Jenkins dodaci}
 Jedna od velik prednosti Jenkins alata jest upravo u dodacima. Dodaci mogu mijenjati vizualno web
 sučelje, mijenjati način povezivanja Jenkins gazde s Jenkins slugom, dodati podršku za nove
 programske jezike i VSC. U službenom Jenkins repositoriju registrirano je preko tisuću različitih
 dodataka~\citep{JenkisPlugins}.
 
+\section{Cypress}
+Cypress je alat za integracijsko i \textit{end-to-end} testiranje web stranica i aplikacija. Za
+razliku od sličnih alata, kao što je Selenium, pokretanje Cypressa je vrlo jednostavno, ima potpuni
+pristup pregledniku koji vrši testiranje te pojednostavljeno programsko sučelje~\citep{Cypress}.
+
+End-to-end testiranje web stranica služi kao simuliranje stvarnih korisnika. Na primjer, ukoliko
+jedan od elemenata nije prikazan unutar internet preglednika jedino \textit{end-to-end} testiranje
+može otkriti takvu grešku. No, \textit{end-to-end} testiranje je vremenski zahtjevno za pisanje, a
+pogotovo za održavanje. Bilo kakva vizualna promjena na aplikaciji zahtjeva promjenu
+\textit{end-to-end} testova, a promjena u funkcionalnosti zahtjeva potpuno nove testove. Stoga je
+preporuka Googleovih inženjera da je 70\% testova jedinice, 20\% integracijski testova, a svega 10\%
+\textit{end-to-end} testovi~\citep{google-2015}.
+
+Otvaranje Cypress alata na lokalnom računalu odvija se preko naredbe $cypress~start$ koja otvara
+program za pokretanje testova, kao što je prikazanom slikom~\ref{fig:02cypress}. Preko aplikacije
+korisnik može pokrenuti testove te vidjeti rezultate. Cypress alat prati izmjene konfiguracije na
+tvrdom disku te ih automatski učitava ako dođe do izmjene.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/02/cypress.png}
+    \caption{Cypress aplikacija}%
+    \label{fig:02cypress}
+\end{figure}
+
+Cypress testovi se mogu pokrenuti i preko komandne linije što je poželjno prilikom pokretanja na
+Jenkins poslužitelju. Pokretanje testa izvršava se naredbom $cypress~run$. Cypress zatim pokreće
+preglednik u takozvanom \textit{headless} načinu rada, to jest bez grafičkog sučelja. Nakon
+završetka rada, Cypress izlazni rezultat sadrži informaciju o uspješnosti testa. Cypress može
+spremiti sve rezultate u junit XML formatu. Primjer uspješnog rezultata dan je
+kodom~\ref{02cypressxml}.
+
+\lstset{caption={junit XML rezultat}, label=02cypressxml}
+\begin{lstlisting}[float=h]
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="1.321" tests="2" failures="0">
+  <testsuite name="Root Suite" timestamp="2018-03-19T03:14:07" tests="0" failures="0" time="0">
+  </testsuite>
+  <testsuite name="Fibonacci test" timestamp="2018-03-19T03:14:07" tests="2" failures="0" time="1.321">
+    <testcase name="Fibonacci test Ispravna forma" time="0.744" classname="Ispravna forma">
+    </testcase>
+    <testcase name="Fibonacci test Neispravna forma" time="0.577" classname="Neispravna forma">
+    </testcase>
+  </testsuite>
+</testsuites>
+\end{lstlisting}
 
 \section{Docker}
-Docker je projekt otvorenog koda koji pojednostavljuje objavljivanje programa tako što koristi
-programske kontejnere (\textit{engl. Software Containers}). Docker slika pakira program unutar
-cjelokupnog datotečnog sustava koji ima sve potrebne komponente kako bi se takav program mogao
-izvoditi - od dinamičkih modula, biblioteka, sve do programskog sučelja operativnoga sustava. Stoga,
-Docker garantira da će izvršavanje takvog sustava bit uvijek jednako, neovisno o računalo na kojem
-se izvodi.
+Docker je projekt otvorenog koda napisan u Go programskom jeziku koji pojednostavljuje objavljivanje
+programa tako što koristi programske kontejnere (\textit{engl. Software Containers}). Docker slika
+pakira program unutar cjelokupnog datotečnog sustava koji ima sve potrebne komponente kako bi se
+takav program mogao izvoditi - od dinamičkih modula, biblioteka, sve do programskog sučelja
+operativnoga sustava. Stoga, Docker garantira da će izvršavanje takvog sustava bit uvijek jednako,
+neovisno o računalo na kojem se izvodi.
 
 Konceptno, Docker je sličan virtualizaciji, kao što je VMWare i VirtualBox. No, za razliku od njih,
 Docker ima prednosti u tome što je brži i koristi manje resursa~\citep{leszko2017continuous}. Na
@@ -653,7 +692,6 @@ slici~\ref{fig:02docker} prikazana  Docker arhitektura.
     \label{fig:02docker}
 \end{figure}
 
-\subsection{Docker osnove}
 Docker slika (\textit{engl. Docker Image}) je preslika datotečnog sustava koja se sastoji od niza
 Docker slojeva (\textit{engl. Docker layers}). Slojevi predstavljaju promjene u datotečnom sustavu
 naspram prijašnjeg sloja. Docker kontejner koristi Docker sliku te pokreće određenu aplikaciju koja
@@ -663,17 +701,82 @@ kontejner zaustavi i obriše, svi podaci su također obrisani.
 
 Docker slike mogu se spremiti u Docker repositorij koji može biti privatni ili javni. Jedan od
 najčešće korištenih je službeni repositorij firme koja stoji iza Docker-a - Docker, Inc, a koji se
-nalazi na Web stranici \textit{https://hub.docker.com}. 
+nalazi na Web stranici \textit{https://hub.docker.com}.
 
+\subsection{Docker operacije}
+
+Izgradnja Docker slike pokreće se pomoću naredbe $docker~build$. Ta naredba učitava datoteku
+\textit{Dockerfile} u zadanom direktoriju. \textit{Dockerfile} je tekstualni dokument koji sadrži
+instalacijske instrukcije potrebne za izgradnju Docker slike~\citep{kacamarga2015lightweight}.
+Na primjeru danim kodom~\ref{02dockerfile} prikazana je instalacija Jenkins alata.
+
+\lstset{caption={Jenkins Dockerfile}, label=02dockerfile}
+\begin{lstlisting}[float=h]
+FROM openjdk:8-jdk-alpine
+
+RUN addgroup -g 1000 jenkins
+RUN adduser -u 1000 -G jenkins jenkins
+
+RUN curl -fsSL \
+    https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/2.117/jenkins-war-2.117.war \
+    -o /usr/share/jenkins/jenkins.war
+
+USER jenkins
+
+ENTRYPOINT ["java", "-jar", "/usr/share/jenkins/jenkins.war"]
+\end{lstlisting}
+
+U danom primjeru korištene su četiri naredbe. Naredbna $FROM$ definira Docker sliku na kojoj će se
+nova slika temeljiti. Na primjeru, temelji se na \textit{openjdk} slici pod oznakom
+\textit{8-jdk-alpine}. Naredba $RUN$ pokreće program koji je definiran iza te naredbne. U danom
+primjeru, pokrenuta je komanda $addgroup$ koja stvara Jenkins groupu, komada $adduser$ koja stvara
+Jenkins korisnika te $curl$ koja dohvaća Jenkins alat s udaljenog računala.
+Naredba $USER$ definira pod kojim korisnikom se pokreće Docker kontejner. U danom primjeru, to je
+korisnik "jenkins". Zadnja korištena naredba $ENTRYPOINT$ koja definira koji će se program pokrenuti
+unutar Docker kontejnera, a u danom primjer je $java -jar /usr/share/jenkins/jenkins.war$.
+
+Nakon što je Docker slika izgrađena, korisnik može pokrenuti Docker kontejner koristeći
+novoizgrađenu sliku pomoću naredbe $docker~run$. Prilikom pokretanja takve naredbe, korisnik može
+podesiti mrežne postakve, montirati direktorije, ograničiti procesorske, diskovne i memorijske
+resurse, izmjeniti sigurnosne postavke te mnoge druge parametre.
+
+Jedan od najčešće korištenih parametera za mrežne aplikacije jeste parametar $-p$. Prilikom
+pokretanja Docker kontejnera, mreža je podešena u tzv.~\textit{bridge} načinu rada te samim time
+pristup Docker kontejneru nije moguć u lokalnoj mreži. Parametar $-p$ naređuje Docker sustavu
+da objavi mrežni port unutar kontejnera na glavnom računalu. Na primjer, parametar $-p 8080:80$
+preusmjerava mrežne zahtjeve porta 8080 na glavnom računalu prema mrežnom portu 80 unutar Docker
+kontejnera. Promjena mrežnog načina rada moguća je preko parametra $--network$.
+
+Svi podaci koji su spremljeni unutar kontejnera su trajno obrisani pri brisanju istoga. Montiranje
+direktorija koristi se ukoliko aplikacija sprema bitne podatke na tvrdi disk te nije dopušteno
+brisanje. Svi zapisi na montirani direktorij spremaju se na tvrdi disk glavnog računala, a Docker
+kontejner ima puni pristup njima. Na primjer, parametar $-v /glavno/racunalo:/data$ montira
+direktorij glavnog računala pod nazivom $/glavno/racunalo$ na direktorij Docker kontejnera pod
+nazivom $/data$. Kada Docker kontejner napravi izmjenu unutar $/data$ direktorija, takva izmjena
+biti će automatski dostupna unutar glavnom računala pod direktorijom $/glavno/racunalo$.
+
+Zaustavljanje pokrenutog Docker kontejnera izvršava se pomoću naredbe $docker~stop$ koja prihvaća
+listu Docker kontejnera koje se želi ugasiti. Docker servis prvo šalje \textit{SIGTERM} signal
+aplikaciji. Ukoliko aplikacija nije zaustavljane unutar perioda milosti (\textit{engl. grace
+period}), tada Docker šalje \textit{SIGKILL} signal.
+
+Zaustavljeni Docker kontejner može se ponovno pokrenuti naredbom $docker~start$. Naredbom
+$docker~rm$ briše se kontejner zajedno sa svim podacima spremljenim unutar kontejnera.
 
 \section{Nginx}
 Nginx je web poslužitelj otvorenog koda napisan u C programskom kodu koji se često koristi kao
 balansiranje opterećenja (\textit{engl. Load Balancer}) i obrnuti posrednik (\textit{engl. reverse
-proxy}). Nastao je s ciljem da ima bolje performanse nego Apache web poslužitelj.  Prema analizi iz
+proxy}). Nastao je s ciljem da ima bolje performanse nego Apache web poslužitelj. Prema analizi iz
 2017. godine, Nginx i dalje ima bolje performanse nego Apache~\citep{nguyen2017comparative}.
 Firma Netcraft, koja se bavi istraživanjem web stranica i servisa, obavlja istraživanje svakih
 mjesec dana. U veljači 2018. godine svaka četvrta internet stranica bila je posluživanja preko Nginx
 poslužitelja~\citep{Netcraft2018}.
+
+Nginx se sastoji od glavnog procesa koji raspodjeljuje posao radnicima. Radnik je proces koji prima
+naredbe od glavnog procesa te je baziran na asinkorniziranom principu~\citep{reese2008nginx} te se
+oslanja na Linux sistemske pozive $epoll/select/poll$. Stoga, radnik poslužuje više zahtjeva
+odjednom s izuzetno malo dodatnih resursa. Zbog toga se Nginx često koristi kao balanser
+opterećenja.
 
 Balansiranje opterećenja je potreban ukoliko jedan poslužitelj aplikacije nema dovoljno resursa kako
 bi poslužio sve klijente~\citep{soni2016load}. Nginx podržava pet algoritama balansiranja te je na
@@ -682,3 +785,91 @@ služi kao obrnuti posrednik. Klijenti se spajaju na Nginx koji zatim odlučuje,
 pravilima, gdje će proslijediti takav zahtjev. Nginx ima mogućnost dodati i uređivati određene
 informacije na takav zahjev. Nakon primitka odgovora, Nginx također ima mogućost promjene
 informacija. Takav obrađeni odgovor se zatim šalje klijentu.
+
+\subsection{Nginx konfiguracija}
+Pri pokretanju Nginx poslužitelja potrebno je zadati konfiguracijsku datoteku. Konfiguracijska
+datoteka sadrži informacije o mrežnim protokolima i mrežnim portovima. Ukoliko se Nginx koristi kao
+balanser opterećenja ili obrnuti posrednik, korisnik tada mora definirati gdje će se zahtjevi
+proslijediti. Primjer minimalne Nginx konfiguracije prikazan je kodom~\ref{02nginxconfig}
+
+\lstset{caption={Nginx konfiguracija}, label=02nginxconfig}
+\begin{lstlisting}[float=h]
+worker_processes  1;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    server {
+        listen       80;
+        server_name  localhost;
+
+        location / {
+            proxy_pass https://www.ferit.unios.hr;
+        }
+    }
+}
+\end{lstlisting}
+
+Parametar $worker\_process$ je broj radnih procesa kojih će Nginx poslužitelj pokrenuti. Svaki
+proces izvršava se samo na jednoj procesorskoj jezgri pa se preporuča vrijednost jednakoj broju
+dostupnih procesorskij jezgri. Blok $events$ definira kako će se obraditi korisnički zahtjevi.
+Unutar toga bloka, $worker\_connections$ definira maksimalni broj paralelnih zahtjeva po radniku.
+
+Unutar $http$ bloka nalazi se $server$ blok koji naređuje Nginx da prihvaća zahtjeve na određenom
+mrežnom portu. U danom primjeru, to je port 80. $server\_name$ je naziv domene za koju će zahtjev
+biti obrađen. Domena je dostupna preko $HTTP$ zaglavlja naziva $Host$, definiranog u RFC
+2616~\citep{fielding1999hypertext}. Nadalje, $location$ blok definira kako će se svi zahtjevi
+obraditi. Pomoću naredbe $proxy\_pass$, moguće je preusmjeriti zahjev na proizvoljni poslužitelj. Na
+primjeru danom kodom~\ref{02nginxconfig}, svi $HTTP$ zahtjevi prosljeđeni su na $www.ferit.unios.hr$
+server.
+
+Nginx proces učitava konfiguracijsku datoteku prilikom pokretanja. Prilikom izmjene konfiguracijske
+datoteke potrebno je ponovno učitati konfiguracijsku datoteku. To se može pokretanjem nginx procesa
+s parametrom $-s reload$, ponovnim pokretanjem servisa pomoću $systemd reload nginx$ ili slanjem
+Unix signala $SIGHUP$. Novu konfiguraciju moguće je učitati pomoću gašenja i ponovnog paljena Nginx
+servisa, no s takvom metodom aplikacije će nakratko biti nedostupna.
+
+\section{Go programski jezik}
+Go je programski jezik otvorenog koda razvijen od firme Google. Projekt je nastao 2007. godine, a
+prva verzija javno je objavljena 2009. godine. Go jezik inspiriran je C programskim jezikom te manje
+poznatim Alef i Oberon-2 jezicima~\citep{donovan2015go}.
+
+Od C programskog jezika Go je naslijedio sintaksu, način kontrole toka programa, osnovne tipove
+podataka, pokazivače te brzo izvođenje programa i neovisnost o trenutnom operativnom sustavu.
+Od Oberon-2 naslijeđena je sintaksa za programske pakete, uključivanje istih te deklaraciju metoda
+i funkcija. Od jezika Alef naslijeđeni su kanali kao način komunikacije između procesa bez potrebe
+za dijeljenom memorijom.
+
+Primjer jednostavne \textit{Hello, World} aplikacije dan je kodom~\ref{02goexample}.
+
+\lstset{caption={Go primjer}, label=02goexample}
+\begin{lstlisting}[float=h]
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, World")
+}
+\end{lstlisting}
+
+Kako je Go prevođeni jezik, potrebno je prevesti Go kod u računalni program. Naredba $go build$
+pokreće Go prevoditelj i, ukoliko je prevođenje uspješno, stvara binarnu datoteku koja se može
+pokrenuti.
+
+Go je organiziran u pakete (\textit{engl. packages}), što bi u drugim programskim jezicima bile
+biblioteke ili moduli. Go paket se sastoji od jednog ili više Go izvornih datoteka unutar istog
+direktorija. U danom primjeru, naziv paketa je $main$.
+
+Go standardna biblioteka sadrži preko 100 paketa za uobičajne zadaće kao što su ulazi/izlazi,
+manipuliranje teksta, sortiranje, kriptografke funkcije. Paket $fmt$ korišten u primjeru sadrži
+funkcije za obradu ulaza te ispis formatiranog izlaza. Funkcija $Println$ ispisuje jednu ili više
+vrijednosti odvojenih zarezom na standardni izlaz s novim rednom na kraju ispisa.
+
+Go prevoditelj je strog oko pravila pisanja izvorne datoteke. Program $gofmt$ koristi se za
+preoblikovanje izvorne datoteke. Na primjer, ukoliko je korišten razmak umjesto tabulatora, $gofmt$
+će zamjeniti razmake sa tabulatorom.
+
+
