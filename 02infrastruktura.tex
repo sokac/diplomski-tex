@@ -534,65 +534,26 @@ sučelje, mijenjati način povezivanja Jenkins gazde s Jenkins slugom, dodati po
 programske jezike i VSC. U službenom Jenkins repositoriju registrirano je preko tisuću različitih
 dodataka~\citep{JenkisPlugins}.
 
-\section{Cypress}
-Cypress je alat za integracijsko i \textit{end-to-end} testiranje web stranica i aplikacija. Za
-razliku od sličnih alata, kao što je Selenium, pokretanje Cypressa je vrlo jednostavno, ima potpuni
-pristup pregledniku koji vrši testiranje te pojednostavljeno programsko sučelje~\citep{Cypress}.
-
-End-to-end testiranje web stranica služi kao simuliranje stvarnih korisnika. Na primjer, ukoliko
-jedan od elemenata nije prikazan unutar internet preglednika jedino \textit{end-to-end} testiranje
-može otkriti takvu grešku. No, \textit{end-to-end} testiranje je vremenski zahtjevno za pisanje, a
-pogotovo za održavanje. Bilo kakva vizualna promjena na aplikaciji zahtjeva promjenu
-\textit{end-to-end} testova, a promjena u funkcionalnosti zahtjeva potpuno nove testove. Stoga je
-preporuka Googleovih inženjera da je 70\% testova jedinice, 20\% integracijski testova, a svega 10\%
-\textit{end-to-end} testovi~\citep{google-2015}.
-
-Otvaranje Cypress alata na lokalnom računalu odvija se preko naredbe $cypress~start$ koja otvara
-program za pokretanje testova, kao što je prikazanom slikom~\ref{fig:02cypress}. Preko aplikacije
-korisnik može pokrenuti testove te vidjeti rezultate. Cypress alat prati izmjene konfiguracije na
-tvrdom disku te ih automatski učitava ako dođe do izmjene.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{img/02/cypress.png}
-    \caption{Cypress aplikacija}%
-    \label{fig:02cypress}
-\end{figure}
-
-Cypress testovi se mogu pokrenuti i preko komandne linije što je poželjno prilikom pokretanja na
-Jenkins poslužitelju. Pokretanje testa izvršava se naredbom $cypress~run$. Cypress zatim pokreće
-preglednik u takozvanom \textit{headless} načinu rada, to jest bez grafičkog sučelja. Nakon
-završetka rada, Cypress izlazni rezultat sadrži informaciju o uspješnosti testa. Cypress može
-spremiti sve rezultate u junit XML formatu. Primjer uspješnog rezultata dan je
-kodom~\ref{02cypressxml}.
-
-\lstset{caption={junit XML rezultat}, label=02cypressxml}
-\begin{lstlisting}[float=h]
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Mocha Tests" time="1.321" tests="2" failures="0">
-  <testsuite name="Root Suite" timestamp="2018-03-19T03:14:07" tests="0" failures="0" time="0">
-  </testsuite>
-  <testsuite name="Fibonacci test" timestamp="2018-03-19T03:14:07" tests="2" failures="0" time="1.321">
-    <testcase name="Fibonacci test Ispravna forma" time="0.744" classname="Ispravna forma">
-    </testcase>
-    <testcase name="Fibonacci test Neispravna forma" time="0.577" classname="Neispravna forma">
-    </testcase>
-  </testsuite>
-</testsuites>
-\end{lstlisting}
-
 \section{Docker}
 Docker je projekt otvorenog koda napisan u Go programskom jeziku koji pojednostavljuje objavljivanje
-programa tako što koristi programske kontejnere (\textit{engl. Software Containers}). Docker slika
-pakira program unutar cjelokupnog datotečnog sustava koji ima sve potrebne komponente kako bi se
-takav program mogao izvoditi - od dinamičkih modula, biblioteka, sve do programskog sučelja
-operativnoga sustava. Stoga, Docker garantira da će izvršavanje takvog sustava bit uvijek jednako,
-neovisno o računalo na kojem se izvodi.
+programa tako što koristi programske kontejnere (\textit{engl. Software Containers}). Unutar $Unix$
+okruženja često se koristio izraz zatvor (~\textit{engl. jail}) prilikom izmjene okoline radi
+sigurnosne izolacije procesa i zaštičenih resursa. S izlaskim Solaris Linux 2005. godine i izmjene u
+sustavu izolacije počinje se upotrebljavati izraz kontejneri~\citep{nickoloff2016docker}. Kontejneri
+po početnoj vrijednosti su totalni izolirani. To uključuje diskovne, memorijske, sabirničke, mrežne
+resurse. Korisnik može dozvoliti određene resurse ukoliko je to potrebno. Iako kontejneri postoje
+već dugi niz godina, korištenje istih nije bilo jednostavno sve do pojave Docker projekta.
 
-Konceptno, Docker je sličan virtualizaciji, kao što je VMWare i VirtualBox. No, za razliku od njih,
-Docker ima prednosti u tome što je brži i koristi manje resursa~\citep{leszko2017continuous}. Na
+Docker slika pakira program unutar cjelokupnog datotečnog sustava koji ima sve potrebne komponente
+kako bi se takav program mogao izvoditi - od dinamičkih modula, biblioteka, sve do programskog
+sučelja operativnoga sustava. Stoga, Docker garantira da će izvršavanje takvog sustava bit uvijek
+jednako, neovisno o računalo na kojem se izvodi.
+
+Docker je konceptno sličan virtualizaciji, kao što je VMWare i VirtualBox. No, za razliku od
+virtualizacije, Docker ima prednosti u tome što je brži i koristi manje
+resursa~\citep{leszko2017continuous}. Docker koristi Linux jezgru glavnog računala. Na
 slici~\ref{fig:02vm} prikazana je arhitektura kod tipične virtualizacije, dok je na
-slici~\ref{fig:02docker} prikazana  Docker arhitektura.
+slici~\ref{fig:02docker} prikazana Docker arhitektura.
 
 \begin{figure}[h]
     \centering
@@ -676,7 +637,7 @@ slici~\ref{fig:02docker} prikazana  Docker arhitektura.
     ]
         \node [box, big] (server) {Poslužitelj};
         \node [box, big, above=of server] (os) {Operativni sustav};
-        \node [box, big, above=of os] (docker) {Docker engine};
+        \node [box, big, above=of os] (docker) {Docker mehanizam};
 
         \node [box, box2, above=3mm of docker] (g2bib) {Biblioteke};
         \node [box, box2, above=of g2bib] (g2app) {Aplikacija 2};
@@ -703,12 +664,16 @@ Docker slike mogu se spremiti u Docker repositorij koji može biti privatni ili 
 najčešće korištenih je službeni repositorij firme koja stoji iza Docker-a - Docker, Inc, a koji se
 nalazi na Web stranici \textit{https://hub.docker.com}.
 
-\subsection{Docker operacije}
+Kako bi se Docker slika pokrenula, potrebno je imati pokrenut Docker servis (~\textit{engl.
+daemon}) te imati Docker komandni program. Korisnik zatim pokreće Docker komandni program koji zatim
+komunicira s Docker servisom. Docker servis može biti pokrenut na lokalnom ili udaljenom računalu.
 
+\subsection{Docker komandni program}
 Izgradnja Docker slike pokreće se pomoću naredbe $docker~build$. Ta naredba učitava datoteku
-\textit{Dockerfile} u zadanom direktoriju. \textit{Dockerfile} je tekstualni dokument koji sadrži
-instalacijske instrukcije potrebne za izgradnju Docker slike~\citep{kacamarga2015lightweight}.
-Na primjeru danim kodom~\ref{02dockerfile} prikazana je instalacija Jenkins alata.
+\textit{Dockerfile} u zadanom direktoriju te šalje naredbu Docker servisu. \textit{Dockerfile} je
+tekstualni dokument koji sadrži instalacijske instrukcije potrebne za izgradnju Docker
+slike~\citep{kacamarga2015lightweight}. Na primjeru danim kodom~\ref{02dockerfile} prikazana je
+instalacija Jenkins alata.
 
 \lstset{caption={Jenkins Dockerfile}, label=02dockerfile}
 \begin{lstlisting}[float=h]
@@ -745,7 +710,7 @@ pokretanja Docker kontejnera, mreža je podešena u tzv.~\textit{bridge} načinu
 pristup Docker kontejneru nije moguć u lokalnoj mreži. Parametar $-p$ naređuje Docker sustavu
 da objavi mrežni port unutar kontejnera na glavnom računalu. Na primjer, parametar $-p 8080:80$
 preusmjerava mrežne zahtjeve porta 8080 na glavnom računalu prema mrežnom portu 80 unutar Docker
-kontejnera. Promjena mrežnog načina rada moguća je preko parametra $--network$.
+kontejnera. Promjena mrežnog načina rada moguća je preko parametra \textit{-{}-network}.
 
 Svi podaci koji su spremljeni unutar kontejnera su trajno obrisani pri brisanju istoga. Montiranje
 direktorija koristi se ukoliko aplikacija sprema bitne podatke na tvrdi disk te nije dopušteno
@@ -762,6 +727,102 @@ period}), tada Docker šalje \textit{SIGKILL} signal.
 
 Zaustavljeni Docker kontejner može se ponovno pokrenuti naredbom $docker~start$. Naredbom
 $docker~rm$ briše se kontejner zajedno sa svim podacima spremljenim unutar kontejnera.
+
+\subsection{Docker servis}
+Logika i algoritmi za izgradnju slika, pokretanje kontejnera se nalaze unutar Docker servis. Docker
+komandna linija omogućava korisniku jednostavnu komunikaciju s Docker servisom. Komunikacija između
+komandne linije i servisa odvija se preko RESTful API koji je dokumentiran i otvoren. Docker također
+podržava SDK (~\textit{engl. Software Development Kit}) za Go i Python programski jezik. U ovom radu
+korišten je Go SDK.
+
+Kontejneri po početnoj vrijednosti pružaju potpunu izolaciju. Na primjer, kontejner ne može
+pristupiti mreži (lokalnoj i internet), pristupiti tvrdom disku. Docker servis pojednostavljuje
+konfiguraciju izolacije pojedinačnih kontejnera koje se mogu svrstati u tri grupe:
+\begin{itemize}
+        \item podatkovni pristup
+        \item mrežni pristup
+        \item resursni pristup
+\end{itemize}
+
+Aplikacije koje spremaju podatke, kao što su baze podataka, moraju trajno spremiti dokumente na
+tvrdi disk. Ukoliko je Docker kontejner s takvom aplikacijom pokrenut bez podatkovnog pristupa, svi
+dokumenti spremaju se unutar Docker kontejnera sloja. Docker slojevi spremljeni su na tvrdi disk,
+a njihov format može korisnik izabrati. Neke od opcija su $aufs$, $devicemapper$, $overlay2$, $zfs$.
+No, ukoliko korisnik želi promjeniti Docker sliku zbog nadogradnje ili promjene postavke potrebno je
+pokrenuti novi kontejner. Prebacivanje podataka s jednog kontejnera na drugi nije jednostavno. Stoga
+je preporuka korištenje Docker volumena (\textit{Docker Volume}). Docker volumen može se montirati
+na bilo koji direktorij. Na slici~\ref{fig:02docker_volume} prikazana je montaža na $/data$
+direktorij.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{img/02/docker_volume.png}
+    \caption{Docker volumen montiran na /data}%
+    \label{fig:02docker_volume}
+\end{figure}
+
+Postoje dvije vrste volumena: volumen vezne montaže (\textit{engl. Bind mount volume}) i Docker
+upravljani volumen (\textit{engl. Docker-managed volume}). Oba tipa volumena zahtjevaju montažni
+direktorij (\textit{engl.~mount point}) unutar Docker kontejnera, no razlika je u tome gdje se
+podaci spremaju. Volumen vezne montaže je vrsta volumena koja je direktno povezana s direktorijem na
+glavnom računalu. Takvi volumeni korisni su ako glavno računalo mora imati direktan pristup
+podacima. Na primjer, ukoliko korisnik koristi Docker kontejner za pokretanje web poslužitelja i
+želi biti u mogućnosti izmjeniti HTML datoteke. Montaža se odvija prilikom pokretanja Docker
+kontejnera s parametrom \textit{-v /glavno/racunalo:/kontejner}. Za razliku od volumena vezne
+montaže, Docker upravljani volumeni su stvoreni i upravljani preko Docker servisa. Također se
+koristi paramtar \textit{-v}, no za razliku od vezne montaže zadaje se samo lokacija na kontejneru.
+Na primjer, za naredbeni parametar \textit{-v /direktorij} Docker će stvoriti volumen te će ga
+montirati na kontejner unutar \textit{/direktorij}. Docker volumeni mogu se monitrati samo za
+čitanje, te isti mogu biti montirani na više Docker kontejnera u istom trenutku.
+
+Aplikacije koje imaju potrebnu za mrežnim pristupom, kao što su web servisi, servisi elektroničke
+pošte mogu se pokrenuti unutar Docker kontejnera. Najčešće se koristi virtualna mreža po
+kontejneru~(\textit{engl.~single-host virtual network}), prikazana na
+slici~\ref{fig:02docker_networking}. To omogućuje pojedinom kontejneru pravo
+pristupa na određene mrežne portove. Docker omogućuje i povezivanje više Docker kontejnera u
+virtualnoj mreži (\textit{multi-host network}) kod koje Docker kontejneri mogu slobodno komunicirati
+međusobno kao u lokalnoj mreži.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/02/docker_networking.png}
+    \caption{Docker virtualna mreža}%
+    \label{fig:02docker_networking}
+\end{figure}
+
+Docker kontejneri imaju četiri vrste mrežne izolacije:
+
+\begin{itemize}
+        \item zatvoreni kontejneri koji  nemaju mrežni pristup
+        \item mostovni kontejneri koji imaju ograničeni mrežni pristup
+        \item spojeni kontejneri koji imaju ograničeni mrežni pristup vanjskoj mreži i
+            neograničeni pristup između kontejnera
+        \item otvoreni kontejneri koji imaju neograničeni mrežni pristup preko logičke mreže glavnog
+            računala.
+\end{itemize}
+
+Docker omogućava ograničavanje pristupa resursima kao što su radna memorija, procesor, vanjski
+uređaji. Prilikom pokretanja Docker kontejnera korisnik može postaviti parametar $-m$ koji
+ograničava količinu radne memorije. Na primjer, $-m 1g$ ograničava radnu memoriju na 1 GB za taj
+kontejner. Bitno je naglasiti da taj parametar ne rezervira memoriju i memorija nije garantirana.
+Ograničenje pristupa procesoru postiže se parametrom \textit{-{}-cpu-shares} i parametrom
+\textit{-{}-cpuset-cpus}.  Parametar \textit{-{}-cpuset-cpus} prihvaća listu CPU jezgara koje
+kontejner može koristiti. Češće korišten parametar \textit{-{}-cpu-shares} omogućava korisniku da
+dodjeli relativnu količinu CPU resursa kontejneru.  Na primjer, ukoliko su pokrenuta dva kontejnera:
+jedan s \textit{-{}-cpu-shares 512}, a drugi s \textit{-{}-cpu-shares 1024} tada će drugi kontejner
+dobiti dva CPU ciklusa za svaki CPU ciklus prvog kontejnera. Takva relacija može se opisati
+matematičkom jednadžbom:
+
+\begin{equation*}
+        r_k = \frac{cpu_k} {\sum_{i=1}^{n} cpu_i}
+\end{equation*}
+
+gdje je:
+
+\begin{itemize}
+    \item $r_k$ omjer procesorskih ciklusa kontejnera $k$ u intervalu $[0, 1]$
+    \item $cpu_k$ parametar \textit{-{}-cpu-shares} za kontejner $k$.
+\end{itemize}
 
 \section{Nginx}
 Nginx je web poslužitelj otvorenog koda napisan u C programskom kodu koji se često koristi kao
@@ -872,4 +933,49 @@ Go prevoditelj je strog oko pravila pisanja izvorne datoteke. Program $gofmt$ ko
 preoblikovanje izvorne datoteke. Na primjer, ukoliko je korišten razmak umjesto tabulatora, $gofmt$
 će zamjeniti razmake sa tabulatorom.
 
+\section{Cypress}
+Cypress je alat za integracijsko i \textit{end-to-end} testiranje web stranica i aplikacija. Za
+razliku od sličnih alata, kao što je Selenium, pokretanje Cypressa je vrlo jednostavno, ima potpuni
+pristup pregledniku koji vrši testiranje te pojednostavljeno programsko sučelje~\citep{Cypress}.
 
+End-to-end testiranje web stranica služi kao simuliranje stvarnih korisnika. Na primjer, ukoliko
+jedan od elemenata nije prikazan unutar internet preglednika jedino \textit{end-to-end} testiranje
+može otkriti takvu grešku. No, \textit{end-to-end} testiranje je vremenski zahtjevno za pisanje, a
+pogotovo za održavanje. Bilo kakva vizualna promjena na aplikaciji zahtjeva promjenu
+\textit{end-to-end} testova, a promjena u funkcionalnosti zahtjeva potpuno nove testove. Stoga je
+preporuka Googleovih inženjera da je 70\% testova jedinice, 20\% integracijski testova, a svega 10\%
+\textit{end-to-end} testovi~\citep{google-2015}.
+
+Otvaranje Cypress alata na lokalnom računalu odvija se preko naredbe $cypress~start$ koja otvara
+program za pokretanje testova, kao što je prikazanom slikom~\ref{fig:02cypress}. Preko aplikacije
+korisnik može pokrenuti testove te vidjeti rezultate. Cypress alat prati izmjene konfiguracije na
+tvrdom disku te ih automatski učitava ako dođe do izmjene.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/02/cypress.png}
+    \caption{Cypress aplikacija}%
+    \label{fig:02cypress}
+\end{figure}
+
+Cypress testovi se mogu pokrenuti i preko komandne linije što je poželjno prilikom pokretanja na
+Jenkins poslužitelju. Pokretanje testa izvršava se naredbom $cypress~run$. Cypress zatim pokreće
+preglednik u takozvanom \textit{headless} načinu rada, to jest bez grafičkog sučelja. Nakon
+završetka rada, Cypress izlazni rezultat sadrži informaciju o uspješnosti testa. Cypress može
+spremiti sve rezultate u junit XML formatu. Primjer uspješnog rezultata dan je
+kodom~\ref{02cypressxml}.
+
+\lstset{caption={junit XML rezultat}, label=02cypressxml}
+\begin{lstlisting}[float=h]
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="1.321" tests="2" failures="0">
+  <testsuite name="Root Suite" timestamp="2018-03-19T03:14:07" tests="0" failures="0" time="0">
+  </testsuite>
+  <testsuite name="Fibonacci test" timestamp="2018-03-19T03:14:07" tests="2" failures="0" time="1.321">
+    <testcase name="Fibonacci test Ispravna forma" time="0.744" classname="Ispravna forma">
+    </testcase>
+    <testcase name="Fibonacci test Neispravna forma" time="0.577" classname="Neispravna forma">
+    </testcase>
+  </testsuite>
+</testsuites>
+\end{lstlisting}

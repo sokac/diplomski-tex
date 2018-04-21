@@ -19,16 +19,7 @@ programskom jeziku. Fibonaccijev broj definiran je rekurzijskom relacijom:
 
 U prvoj iteraciji programa koristi se naivno, rekurzivno rješenje vremenske i memorijske
 kompleksnosti $O(2^N)$. Prilikom primitka HTTP zahtjeva, programa pokreće računanje fibonaccijevog
-broja tako da zbroji rješenja prijašnje dvije iteracije fibonaccijevog broja. Na primjer, ako je
-zatražen broj pet, funkcija vraća zbroj dvije fibonacci funkcije, jedna s parametrom četiri, a druge
-s tri. Implementacija je prikazana kodom~\ref{03fibv1} te slikom~\ref{fig:03fibv1png}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.3\textwidth]{img/03/fibonacci_html.png}
-    \caption{Izgled fibonacci web aplikacije}%
-    \label{fig:03fibv1png}
-\end{figure}
+broja, kao što je prikazano programskim kodom~\ref{03fibv1}.
 
 \lstset{caption={Fibonacci v1}, label=03fibv1}
 \begin{lstlisting}[float=h]
@@ -43,17 +34,102 @@ func fibonacci(n uint64) uint64 {
 }
 \end{lstlisting}
 
+Funkcija fibonacci prima broj kao parametar. Ukoliko je broj nula, vraća vrijednost nula.
+Ukoliko je broj jedan, vraća vrijednost jedan. Uprotivnom, vraća zbroj dvije fibonacci funkcije.
+Prva funkcija ima parametar $broj-1$, dok druga funkcija ima broj $broj-2$. Na primjer, ako je
+zatražen broj pet, funkcija vraća zbroj dvije fibonacci funkcije, jedna s parametrom četiri, a druge
+s tri.
+
 Kako bi se provjerila ispravnost koda, napisani su jednostavni testovi jedinice, prikazano
-kodom~\ref{03fibunit} te \textit{end-to-end} testovi prikazani kodom~\ref{03fibe2e}.
+kodom~\ref{03fibunit}
 
 \lstset{caption={Testiranje jedinice}, label=03fibunit}
 \begin{lstlisting}[float=h]
+func testEqual(t *testing.T, expected, actual uint64) {
+	if expected == actual {
+		return
+	}
+	t.Errorf("Greska: \%d (ocekivano) != \%d (dobiveno)", expected, actual)
+}
+
 func TestFibonacci(t *testing.T) {
-	assert.Equal(t, uint64(5), fibonacci(5))
-	assert.Equal(t, uint64(8), fibonacci(6))
-	assert.Equal(t, uint64(89), fibonacci(11))
+	testEqual(t, uint64(5), fibonacci(5))
+	testEqual(t, uint64(8), fibonacci(6))
+	testEqual(t, uint64(89), fibonacci(11))
+}
+
+\end{lstlisting}
+
+Za sustav testiranja korišten je $testing$ paket koji se nalazi u standardnoj Go biblioteci. Testovi
+jedinice se sastoji od jednog testa s tri provjere. Unutar svakog testa poziva se pomoćna funkcija
+koja prima tri vrijednosti: trenutni test, očekivana vrijednost te dobivena vrijednost. Ukoliko
+dobivena vrijednost nije jednaka očekivanoj vrijendosti, funkcija će označiti takav test kao
+netočnim.
+
+Za pozivanje fibonacci funkcije, kreirana je web aplikacija kao što je prikazano
+slikom~\ref{fig:03fibv1png}. Web aplikacija se sastoji od obrasca koji sadrži kućicu tekst za unos
+te gumb za izvršavanje operacije. Pritiskom na gumb izvršava se HTTP XHR zahtjev te po završetku
+istoga se prikazuje rezultat ili greška ako je do nje došlo.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.3\textwidth]{img/03/fibonacci_html.png}
+    \caption{Izgled fibonacci web aplikacije}%
+    \label{fig:03fibv1png}
+\end{figure}
+
+U glavnoj funkciji koja se poziva prilikom pokretanje programa, \textit{main}, pokrenut je HTTP
+servis koji je zadužen za posluživanje HTTP zahtjeva. Pokretanje HTTP servisa dan je
+kodom~\ref{03fibhttp}.
+
+\lstset{caption={HTTP servis}, label=03fibhttp}
+\begin{lstlisting}[float=h]
+func fibonacciHandler(w http.ResponseWriter, r *http.Request) {
+	n, err := strconv.ParseUint(r.URL.Query().Get("n"), 10, 64)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Parametar n mora biti prirodni broj."))
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(strconv.FormatUint(fibonacci(n), 10)))
+}
+
+func homePageHandler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "./static/index.html")
+}
+
+func main() {
+	http.HandleFunc("/", homePageHandler)
+	http.HandleFunc("/api/fibonacci", fibonacciHandler)
+	log.Fatal(http.ListenAndServe(":8888", nil))
 }
 \end{lstlisting}
+
+Unutar $main$ funkcije stvorena su dva HTTP rukovoditelja~(\textit{engl.~handlers}). Prvi
+rukovoditelj obrađuje zahtjeve za početnu stranicu. Neovisno o bilo kojim argumentima, poslužuje
+statičnu datoteku koja se nalazi na lokaciji \textit{static/index.html}.
+
+Drugi rukovoditelj obrađuje zahtjeve za stranicu \textit{/api/fibonacci}. Preko GET parametra
+očekuje varijablu $n$ te ju pretvara u ne-negativni cijeli broj. Ukoliko Go nije u mogućnosti
+to napraviti, vraća grešku korisniku. Uprotivnom poziva fibonacci funkciju s dobivenim brojem te
+vraća vrijednost korisniku.
+
+\textit{End-to-end} testovi prikazani kodom~\ref{03fibe2e} sastoje se od dva testa. Prvi test je
+test u kojem se zadaje ispravan argument, računanje 11.~finbonaccijevog broja. Cypress alat otvara
+internet preglednik te otvara zadanu web stranicu. Nakon uspješnog otvaranja, u tekstualnu kućicu
+unosi broj 11 te pritišće gumb "Računaj". Zatim očekuje da će stranica prikazati broj 89, koji je
+traženo rješenje. U drugom testu, zatražen je -1.~fibonaccijev broj. Kako to nije moguće izračunati,
+očekivanje je da će stranica prikazati grešku da broj mora biti prirodan.
+
+Ukoliko Cypress u bili kojem trenutku ne može pronaći traženi element, test će biti neuspješan. Na
+primjer, ukoliko na stranici ne postoji element s identifikacijom $number$ test će biti neuspješan.
+Ukoliko HTTP XHR zahtev ne bude uspješan test će također biti neuspješan.
+
+Cypress testovi se mogu pokrenuti na lokalnom računalu pomoću naredbe $cypress~open$. Izmjena
+testova će automatski biti dostupna unutar grafičkog sučelja Cypress. Testovi se također mogu
+pokrenuti naredbom $cypress~run$ koja pokreće testove te izlazi po završetku svih. Rezultati su
+dostupni preko standardnog izlaza i izlaznog stanja.
 
 \lstset{caption={\textit{End-to-end} testiranje}, label=03fibe2e}
 \begin{lstlisting}[language=php,float=h]
@@ -74,42 +150,6 @@ describe('Fibonacci test', function() {
         cy.contains('Parametar n mora biti prirodni broj.');
     });
 })
-\end{lstlisting}
-
-U glavnoj funkciji koja se poziva prilikom pokretanje programa, \textit{main}, pokrenut je HTTP
-servis koji je zadužen za posluživanje HTTP zahtjeva. Pokretanje HTTP servisa dan je
-kodom~\ref{03fibhttp}.
-
-\lstset{caption={HTTP servis}, label=03fibhttp}
-\begin{lstlisting}[float=h]
-func fibonacciHandler(w http.ResponseWriter, r *http.Request) {
-	n, err := strconv.ParseUint(r.URL.Query().Get("n"), 10, 64)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Parametar n mora biti prirodni broj."))
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(strconv.FormatUint(fibonacci(n), 10)))
-}
-
-func healthHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("OK"))
-}
-
-func homePageHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "./static/index.html")
-}
-
-func main() {
-	http.HandleFunc("/", homePageHandler)
-	http.HandleFunc("/api/fibonacci", fibonacciHandler)
-	http.HandleFunc("/health", healthHandler)
-
-	log.Fatal(http.ListenAndServe(":8888", nil))
-}
-
 \end{lstlisting}
 
 \section{Jenkins posao za izgradnju i objavu Docker slike}
@@ -154,7 +194,15 @@ da je Docker slika spremna za uporabu od strane klijenata. Tu sliku dohvatit će
 menadžment.
 
 U zadnjoj fazi, koja se bezuvjetno izvršava, prikupljaju se rezultati testova jedinica i
-\textit{end-to-end} testiranja. Rezultati su vidljivi korisniku preko Jenkins web sučelje.
+\textit{end-to-end} testiranja. Rezultati su vidljivi korisniku preko Jenkins web sučelje kao što je
+prikazano na slici~\ref{fig:03jenkins_result}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/03/jenkins_result.png}
+    \caption{Jenkins linija za izgradnju i objavu slike}%
+    \label{fig:03jenkins_result}
+\end{figure}
 
 \section{Servis za menadžment}
 Servis za menadžment je servis zadužen za preuzimanje zadnje Docker slike objavljene na
