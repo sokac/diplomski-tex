@@ -260,11 +260,11 @@
   {\setlength{\parskip}{0em} \parindent \z@ \raggedright \normalfont
     \interlinepenalty\@M
     \ifnum \c@secnumdepth >\m@ne
-      \Huge\bfseries \strdodatak\ \thechapter \\ #1
+      \large\bfseries \strdodatak\ \thechapter \\ #1
       \par\nobreak
     \fi
     \nobreak
-    \vskip 15\p@
+    \vskip 12\p@
   }
 }
 {
@@ -281,11 +281,11 @@
   {\setlength{\parskip}{0em} \parindent \z@ \raggedright \normalfont
     \interlinepenalty\@M
     \ifnum \c@secnumdepth >\m@ne
-      \Huge\bfseries \thechapter.~#1
+      \large\bfseries \thechapter.~#1
       \par\nobreak
     \fi
     \nobreak
-    \vskip 15\p@
+    \vskip 12\p@
   }
 }
 }
@@ -296,7 +296,7 @@
   {\setlength{\parskip}{0em} \parindent \z@ \raggedright
     \normalfont
     \interlinepenalty\@Mdef
-    \Bold\Huge \strdodatak\ \\ #1\par
+    \Bold\large \strdodatak\ \\ #1\par
     \nobreak
     \vskip 15\p@
   }

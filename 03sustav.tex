@@ -1,21 +1,21 @@
-\chapter{Sustav kontinuiranog razvoja na primjeru Web programa}
-Za reviziju koda korišten je servis Github te je projekt nazvan \textit{diplomski-go}. Jenkins je
-instaliran zajedno s osnovnim dodacima koji su potrebno za ovaj projekt - Pipeline, Git, Docker.
-Nakon objave prve verzije programa, izrađen je Jenkins posao koji izgrađuje Docker sliku te
-objavljuje na službeni Docker repositorij. Takvu sliku preuzima servis za menadžment te pokreće
-Docker kontejner. Nakon što je kontejner spreman, Nginx počinje preusmjerivati zahtjeve na njega.
+\chapter{KONTINUIRANI RAZVOJ NA PRIMJERU WEB APLIKACIJE}
+U prijašnjem poglavlju opisani su programi i infrastruktura potrebna za kontinuirani razvoj
+aplikacije. U ovom poglavlju opisana je implementacija sustava za kontinuirani razvoj na primjeru
+web aplikacije za izračun fibonaccijevog broja koja je spremljena na Git projektu nazvanom
+\textit{diplomski-go} te je za spremanje korišten Github servis.
 
 \section{Aplikacija za izračun fibonaccijevog broja}
-Za testiranje kontinuiranog razvoja izrađena je web programa za izračun fibonaccijevog broja u Go
-programskom jeziku. Fibonaccijev broj definiran je rekurzijskom relacijom:
+Za testiranje sustava kontinuiranog razvoja izrađena je web programa za izračun fibonaccijevog broja
+u Go programskom jeziku. Fibonaccijev broj definiran je formulom~\ref{eq:03fibonacci}.
 
-\begin{equation*}
+\begin{equation}
     f(n) = \begin{cases}
                0               & n = 0\\
                1               & n = 1\\
                f(n-1) + f(n-2) & n > 1
            \end{cases}
-\end{equation*}
+   \label{eq:03fibonacci}
+\end{equation}
 
 U prvoj iteraciji programa koristi se naivno, rekurzivno rješenje vremenske i memorijske
 kompleksnosti $O(2^N)$. Prilikom primitka HTTP zahtjeva, programa pokreće računanje fibonaccijevog
@@ -38,9 +38,7 @@ Funkcija fibonacci prima broj kao parametar. Ukoliko je broj nula, vraća vrijed
 Ukoliko je broj jedan, vraća vrijednost jedan. Uprotivnom, vraća zbroj dvije fibonacci funkcije.
 Prva funkcija ima parametar $broj-1$, dok druga funkcija ima broj $broj-2$. Na primjer, ako je
 zatražen broj pet, funkcija vraća zbroj dvije fibonacci funkcije, jedna s parametrom četiri, a druge
-s tri.
-
-Kako bi se provjerila ispravnost koda, napisani su jednostavni testovi jedinice, prikazano
+s tri. Kako bi se provjerila ispravnost koda, napisani su jednostavni testovi jedinice, prikazano
 kodom~\ref{03fibunit}
 
 \lstset{caption={Testiranje jedinice}, label=03fibunit}
@@ -61,10 +59,10 @@ func TestFibonacci(t *testing.T) {
 \end{lstlisting}
 
 Za sustav testiranja korišten je $testing$ paket koji se nalazi u standardnoj Go biblioteci. Testovi
-jedinice se sastoji od jednog testa s tri provjere. Unutar svakog testa poziva se pomoćna funkcija
-koja prima tri vrijednosti: trenutni test, očekivana vrijednost te dobivena vrijednost. Ukoliko
-dobivena vrijednost nije jednaka očekivanoj vrijendosti, funkcija će označiti takav test kao
-netočnim.
+jedinice se sastoji od jednog testa s tri provjere gdje se provjerava vrijednost petog, šestog i
+jedanaestog fibonaccijev broj.  Unutar svakog testa poziva se pomoćna funkcija koja prima tri
+vrijednosti: trenutni test, očekivana vrijednost te dobivena vrijednost. Ukoliko dobivena vrijednost
+nije jednaka očekivanoj vrijendosti, funkcija će označiti takav test kao netočnim.
 
 Za pozivanje fibonacci funkcije, kreirana je web aplikacija kao što je prikazano
 slikom~\ref{fig:03fibv1png}. Web aplikacija se sastoji od obrasca koji sadrži kućicu tekst za unos
@@ -78,7 +76,7 @@ istoga se prikazuje rezultat ili greška ako je do nje došlo.
     \label{fig:03fibv1png}
 \end{figure}
 
-U glavnoj funkciji koja se poziva prilikom pokretanje programa, \textit{main}, pokrenut je HTTP
+U glavnoj funkciji koja se poziva prilikom pokretanje programa, \texttt{main}, pokrenut je HTTP
 servis koji je zadužen za posluživanje HTTP zahtjeva. Pokretanje HTTP servisa dan je
 kodom~\ref{03fibhttp}.
 
@@ -108,23 +106,23 @@ func main() {
 
 Unutar $main$ funkcije stvorena su dva HTTP rukovoditelja~(\textit{engl.~handlers}). Prvi
 rukovoditelj obrađuje zahtjeve za početnu stranicu. Neovisno o bilo kojim argumentima, poslužuje
-statičnu datoteku koja se nalazi na lokaciji \textit{static/index.html}.
+statičnu datoteku koja se nalazi na lokaciji \texttt{static/index.html}.
 
-Drugi rukovoditelj obrađuje zahtjeve za stranicu \textit{/api/fibonacci}. Preko GET parametra
-očekuje varijablu $n$ te ju pretvara u ne-negativni cijeli broj. Ukoliko Go nije u mogućnosti
+Drugi rukovoditelj obrađuje zahtjeve za stranicu \texttt{/api/fibonacci}. Preko GET parametra
+očekuje varijablu $n$ te ju pretvara u ne-negativni cijeli broj. Ukoliko program nije u mogućnosti
 to napraviti, vraća grešku korisniku. Uprotivnom poziva fibonacci funkciju s dobivenim brojem te
-vraća vrijednost korisniku.
+vraća vrijednost korisniku u tekstualnom obliku.
 
 \textit{End-to-end} testovi prikazani kodom~\ref{03fibe2e} sastoje se od dva testa. Prvi test je
-test u kojem se zadaje ispravan argument, računanje 11.~finbonaccijevog broja. Cypress alat otvara
-internet preglednik te otvara zadanu web stranicu. Nakon uspješnog otvaranja, u tekstualnu kućicu
-unosi broj 11 te pritišće gumb "Računaj". Zatim očekuje da će stranica prikazati broj 89, koji je
-traženo rješenje. U drugom testu, zatražen je -1.~fibonaccijev broj. Kako to nije moguće izračunati,
-očekivanje je da će stranica prikazati grešku da broj mora biti prirodan.
+test u kojem se zadaje ispravan argument i zadaje izračun 11.~finbonaccijevog broja. Cypress alat
+otvara internet preglednik te otvara zadanu web stranicu. Nakon uspješnog otvaranja, u tekstualnu
+kućicu unosi broj 11 te pritišće gumb "Računaj". Zatim očekuje da će stranica prikazati broj 89,
+koji je traženo rješenje. U drugom testu, zatražen je -1.~fibonaccijev broj. Kako to nije moguće
+izračunati, očekivanje je da će stranica prikazati grešku da broj mora biti prirodan.
 
-Ukoliko Cypress u bili kojem trenutku ne može pronaći traženi element, test će biti neuspješan. Na
-primjer, ukoliko na stranici ne postoji element s identifikacijom $number$ test će biti neuspješan.
-Ukoliko HTTP XHR zahtev ne bude uspješan test će također biti neuspješan.
+Ukoliko Cypress može pronaći traženi element unutar zadanog intervala, takav test je označen kao
+neuspješan. Na primjer, ukoliko na stranici ne postoji element s identifikacijom \texttt{number}
+test će biti neuspješan.  Ukoliko HTTP XHR zahtev ne bude uspješan test će također biti neuspješan.
 
 Cypress testovi se mogu pokrenuti na lokalnom računalu pomoću naredbe $cypress~open$. Izmjena
 testova će automatski biti dostupna unutar grafičkog sučelja Cypress. Testovi se također mogu
@@ -154,7 +152,7 @@ describe('Fibonacci test', function() {
 
 \section{Jenkins posao za izgradnju i objavu Docker slike}
 Za Jenkins posao koji izrađuje Docker sliku i objavljuje u Docker repositorij odabrana je je Jenkins
-linija. Jenkins linija je isprogramirana i spremljena u datoteci~\textit{Jenkinsfile} unutar
+linija. Jenkins linija je isprogramirana i spremljena u datoteci~\texttt{Jenkinsfile} unutar
 fibonacci projekta. Jenkins linija se sastoji od šest faza: dohvaćanje koda preko Git projekta,
 pokretanje testova jedinica, izgradnja Docker slike, pokretanje \textit{end-to-end} testova te
 objava Docker slike u javni Docker repositorij. Na slici~\ref{fig:03jenkins_pipeline} prikazana je
@@ -162,7 +160,7 @@ Jenkins linija.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{img/03/jenkins_pipeline.png}
+    \includegraphics[width=\textwidth]{img/03/jenkins_pipeline.png}
     \caption{Jenkins linija za izgradnju i objavu slike}%
     \label{fig:03jenkins_pipeline}
 \end{figure}
@@ -199,14 +197,14 @@ prikazano na slici~\ref{fig:03jenkins_result}.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{img/03/jenkins_result.png}
+    \includegraphics[width=\textwidth]{img/03/jenkins_result.png}
     \caption{Jenkins linija za izgradnju i objavu slike}%
     \label{fig:03jenkins_result}
 \end{figure}
 
 \section{Servis za menadžment}
-Servis za menadžment je servis zadužen za preuzimanje zadnje Docker slike objavljene na
-Docker repositoriju. Prilikom pokretanja servisa, korisnik mora podesiti konfiguracijku datoteku.
+Servis za menadžment je servis zadužen za preuzimanje zadnje Docker slike objavljene na Docker
+repositoriju. Prije pokretanja servisa, korisnik mora podesiti konfiguracijku datoteku.
 Konfiguracijska datoteka je datoteka u \textit{JSON} formatu koja sadrži informacije o Docker slici,
 lokaciji Nginx PID datoteci, lokaciji Nginx datotečnoj konfiguracije te vrijeme čekanja prilikom
 rotiranja verzije aplikacije. Primjer konfiguracije prikazan je kodom~\ref{03jsonconfig}.
@@ -222,16 +220,16 @@ rotiranja verzije aplikacije. Primjer konfiguracije prikazan je kodom~\ref{03jso
 
 \end{lstlisting}
 
-Informacija o nazivu Docker slike spremljena je pod ključem \textit{dockerImage}. Servis
+Informacija o nazivu Docker slike spremljena je pod ključem \texttt{dockerImage}. Servis
 zahtjeva da zadnja inačica slike ima oznaku \textit{latest}, a što je ujedno i Docker standard.
 
-Nginx PID datoteka, spremljena pod ključem \textit{nginxPIDfile} sadrži indentitet Nginx procesa.
+Nginx PID datoteka, spremljena pod ključem \texttt{nginxPIDfile} sadrži indentitet Nginx procesa.
 Pomoću tog indentiteta moguće je poslati zahtjev Nginx procesu da ponovno učita konfiguracije
 datoteke bez prekida posluživanja korisnika.
 
 Nginx datotečna konfiguracija sprema postavke potrebne da Nginx može prosljediti informacije
 aplikaciji, to jest Docker kontejneru. Vrijednost je spremljena pod ključem
-\textit{nginxConfiguration}. Primjer generirane konfiguracije prikazan je
+\texttt{nginxConfiguration}. Primjer generirane konfiguracije prikazan je
 kodom~\ref{03nginxconfig}.
 
 \lstset{caption={Nginx konfiguracija}, label=03nginxconfig}
@@ -242,16 +240,126 @@ upstream manager_backend {
 }
 \end{lstlisting}
 
-Nakon što servis pokrene Docker kontejner s novom aplikacijom, čekat će zadani broj sekundi prije
-nego ugasi i obriše kontejner sa starom verijom aplikacije. Takvo vrijeme zadano je ključem
-\textit{versionOverlapDuration}.
+\subsection{Arhitektura servisa}
+Servis za menadžment sastoji se od četiri glavne komponente:
+\begin{itemize}
+    \item komponenta za konfiguracijsku
+    \item upravitelj \textit{Unix} signala
+    \item dohvatitelj Docker slike
+    \item upravitelj Docker slike
+\end{itemize}
 
-Ukoliko je konfiguracijska datoteka ispravna, servis počinje periodički provjeravati izmjene na
-udaljenom repositoriju. Ukoliko je došlo do promjene slike s oznakom \textit{latest}, servis pokreće
-novi Docker kontejner koji prihvaća zahtjeve na nekorištenom \textit{TCP portu}. Zatim zapisuje novu
+Komponenta za konfiguraciju zadužena je za učitavanje korisničke \textit{JSON} datoteke te provjeru
+njene ispravnosti. Za učitavanje datoteke s tvrdog diska korišten je \texttt{io/ioutil} paket koji
+služi za ulazno--izlazne operacije. Kako je konfiguracijska datoteka u \textit{JSON} formatu,
+korišten je \texttt{encoding/json} paket koji se nalazi u standardnoj Go biblioteci i baziran je na
+standardu \textit{RFC 7159}. Ukoliko jedna od vrijednosti konfiguracije nije ispravna, komponenta
+vraća grešku.
+
+Upravitelj signala je zasebna Go rutina koja čeka dva \textit{Unix} signala: \texttt{SIGINT} i
+\texttt{SIGTERM} pomoću kanala. Ukoliko servis zaprimi jedan od ta dva signala, započinje s
+milosrdnim gašenjem servisa pomoću zatvaranja specijalnog kanala. Upravitelj signala je potreban
+kako bi sustav mogao biti sigurno ugašen i u trenutku kada je nova verzija aplikacije objavljena.
+
+Dohvatitelj Docker slike je također zasebna Go rutina. Ova komponenta je zadružena za povremenu
+provjeru zadnje Docker slike na udaljenom poslužitelju. Za komunikaciju s Docker servisom koristi
+službenu Docker biblioteku za Go jezik. Komponenta svakih trideset sekundi dohvaća zadnju sliku s
+udaljenog poslužitelja te provjerava identifikator Docker slike s prijašnjom verzijom. Ukoliko
+postoji izmjena u verziji, tada šalje vrijednost identifikatora u kanal koji se očitava preko
+komponente upravitelja Docker slike. Algoritam dohvaćanja nove slike prikazan je
+kodom~\ref{03manager_fetcher}.
+
+\lstset{caption={Algoritam dohvatitelja Docker slike}, label=03manager_fetcher}
+\begin{lstlisting}[float=h]
+func (c *DockerFetcher) fetchLatest() {
+	ctx := context.Background()
+	defer ctx.Done()
+
+	refStr := fmt.Sprintf("%s:latest", c.image)
+	o, err := c.cli.ImagePull(ctx, refStr, types.ImagePullOptions{})
+	if o != nil {
+		defer o.Close()
+	}
+	if err != nil {
+		log.Println("Couldn't pull the latest image", err.Error())
+		return
+	}
+	inspect, _, err := c.cli.ImageInspectWithRaw(ctx, refStr)
+	if err != nil {
+		log.Println("Couldn't pull the latest image", err.Error())
+		return
+	}
+	if c.latestID != inspect.ID {
+		log.Println("New image found", inspect.ID)
+		c.ch <- inspect.ID
+		c.latestID = inspect.ID
+	}
+}
+\end{lstlisting}
+
+Komponenta upravitelja Docker slike je isto tako zasebna Go rutina. Za razliku od dohvatitelja, ona
+isključivo čeka na poruku od kanala. Kada je identifikator Docker slike zaprimljen kroz kanal,
+pokreće se algoritam za pokretanje nove aplikacije. Algoritam prvo mora pronaći slobodan TCP port na
+kojem nova aplikacija može slušati, prikazano kodom~\ref{03manager_port}. Korištenje statičkog porta
+nije moguće jer bi prethodna verzija aplikacija slušala na tom portu. Ukoliko se stava verzija
+aplikacija ugasi radi pokretanja nove verzija tada će takva aplikacija biti nedostupna onoliko
+koliko je potrebno da se aplikacija pokrene, što nije prihvatljivo za moderne aplikacije.
+
+\lstset{caption={Algoritam za pronalazak slobodnog porta}, label=03manager_port}
+\begin{lstlisting}[float=h]
+func getFreePort() (int, error) {
+	tcpAddr, err := net.ResolveTCPAddr("tcp", "127.0.0.1:0")
+	if err != nil {
+		return 0, err
+	}
+	l, err := net.ListenTCP("tcp", tcpAddr)
+	if err != nil {
+		return 0, err
+	}
+	defer l.Close()
+	return l.Addr().(*net.TCPAddr).Port, nil
+}
+\end{lstlisting}
+
+Nakon što je slobodan port pronađen, pokreće se Docker kontejner sa zadnjom verzijom aplikacije.
+Kontejner se pokreće u \textit{mostovnom} mrežnom načinu rada te prosljeđuje zathjeva sa slobodnog
+porta glavnog računala prema aplikaciji koja se izvršava unutar Docker kontejnera. Također, zadaje
+se naredba Docker servisu da obriše sliku po zaustavljanju Docker kontejnera.
+
+Nakon pokretanja Docker kontejnera obaviještavaju se svi pretplatnici. Pretplanik je struktura
+opisana \texttt{Subscriber} sučeljem, koji je prikazan kodom~\ref{03manager_subscriber}. Pretplanik
+može izvšiti bilo kakvu operaciju nakon što je obaviješten, kao što je slanje elekroničke pošte za
+novu verziju, slanje \textit{IRC} poruke, promjena konfiguracije web servisa, rotacija log datoteka.
+
+\lstset{caption={Sučelje pretplatnika}, label=03manager_subscriber}
+\begin{lstlisting}[float=h]
+type Subscribers interface {
+	NewContainer(dockerPort int)
+}
+\end{lstlisting}
+
+U ovom radu isprogramiran je samo jedan pretplanik - Nginx. Nginx pretplatnik zapisuje novu
+konfiguraciju unutar datoteke zadanu konfiguracijom \texttt{nginxConfiguration}. Konfiguracijska
+datoteka prikazana je kodom~\ref{03nginxconfig}. Nakon što je datoteka zapisana, učitava se procesni
+identifikator nginx procesa preko \textit{PID} datoteke. Zatim se šalje Unix signal \texttt{SIGHUP}
+nginx procesu pomoću \texttt{syscall} paketa koji obaviještava Nginx da ponovno učita konfiguracijske
+datoteke. U tom trenutku Nginx počinje posluživati korisnike s novom aplikacijom.
+
+Nakon što su svi pretplanici obaviješteni i izvršili potprogram, upravitelj Docker slike čeka zadano
+vrijeme \texttt{versionOverlapDuration} te zatim gasi stari Docker kontejner. Stari Docker kontejner
+prima signal \texttt{SIGTERM} koji omogućuje milosrdno gašenje aplikacije. Ukoliko se kontejner ne
+ugasi nakon deset sekundi, šalje se \texttt{SIGKILL} koji nasilno gasi aplikaciju i kontejner, koji
+se zatim briše.
+
+\subsection{Rad servisa}
+Prilikom pokretanja servisa, učitava se konfiguracijska datoteka te se provjerava njena ispravnost.
+Ukoliko je konfiguracija datoteka neispravna, program ispisuje grešku te prekida rad. Ako je
+konfiguracijska datoteka ispravna, servis počinje periodički provjeravati izmjene na udaljenom
+repositoriju. Ukoliko je došlo do promjene slike s oznakom \textit{latest}, servis pokreće novi
+Docker kontejner koji prihvaća zahtjeve na nekorištenom \textit{TCP portu}. Zatim zapisuje novu
 Nginx konfiguraciju na tvrdi disk te šalje \textit{SIGHUP Unix} signal Nginx procesu. Takav signal
 služi za učitanje promjena konfiguracije. Nakon korisničko definiranog vremena, stari Docker
-kontejner se gasi te automatski briše. Dijagram toka prikazan je
+kontejner se gasi te automatski briše. Pojednostavljeni dijagram toka prikazan je
 slikom~\ref{fig:03servismanagement}.
 
 \begin{figure}[h]
@@ -287,20 +395,23 @@ slikom~\ref{fig:03servismanagement}.
     ]
         \node [block] (start) {POČETAK};
 
-        \node [process, below=of start] (checkversion) {Provjeri zadnju verziju slike};
+        \node [process, below=of start] (loadconfig) {Učitaj postavke};
+
+        \node [process, below=of loadconfig] (checkversion) {Provjeri zadnju verziju slike};
 
         \node [left=of checkversion] (e2) {};
 
         \node [decision, below=of checkversion] (newversion) {Nova verzija?};
 
-        \node [process, below=of newversion] (launch) {Pokreni najnoviju verziju u kontejneru};
+        \node [process, below=of newversion] (launch) {Pokreni najnoviju verziju};
         \node [process, below=of launch] (save) {Spremni novu Nginx konfiguraciju};
         \node [process, below=of save] (reload) {Učitaj Nginx promjene};
         \node [process, below=of reload] (shutdown) {Ugasi stari kontejner};
 
-        \draw [arrow] (start) -- (checkversion);
+        \draw [arrow] (start) -- (loadconfig);
+        \draw [arrow] (loadconfig) -- (checkversion);
         \draw [arrow] (checkversion) -- (newversion);
-        \draw [arrow] (newversion) -- node[anchor=south] {NE} ++(-3cm,0cm) |- (checkversion);
+        \draw [arrow] (newversion) -- node[anchor=south] {NE} ++(-4.5cm,0cm) |- (checkversion);
 
         \draw [arrow] (newversion) -- node[xshift=-5mm] {DA} (launch);
         \draw [arrow] (launch) -- (save);
@@ -308,13 +419,13 @@ slikom~\ref{fig:03servismanagement}.
         \draw [arrow] (reload) -- (shutdown);
         \draw [arrow] (shutdown) -- ++(+4.5cm,0cm) |- (checkversion);
     \end{tikzpicture}
-    \caption{Dijagram toka servisa za menadžment}%
+    \caption{Pojednostavljeni dijagram toka servisa za menadžment}%
     \label{fig:03servismanagement}
 \end{figure}
 
 Generirana Nginx konfiguracija sadrži samo informacije o Docker kontejeru te kao takva nije potpuna.
 Glavna Nginx konfiguracija priključuje takvu konfiguraciju glavnom pomoću direktive
-\textit{include}. Primjer glavne Nginx konfiguracije prikazan je kodom~\ref{03nginxconfig2}.
+\texttt{include}. Primjer glavne Nginx konfiguracije prikazan je kodom~\ref{03nginxconfig2}.
 
 \lstset{caption={Nginx konfiguracija}, label=03nginxconfig2}
 \begin{lstlisting}[float=h]

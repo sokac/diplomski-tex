@@ -1,4 +1,4 @@
-\chapter{Uvod}
+\chapter{UVOD}
 Razvoj aplikacija uvelike se promijenio s razvojem novih tehnologija, a pogotovo u zadnjem desetljeću
 s razvojem oblaka (\textit{engl. cloud}). Sve je veći broj firmi koji se bave razvojem aplikacija
 te imaju potrebu što prije objaviti nadogradnje aplikacija. Stare metode objavljivanja aplikacija
@@ -16,15 +16,20 @@ Firma Facebook objavila je članak~\citep{rossi2016continuous} o korištenju kon
 kojem nepobitno dokazuju da brzina i kvaliteta koda ne opada sa povećanjem broj inženjera razvojnih
 timova i kvaliteta koda ne opada. Broj grešaka (\textit{engl. bugs}) u kodu linearno raste s brojem
 objavljivanja koda, kao što je i očekivano. Također, neovisno o broju inženjera, u prosjeku se
-pojavljuje jedna greška srednjeg prioriteta na oko 3000 pojedinačnih objava koda.  Facebook tvrdi da
+pojavljuje jedna greška srednjeg prioriteta na oko 3000 pojedinačnih objava koda. Facebook tvrdi da
 je jedan od razloga kontinuirano testiranje.
 
-U drugom poglavlju opisana je jedna od infrastruktura kontinuiranog razvoja aplikacija. Opisan je
-Git sustav za reviziju koda, Jenkins aplikacija za kontinuiranu integraciju programskog koda,
-Docker za pohranjivanje slike aplikacije i Nginx za distribuciju i balansiranje zahtjeva korisnika.
-U trećem poglavlju opisan je proces i izrada jednostavne internet aplikacije u Go programskom jeziku
-zajedno s testovima jedinice i testovima funkcionalnosti. Opisana je i izrada Jenkins posla koja će
-pokrenuti testove i kompajliranje te izraditi i spremiti Docker sliku. U četvrtom poglavlju opisan
-je proces preuzimanje Docker te posluživanje korisnika preko Nginx programa.
+U drugom poglavlju opisana je korištena infrastruktura kontinuiranog razvoja aplikacija. Uspoređeni
+su tipovi sustava za reviziju koda te njihov povijesni razvoj. Prikazane su osnove korištenja i
+arhitektura izabranog sustava za reviziju koda -- Git. Zatim je opisan sustav za kontinuiranu
+integraciju te osnove Jenkins alata. U istom poglavlju opisan je Docker alat i uspoređen s
+virtualizacijom; Nginx web server, Go programski jezik te Cypress alat za integracijsko testiranje.
 
-TODO
+U trećem poglavlju opisan je proces i izrada jednostavne internet aplikacije u Go programskom jeziku
+zajedno s testovima jedinice i testovima funkcionalnosti. Opisana je izrada Jenkins posla koji
+pokreće testove i kompajliranje te izradu i spremanje Docker slike; program za
+menadžment Docker kontejnera koji je zadužen za pokretanje zadnje verzije aplikacije; korištenje
+Nginx programa zaduženog za posluživanje HTTP zahtjeva; proces objavljivanja nove verzije te proces
+vraćanja na prethodnu verziju.
+
+Četvrto poglavlje zaključuje rad.

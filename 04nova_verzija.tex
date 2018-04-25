@@ -1,4 +1,4 @@
-\section{Nova verzija programa}
+\section{Razvoj nove verzije fibonacci aplikacije}
 U drugoj verziji poboljšana je vremenska kompleksnost tako što je uklonjena rekurzija te dodana
 memoizacija. Nova vremenska kompleksnost je $O(N)$, dok je memorijska kompleksnost $O(1)$. Nova
 verzija prikazana je kodom~\ref{04fibv2}. Također, u novoj verziji izmjenjen je dizajn, kao što je
@@ -59,17 +59,24 @@ slici~\ref{fig:04stresstest} prikazan je vremenski odaziv prve i druge verzije a
 \section{Vraćanje na staru aplikaciju}
 Bilo koja izmjena aplikacije može uzrokovati neočekivanom greškom. Stoga, svaka izmjena aplikacije
 predstavlja rizik. Korištenjem testova jedinica i \textit{end-to-end} testova povećana je
-vjerojatnost otkrivanja greške prilikom razvoja aplikacije. Ukoliko novoobjavljena verzija
+vjerojatnost otkrivanja greške prilikom razvoja aplikacije. No, ukoliko novoobjavljena verzija
 aplikacije sadrži neku grešku, potreban je dobar sustav da se takva greška može brzo otkloniti.
-Često je najbrže rješenje vraćanje na staru verziju aplikacije (\textit{engl. version rollback}),
+Često je najbrže rješenje vraćanje na staru verziju aplikacije (\textit{engl.~version rollback}),
 gdje se neispravna verzija zamjenjuje s prethodno objavljenom, stabilnom verzijom. Zatim je potrebno
 ukloniti grešku u kodu te dodati prikladne testove nakon čega se može objaviti nova, ispravljena
 verzija aplikacije.
 
-U ovom radu korišten je parametrizitrani Jenkins posao za vraćanje na prethodno objavljenu verziju.
-Prilikom pokretanja takvog posla, korisniku je dan padajući izbornik sa svim verzijama aplikacije.
-Nakon što korisnik izabere željenu verziju, Jenkins označava tu verziju aplikacije kao zadnju.
-Unutar trideset sekundi, servis za menadžment pokreće novoizabranu verziju aplikacije i počinje ju
-posluživati. U tom trenutku, verzija aplikacije s greškom se ne poslužuje korisnicima.
+Proces vraćanja na staru verziju mora biti brz i intuitivan. U ovom radu korišten je
+parametrizitrani Jenkins posao za vraćanje na prethodno objavljenu verziju, prikazan
+slikom~\ref{fig:04jenkins_rollback}. Prilikom pokretanja takvog posla, korisniku je dan padajući
+izbornik sa svim verzijama aplikacije. Nakon što korisnik izabere željenu verziju, Jenkins označava
+tu verziju aplikacije kao zadnju. Unutar trideset sekundi, servis za menadžment pokreće novoizabranu
+verziju aplikacije i počinje ju posluživati. U tom trenutku, verzija aplikacije s greškom se ne
+poslužuje korisnicima.
 
-
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{img/04/jenkins_rollback.png}
+    \caption{Jenkins posao za vraćanje verzije aplikacije}%
+    \label{fig:04jenkins_rollback}
+\end{figure}
