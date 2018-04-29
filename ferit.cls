@@ -79,6 +79,7 @@
 \newcommand{\strdiplomski}{DIPLOMSKI RAD br}
 \newcommand{\strseminar}{SEMINAR}
 \newcommand{\strvoditelj}{Voditelj}
+\newcommand{\strzivotopis}{\v{Z}IVOTOPIS}
 \newcommand{\strsijecanj}{sije\v{c}anj}
 \newcommand{\strveljaca}{velja\v{c}a}
 \newcommand{\strozujak}{o\v{z}ujak}
@@ -101,6 +102,7 @@
   \renewcommand{\strzavrsni}{BACHELOR THESIS num}%
   \renewcommand{\strdiplomski}{MASTER THESIS num}%
   \renewcommand{\strseminar}{SEMINAR}%
+  \renewcommand{\strzivotopis}{BIOGRAPHY}%
   \renewcommand{\strvoditelj}{Mentor}%
   \renewcommand{\strsijecanj}{January}%
   \renewcommand{\strveljaca}{February}%
@@ -473,6 +475,18 @@ Koristi \noexpand\engtitle za definiranje}}
 \end{center}
 \hspace*{\fill} {\bf Abstract} \hspace*{\fill} \par
 \vspace*{25pt}
+}
+{
+\vspace*{\fill}
+}
+
+\newenvironment{biografija} {
+\newpage
+    {
+        \noindent\large\bf \strzivotopis\
+        \vskip 12\p@
+    }
+\thispagestyle{empty}
 }
 {
 \vspace*{\fill}
