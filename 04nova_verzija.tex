@@ -1,7 +1,7 @@
 \section{Razvoj nove verzije fibonacci aplikacije}
 U drugoj verziji poboljšana je vremenska kompleksnost tako što je uklonjena rekurzija te dodana
 memoizacija. Nova vremenska kompleksnost je $O(N)$, dok je memorijska kompleksnost $O(1)$. Nova
-verzija prikazana je kodom~\ref{04fibv2}. Također, u novoj verziji izmjenjen je dizajn, kao što je
+verzija prikazana je kodom~\ref{04fibv2}. U novoj je verziji također izmjenjen dizajn kao što je
 prikazano slikom~\ref{fig:04redesign}
 
 \lstset{caption={Fibonacci v2}, label=04fibv2}
@@ -30,24 +30,25 @@ func fibonacci(n uint64) uint64 {
     \label{fig:04redesign}
 \end{figure}
 
-Čim se takva izmjena spremljena na Github unutar glavne, \textit{master} grane, Jenkins pokreće
-izgradnju nove aplikacije. Ukoliko su svi testovi budu uspješni, Docker slika se objavljuje. Zatim
+Jenkins pokreće izgradnju nove aplikacije čim je nekakva izmjena dostupna na Git poslužitelju unutar
+glavne, \textit{master} grane. Ukoliko su svi testovi uspješni objavljuje se Docker slika. Zatim
 servis za menadžment dohvaća novu verziju te počinje posluživati korisnike s novom verzijom.
 
 Prethodnu verziju aplikacije potrebno je ukloniti tek nakon što su svi zahtjevi obrađeni. Na
-primjer, ukoliko je potrebno 2 sekunde za obradu nekog zahtjeva tada je potrebno pričekati barem
-toliko vremena prije nego što se prethodna verzija aplikacije može potpuno ugasiti. Uprotivnom,
-zahtjev korisnika neće biti potpuno ispunjen.
+primjer, ukoliko je potrebno dvije sekunde za obradu nekog zahtjeva, tada je potrebno pričekati
+barem toliko vremena prije nego što se prethodna verzija aplikacije može potpuno ugasiti.  U
+protivnom zahtjev korisnika će biti prekinut i neće biti potpuno ispunjen.
 
 Testiranje stabilnosti aplikacije prilikom izmjene koda provedeno je alatom \textit{Jmeter}. Jmeter
 je alat za stresno testiranje aplikacije, a razvija ga neprofitna organizacija \textit{Apache}. Može
-se koristiti za stresno testiranje baza podataka preko JDBC, FTP, LDAP, HTTP, i mnogih drugih
+se koristiti za stresno testiranje FTP, LDAP, HTTP, baza podataka preko JDBC, i mnogih drugih
 protokola.
 
 Za testiranje infrastrukture ovog projekta korišten je HTTP protokol. Izvršeno je 10.000 zahtjeva
-za 34.~fibonaccijev broj. U trenutku pokretanja stresnog testa, korištena je stara verzija fibonacci
-aplikacije. Zatim je objavljena nova verzija sa optimizacijom. Svi zahtjevi uspješno su izvršeni. Na
-slici~\ref{fig:04stresstest} prikazan je vremenski odaziv prve i druge verzije aplikacije.
+za 34.~fibonaccijev broj. U trenutku pokretanja stresnog testa korištena je stara verzija fibonacci
+aplikacije, a potom je objavljena nova verzija koja sadrži optimizaciju. Svi zahtjevi uspješno su
+izvršeni. Na slici~\ref{fig:04stresstest} prikazan je vremenski odaziv prve i druge verzije
+aplikacije.
 
 \begin{figure}[h]
     \centering
@@ -57,21 +58,21 @@ slici~\ref{fig:04stresstest} prikazan je vremenski odaziv prve i druge verzije a
 \end{figure}
 
 \section{Vraćanje na staru aplikaciju}
-Bilo koja izmjena aplikacije može uzrokovati neočekivanom greškom. Stoga, svaka izmjena aplikacije
+Bilo koja izmjena aplikacije može uzrokovati neočekivanu pogrešku, stoga svaka izmjena aplikacije
 predstavlja rizik. Korištenjem testova jedinica i \textit{end-to-end} testova povećana je
 vjerojatnost otkrivanja greške prilikom razvoja aplikacije. No, ukoliko novoobjavljena verzija
-aplikacije sadrži neku grešku, potreban je dobar sustav da se takva greška može brzo otkloniti.
-Često je najbrže rješenje vraćanje na staru verziju aplikacije (\textit{engl.~version rollback}),
-gdje se neispravna verzija zamjenjuje s prethodno objavljenom, stabilnom verzijom. Zatim je potrebno
-ukloniti grešku u kodu te dodati prikladne testove nakon čega se može objaviti nova, ispravljena
-verzija aplikacije.
+aplikacije sadrži neku grešku, potreban je dobar sustav kako bi se takva pogreška mogla brzo
+otkloniti. Često je najbrže rješenje vraćanje na staru verziju aplikacije (\textit{engl.~version
+rollback}), gdje se neispravna verzija zamjenjuje s prethodno objavljenom, stabilnom verzijom. Zatim
+je potrebno ukloniti grešku u kodu te dodati prikladne testove nakon čega se može objaviti nova,
+ispravljena verzija aplikacije.
 
 Proces vraćanja na staru verziju mora biti brz i intuitivan. U ovom radu korišten je
 parametrizitrani Jenkins posao za vraćanje na prethodno objavljenu verziju, prikazan
-slikom~\ref{fig:04jenkins_rollback}. Prilikom pokretanja takvog posla, korisniku je dan padajući
+slikom~\ref{fig:04jenkins_rollback}. Prilikom pokretanja takvog posla korisniku je dan padajući
 izbornik sa svim verzijama aplikacije. Nakon što korisnik izabere željenu verziju, Jenkins označava
-tu verziju aplikacije kao zadnju. Unutar trideset sekundi, servis za menadžment pokreće novoizabranu
-verziju aplikacije i počinje ju posluživati. U tom trenutku, verzija aplikacije s greškom se ne
+tu verziju aplikacije kao zadnju. Unutar trideset sekundi servis za menadžment pokreće novoizabranu
+verziju aplikacije i počinje ju posluživati. U tom trenutku verzija aplikacije s greškom se ne
 poslužuje korisnicima.
 
 \begin{figure}[h]
