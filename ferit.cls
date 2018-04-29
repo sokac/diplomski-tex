@@ -176,7 +176,7 @@
 
 % Promjena naziva poglavlja ``Bibliografija'' -> ``Literatura''
 \addto\captionscroatian{%
-  \def\bibname{Literatura}
+  \def\bibname{\large LITERATURA}
 }
 
 % Primjena naziva listing (programski kod)
