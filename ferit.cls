@@ -176,8 +176,10 @@
 
 % Promjena naziva poglavlja ``Bibliografija'' -> ``Literatura''
 \addto\captionscroatian{%
-  \def\bibname{\large LITERATURA}
+      \def\bibname{LITERATURA}
 }
+
+\renewcommand{\bibsection}{XXX1\small} %natbib
 
 % Primjena naziva listing (programski kod)
 \addto\captionscroatian{%
@@ -309,7 +311,7 @@
   {\setlength{\parskip}{0em} \parindent \z@ \raggedright
     \normalfont
     \interlinepenalty\@M
-    \Huge \textbf{#1}\par
+    \large \MakeUppercase{\textbf{#1}}\par
     \nobreak
     \vskip 15\p@
   }
