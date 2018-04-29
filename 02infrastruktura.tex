@@ -1,8 +1,10 @@
 \chapter{INFRASTRUKTURA KONTINUIRANOG RAZVOJA APLIKACIJA}
 Za izradu sustava za kontinuiran razvoj aplikacije potrebna je infrastruktura koja to omogućuje.
-Postoji velik izbor aplikacija i servisa, koji se mogu koristiti za kontinuiran razvoj aplikacije.
-Na primjer, za verzioniranje koda može se koristiti Git, Subversion, Mercurial, Microsoft TFS, a za
-kontinuiranu integraciju programskog koda Jenkins, Hudson, TeamCity.
+Postoji velik izbor aplikacija i servisa koji se mogu koristiti u tu svrhu.  Na primjer, za
+verzioniranje koda može se koristiti Git, Subversion, Mercurial, Microsoft TFS, a za kontinuiranu
+integraciju programskog koda Jenkins, Hudson, TeamCity.
+
+% TODO vise teksta?
 
 \section{Git - sustav kontrole verzija}
 Sustav kontrole verzija je sustav koji sprema promjene datoteka kroz vrijeme. Najčešće se koristi za
@@ -11,7 +13,7 @@ pisanje knjige, dokumenata, dizajn i slično.
 
 Prilikom izgradnje programske podrške u pravilu je potrebno imati sustav verzija, pogotovo ako više
 inženjera radi na istom projektu. Korisnik u bilo kojem trenutku može zapisati trenutno stanje mape
-(\textit{engl.~directory}) u sustav. Na primjer, korisnik može zapisati kad je određena cjelina
+(\textit{engl.~directory}) u sustav. Na primjer, korisnik može zapisati kada je određena cjelina
 aplikacija isprogramirana, kada je popravljena greška (\textit{engl.~bug}) ili kada su dodani novi
 testovi jedinica. Korisnik može pregledati povijest u bilo kojem trenutku, vratiti mapu u prijašnje
 stanje, usporediti izmjene između zapisa. To je samo mali dio operacija koje korisnik može odraditi.
@@ -22,7 +24,7 @@ Rezultati ankete prikazni su slikom~\ref{fig:02so_survey}.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.85\textwidth]{img/02/so_survey.png}
+    \includegraphics[width=0.75\textwidth]{img/02/so_survey.png}
     \caption{Rezultati ankete o korištenju kontrole sustava}%
     \label{fig:02so_survey}
 \end{figure}
@@ -30,11 +32,14 @@ Rezultati ankete prikazni su slikom~\ref{fig:02so_survey}.
 
 \subsection{Vrste sustava kontrole verzija}
 Prije nego što su ovakvi sustavi postali popularni i industrijski standard, korisnici su ručno
-kopirali mapu ili datoteku te ju spremili kao rezervu (\textit{engl.~backup}). Takav proces podložan
-je greškama te ne pruža puno funkcionalnosti. Jedno od prvih rješenja bio je RCS (\textit{engl.
-Revision Control System})~\citep{chacon2014pro}, koji omogućuje pohranjivanje razlike datoteka
-(\textit{engl.~patch set}) između revizija. Korisnik može vratiti datoteku u prijašnje stanje tako
-da sustav primjeni razliku datoteka, kao što je prikazano na slici~\ref{fig:02rcs}.
+kopirali mapu ili datoteku te ju spremali kao rezervu (\textit{engl.~backup}). Takav proces podložan
+je greškama te ne pruža puno funkcionalnosti. Jedno od prvih dostupnih rješenja je RCS
+(\textit{engl. Revision Control System})~\citep{chacon2014pro}. RCS omogućava pohranjivanje
+razlike datoteka (\textit{engl.~patch set}) između revizija. Korisnik može vratiti datoteku u
+prijašnje stanje tako da sustav primjeni razliku datoteka, kao što je prikazano na
+slici~\ref{fig:02rcs}.
+
+% TODO vise teksta, povijest
 
 \begin{figure}[h]
     \centering
@@ -96,7 +101,7 @@ da sustav primjeni razliku datoteka, kao što je prikazano na slici~\ref{fig:02r
     \label{fig:02rcs}
 \end{figure}
 
-RCS postaje problematičan ukoliko je potrebno rad na više računala, to jest ukoliko više inženjera
+Problemi se javljaju ukoliko je potreban rad na više računala, to jest ukoliko više inženjera
 radi na projektu. Kako bi se riješio taj problem, osmišljen je centralizirani sustavi kontrole
 verzija (CVCS, \textit{engl.~Centralized Version Control System}), prikazan na
 slici~\ref{fig:02CVCS}. Takvi sustavi, kao što su CSV, Subversion, Perforce, imaju centralno
@@ -170,14 +175,14 @@ ili pohranili novu verziju.  Administratori u pravilu mogu ograničiti radnje po
 
 Centrali sustavi kontrole verzija imaju velike nedostatke. Kako se radi o centralom sustavu, ispadom
 centralnog računala, sustav postaje nedostupan te korisnici ne mogu raditi. U slučaju gubitka
-podataka na centralnim računalu, na primjer zbog kvara tvrdog diska (\textit{engl.~hard drive}),
-informacije o svim revizijama su uništene, te jedino podaci koji su dostupni su oni na lokalnim
-računalima korisnika. Zbog takvih nedostataka, distribuirani sustavi kontrole verzija su osmišljeni.
+podataka na centralnim računalu, primjerice zbog kvara tvrdog diska (\textit{engl.~hard drive}),
+informacije o svim revizijama su uništene, te jedini podatci koji su dostupni su oni na lokalnim
+računalima korisnika. Zbog takvih nedostataka osmišljeni su distribuirani sustavi kontrole verzija.
 
-Distribuirani sustavi kontrole verzija (DVSC, \textit{engl.~Distributed Version Control System}) je
-sustav gdje korisnik dohvaća datoteke, ali i svu povijest. Stoga, ukoliko poslužitelj postane
+Distribuirani sustav kontrole verzija (DVSC, \textit{engl.~Distributed Version Control System}) je
+sustav u kojemu korisnik dohvaća datoteke, ali i svu povijest. Stoga, ukoliko poslužitelj postane
 nedostupan, korisnik i dalje može koristiti sve funkcije takvog sustava. Isto tako, ukoliko
-poslužitelj postane trajno nedostupan, korisnik može pokrenuti vlastiti poslužitelj sa podacima
+poslužitelj postane trajno nedostupan, korisnik može pokrenuti vlastiti poslužitelj sa podatcima
 spremljenim na lokalnom računalu bez ikakvih gubitaka. Arhitektura takvog distribuiranog sustava
 dana je slikom \ref{fig:02DVCS}.
 
@@ -281,17 +286,17 @@ Git je distribuirani sustav otvorenog koda za kontrolu verzije. Za razliku od ve
 Git sprema cijele datoteke koje su promijenjene od zadnje verzije. Na primjer, ako korisnik promjeni
 datoteku tako što doda novu liniju koda, klasični VSC sustavi će spremiti informaciju o toj razlici,
 dok će Git spremiti cijelu datoteku. Spremanje cijele datoteke zauzima diskovni prostor, no
-omogućuje brže operacije kada je potrebno pogledati povijest i kako su datoteke izgledala u bilo
-kojem trenutku.
+s druge strane omogućuje brže operacije pregledavanja povijesti te sadržaja datoteka u bilo kojem
+trenutku.
 
-Zbog svoje distribuirane naravi, korisnik može koristiti Git i kada nije povezan na mrežu. Većina
-operacija, kao što su \texttt{git-commit}, \texttt{git-merge}, \texttt{git-checkout},
-\texttt{git-log}, izvršavaju se na lokalnom računalu. Kada je računalo ponovno povezano na mreži,
-korisnik može odabrati da dohvati nove datoteke ili pak da pošalje svoje izmijenjene datoteke.
+Zbog svoje distribuirane naravi Git je dostupan korisnicima i kada računalo nije mrežno povezano.
+Većina operacija, kao što su \texttt{git-commit}, \texttt{git-merge}, \texttt{git-checkout},
+\texttt{git-log}, izvršavaju se na lokalnom računalu. Kada je računalo ponovno povezano na mreži
+korisnik može odabrati dohvaćanje novih datoteka ili pak slanje izmjena.
 
 Git ima tri moguća stanja datoteka: predan (\textit{engl.~committed}), izmijenjen
 (\textit{engl.~modified}) i priređen (\textit{engl.~staged}). Predane datoteke su one datoteke koje
-su spremljene u lokalnu bazu, to jest bazu na lokalnom računalu. Izmijenjene datoteke su one
+su spremljene u lokalnu bazu, odnosno bazu na lokalnom računalu. Izmijenjene datoteke su one
 datoteke koje su izmijenjene na lokalnom računalu, no nisu spremljene u lokalnoj Git bazi podataka.
 Priređene datoteke su izmijenjene datoteke koje se dodaju u sljedećem unosu u Git bazu.
 
@@ -300,17 +305,17 @@ programa van glavne grane. Prilikom razvoja, manji dijelovi koda se često sprem
 git-commit}) i povremeno šalju na server (tzv.~\texttt{git-push}). Kada je nova funkcija
 isprogramirana i testirana, takva grana se spaja (tzv.~\texttt{git-merge}) na glavnu granu. U
 slučaju sukoba datoteka (\textit{engl.~conflict}), korisnik je obaviješten te mora ručno riješiti
-takav sukob datoteka i ponovno testirati aplikaciju.
+takav sukob i ponovno testirati aplikaciju.
 
 Korištenje Git uvelike je pojednostavljeno ukoliko se korisnik odluči koristiti servis kao što je
 GitHub, Gitlab ili Bitbucket. Takvi servisi omogućuju jednostavno kreiranje Git baze te operacije
 spajanja \texttt{git-merge}. Također, većina integriranih sustava za razvoj (IDE,
 \textit{engl.~Integrated Development Environment}) podržava Git operacije, tako da korisnik ne mora
-koristiti komandu liniju.
+koristiti komandnu liniju.
 
 \subsection{Korištenje Git-a i GitHub} Git operacije se često izvode preko komandne linije.
 Kreiranje novog Git projekta obavlja se preko komande \texttt{git-init}. Git-init stvara praznu Git
-bazu podataka. Nakon toga, toga korisnik može prirediti datoteke koje će se spremiti u bazu preko
+bazu podataka. Korisnik nakon toga može prirediti datoteke koje će se spremiti u bazu preko
 operacije \texttt{git-add}. Kada je sve spremno za trajno spremanje u Git bazu, pokreće se operacija
 \texttt{git-commit} koja predaje datoteke u lokalnu Git bazu. Primjer stvaranja Git projekta te
 spremanja prikazan je programskim kodom~\ref{02init}.
@@ -323,14 +328,12 @@ git add LICENSE // Pretpostavka da LICENSE postoji unutar direktorija
 git commit -m "Prvi commit"
 \end{lstlisting}
 
-Takva baza spremljena je na lokalnom računalu te samim time je nedostupna drugim računalima. Kako bi
-takva baza postala dostupna drugim računalima, potrebno je poslati bazu na Git poslužitelj. Jedan
-od najpopularnijih servisa koji pruža Git poslužitelj kao uslugu je GitHub.
-
-GitHub je servis istoimene firme koja pruža Git kao uslugu. U travnju 2017. godine, GitHub je
-objavio da je registrirano skoro 20 milijuna korisnika i 57 milijuna Git
+Takva baza spremljena je na lokalnom računalu te je samim time nedostupna drugim računalima. Kako bi
+takva baza postala dostupna drugim računalima, potrebno je poslati bazu na Git poslužitelj. Jedan od
+najpopularnijih servisa koji pruža Git poslužitelj kao uslugu je GitHub.  U travnju 2017. godine
+GitHub je objavio da je registrirano skoro 20 milijuna korisnika i 57 milijuna Git
 projekata~\citep{github2017}. Korisnik se more registrirati na github.com kako bi mogao koristiti
-usluge GitHub. Nakon uspješne registracije, Git projekt se može kreirati kao što je vidljivo na
+usluge. Nakon uspješne registracije, Git projekt se može kreirati kao što je vidljivo na
 slici~\ref{fig:02hgreg}.
 
 \begin{figure}[h]
@@ -341,7 +344,7 @@ slici~\ref{fig:02hgreg}.
 \end{figure}
 
 Kada je napravljen projekt na GitHub-u, u lokalnu bazu registrira se udaljen Git poslužitelj pomoću
-\texttt{git-remote} operacije te se lokalna baza može poslati na udaljeno pomoću operacije
+\texttt{git-remote} operacije te se lokalna baza može poslati na udaljeno računalo pomoću operacije
 \texttt{git-push}. Važno je zapamtiti da operacija \texttt{git-commit} ne šalje izmjene na udaljeno
 računalo, nego isključivo \texttt{git-push}.  Operacija \texttt{git-push} šalje samo razliku između
 lokalnih predanih datoteka te udaljenih datoteka.  Primjer dodavanja udaljenog servera i slanje
@@ -354,20 +357,20 @@ git push -u origin master
 \end{lstlisting}
 
 \subsection{Git grane}
-Većina VSC sustava podržava neku vrstu grananja. Grananje omogućuje korisniku da izađe iz glavne
+Većina VSC sustava podržava neku vrstu grananja. Grananje omogućava korisniku da izađe iz glavne
 grane razvoja, često nazvanu \textit{master}, te nastavi razvoj u potpuno drugoj grani. Korisnik u
 bilo kojem trenutku može izabrati u kojoj grani želi biti. Također, korisnik može spojiti dvije
 grane u bilo kojem trenutku.
 
 Git ima prednost nad drugim VSC sustavima jer su stvaranje i mijenjanje grana izuzetno brze
-operacije. Samim time, Git potiče na često korištenje grana. Kreiranje grane obavlja se operacijom
-\texttt{git-branch}, koja kreira novu granu. Takva grana ima iste datoteke kao i grana prije nego
-što je operacija kreiranja grane bila pozvana. Operacija \texttt{git-checkout} koristi se za
-prebacivanje u drugu granu. Trenutna grana zapisana je u specijalnoj referenci koja se zove
-\textit{HEAD}. Na slici~\ref{fig:02gitexample} prikazan je Git projekt s dvije grane,
-\textit{master} i \textit{development}, gdje grana \textit{development} sadrži više predanih
-izmjena. Prilikom pokretanja \texttt{git checkout master}, \textit{HEAD} pokazivač se pomiče na
-\textit{master} granu te se datoteke mijenjaju na sadržaj u tom trenutku, kao što je prikazano na
+operacije. Samim time, Git potiče na često korištenje grana. Nova grana stvara se operacijom
+\texttt{git-branch} te ima iste datoteke kao i grana prije nego što je operacija kreiranja grane
+bila pozvana. Operacija \texttt{git-checkout} koristi se za prebacivanje u drugu granu. Trenutna
+grana zapisana je u specijalnoj referenci koja se zove \textit{HEAD}. Na
+slici~\ref{fig:02gitexample} prikazan je Git projekt s dvije grane, \textit{master} i
+\textit{development}, gdje grana \textit{development} sadrži više predanih izmjena. Prilikom
+pokretanja \texttt{git checkout master}, \textit{HEAD} pokazivač se pomiče na \textit{master} granu
+te se datoteke mijenjaju na sadržaj \textit{master} grane, kao što je prikazano na
 slici~\ref{fig:02gitexample2}. Ukoliko korisnik preda izmjene unutar grane \textit{master}, tada
 dolazi do razdvajanja grana, jer grana \textit{master} ima datoteke koje ne postoje u povijesti
 grane \textit{development} i obrnuto. Git operacija \texttt{git-merge} omogućava spajanje grana i u
@@ -456,27 +459,27 @@ takvom slučaju.
 \end{figure}
 
 Osim standardnih operacija, Github servis nudi uslugu pregleda koda (\textit{engl. code review}).
-Inženjeri mogu međusobno pregledavati kod prije nego što se spoji s glavnom granom. Također, moguće
-je koristiti i integracijske testove kako bi se osiguralo da novi kod ispravno funkcionira.
+Inženjeri mogu međusobno pregledavati kod prije nego što se spoji s glavnom granom. Također je
+moguće koristiti i integracijske testove kako bi se osiguralo ispravno funkcioniranje novog koda.
 
 \section{Jenkins}
 Timovi koji koriste stare metode, kao što su Grantt dijagrame i model vodopada (\textit{engl.
 waterfall model}), moraju odvojiti poveći dio vremena za fazu integracije. U toj fazi razvoja
-računalne podrške, inženjeri i timovi spajaju dijelove koda na kojima su radili mjesecima.  Prilikom
-spajanja dijelova koda, često dolazi do sukoba datoteka i programskih sučelja koji inženjeri ručno
-moraju riješiti. Taj proces zna potrajati tjednima kako bi se suboki riješili i program ponovno
-testirao. U takvom sustavu, faza integracija izuzetno je stresna za inženjere i voditelje timove. Ta
-faza često odgađa objavljivanje nove verzije aplikacije, a samim time i gubitak povjerenja krajnjih
-korisnika. Iz tih razloga, nastala je potreba za kontinuiranom integracijom.
+računalne podrške inženjeri i timovi spajaju dijelove koda na kojima su radili mjesecima. Prilikom
+spajanja, često dolazi do sukoba datoteka i programskih sučelja koji inženjeri ručno moraju
+riješiti. Taj proces zna potrajati tjednima jer je potrebno riješiti sukobe i ponovno testirati
+program. U takvom je sustavu faza integracija izuzetno stresna za inženjere i voditelje timove. Ta
+faza je često uzrok odgađanja objavljive nove verzije, a samim time i gubitak povjerenja krajnjih
+korisnika. Iz tih je razloga nastala potreba za kontinuiranom integracijom.
 
 Kontinuirana integracija (CI, \textit{engl.~Continuous Integration}) je način razvoja aplikacije
 gdje se radne verzije programa spajaju s glavnom verzijom barem jednom
 dnevno~\citep{fowler2006continuous}. Ekstremnija verzija takvog načina razvoja nazvana je ekstremno
 programiranje (XP, \textit{engl.~Extreme Programming}), gdje se radna verzija spaja u glavnu verziju
-barem jednom u dva do tri sata~\citep{beck1999embracing}, prikazano na slici~\ref{fig:02xp}. Kako bi
-to bilo moguće potrebna je dobra infrastruktura koja omogućava brzo otkrivanje grešaka prilikom
-razvoja. Također, pomaže prilikom dijagnostike te omogućava brzu izgradnju aplikacije. Svaki
-profesionalni razvojni tim treba koristiti takav sustav kako bi bio što učinkovitiji i
+barem jednom u dva do tri sata~\citep{beck1999embracing}, kako je prikazano na slici~\ref{fig:02xp}.
+Kako bi to bilo moguće potrebna je dobra infrastruktura koja omogućava brzo otkrivanje grešaka
+prilikom razvoja. Ona također pomaže prilikom dijagnostike te omogućava brzu izgradnju aplikacije.
+Svaki bi profesionalni razvojni tim trebao koristiti takav sustav kako bi bio što učinkovitiji i
 konkurentniji.
 
 \begin{figure}[h]
@@ -486,23 +489,24 @@ konkurentniji.
     \label{fig:02xp}
 \end{figure}
 
-Pojednostavljeno, sustav kontinuirane integracije nadgleda sve promjene nad sustav kontrole verzija.
-Kada je promjena očitana, sustav pokreće proces testiranja jedinica i izgradnje aplikacije
+Pojednostavljeno, sustav kontinuirane integracije nadgleda sve promjene nad sustavom kontrole
+verzija. Kada je promjena očitana, sustav pokreće proces testiranja jedinica i izgradnje aplikacije
 (\textit{engl. compile}). U slučaju greške, sustav obavještava inženjera o pogrešci kako bi se mogla
 ispraviti što prije. Osim toga, sustav mora biti u mogućnosti proizvesti izvješća o kvaliteti koda,
-kao što je pokrivenosti testiranja jedinice, razne statistike poput vrijeme izgradnje, učestalost
+kao što je pokrivenost testiranja jedinice, razne statistike poput vrijeme izgradnje, učestalost
 grešaka.
 
-Ukoliko je sustav kontinuirane integracije pouzdan, može se automatizirati i sustav objavljivanja
+Ako je sustav kontinuirane integracije pouzdan, može se automatizirati i sustav objavljivanja
 aplikacija. Ukoliko se takva aplikacija automatski objavljuje i dostavlja krajnjim korisnicima, radi
 se o sustavu za kontinuirani razvoj i objavu aplikacija (\textit{engl.~Continuous Deployment}). Kod
 takvog sustava iznimno je bitno da je proces nadogradnje aplikacije jednostavan, a poželjno i
-skriven, od krajnjeg korisnika. Stoga se najčešće primjenjuje na mrežnim aplikacijama, kao što su
+skriven od krajnjeg korisnika. Stoga se najčešće primjenjuje na mrežnim aplikacijama kao što su
 internet aplikacije i stranice.
 
+% TODO više o povijesti
 Jenkins, izvorno nazvan Hudson, je alat za kontinuiranu integraciju otvorenog koda napisan u
 programskom jeziku Java. Postao je iznimno popularan zbog jednostavnosti korištenja, jednostavnog
-grafičkog sučelja, mogućnost proširenja preko dodataka (\textit{engl. plugins}) te mnogih drugih
+grafičkog sučelja, mogućnosti proširenja preko dodataka (\textit{engl. plugins}) te mnogih drugih
 značajki. Primjer početne stranice Jenkinsa prikazan je na slici~\ref{fig:02jenkins_home}.
 
 \begin{figure}[h]
@@ -512,27 +516,32 @@ značajki. Primjer početne stranice Jenkinsa prikazan je na slici~\ref{fig:02je
     \label{fig:02jenkins_home}
 \end{figure}
 
-Uvođenje Jenkins alata može se uvesti postepeno u firmama koji nemaju nikakav
-sustav~\citep{smart2011jenkins}. Prvo je potrebno uvesti sustav koji će na dnevnoj bazi izgrađivati
-aplikaciju. Druga faza je uvođenje automatskog testiranja prije izgrađivanja aplikacije, također na
-dnevnoj razini. Sljedeća faza je uvođenje metrika vezano za kvalitetu koda (pokrivenosti jedinica,
-brzina testova i izgradnje) te automatska izgradnja dokumentacije. Četvrta faza je dodatno
-testiranje, kao što je testiranje funkcionalnosti. Takvo testiranje odvija se nakon što je
-aplikacija izgrađena. Peta faza je gdje se aplikacija koja je prošla dodatno testiranje automatski
-objavljuje. Takvu aplikaciju mogu koristiti osobe koje nisu inženjeri, kao što su timovi za
-testiranje kvalitete. Zadnja faza sustava je kontinuirano objavljivanje aplikacije krajnjim
-korisnicima.
+Jenkins alata može se postepeno uvesti u firmama koji nemaju nikakav sustav kontinuirane
+integracije~\citep{smart2011jenkins}. Prvo je potrebno uvesti sustav koji će na dnevnoj bazi
+izgrađivati aplikaciju. Druga faza je uvođenje automatskog testiranja prije izgrađivanja aplikacije,
+također na dnevnoj razini. Sljedeća faza je uvođenje metrika za kvalitetu koda (pokrivenosti
+jedinica, brzina testova i izgradnje) te automatska izgradnja dokumentacije. Četvrta faza je dodatno
+testiranje, poput testiranja funkcionalnosti, a ona se odvija nakon što je aplikacija izgrađena.
+Peta faza je automatsko objavljivanje aplikacije koja je prošla dodatno testiranje. Takvu
+aplikaciju mogu koristiti i osobe koje nisu inženjeri, kao što su timovi za testiranje kvalitete.
+Zadnja faza sustava je kontinuirano objavljivanje aplikacije krajnjim korisnicima.
 
-Jenkins se sastoji od Jenkins poslova (\textit{engl. Jenkins Jobs}), Jenkins građe (\textit{engl.
-Jenkins build}), parametara, Jenkins linije (\textit{engl. Jenkins Pipeline}) i dodataka.
+Jenkins se sastoji od:
+\begin{itemize}
+    \item poslova (\textit{engl. Jobs})
+    \item građe (\textit{engl. build})
+    \item parametara
+    \item linije (\textit{engl. Pipeline})
+    \item dodataka (\textit{engl. plugins}).
+\end{itemize}
 
 \subsection{Jenkins arhitektura}
-Jenkins posao je skup pravila prema kojem se izgrađuje aplikacija. Sastoji se od naziva posla,
-opisa, definira parametre potrebne za pokretanje izgradnje aplikacije, instrukcija kako se izgrađuje
-aplikacija te listu akcija nakon što je posao završen~\citep{pathania2016learning}. Jenkins posao ne
-ovisi o programskom jeziku aplikacije koja se izgrađuje, niti o VCS. Posao se može programirati, ali
-i izgraditi koristeći grafičko web sučelje. Primjer izgradnje posla preko web sučelja prikazan je
-slikom~\ref{fig:02jenkinsjob}
+Jenkins posao je skup pravila prema kojemu se izgrađuje aplikacija. Sastoji se od naziva posla,
+opisa, definiranih parametara potrebnih za pokretanje izgradnje aplikacije, instrukcija za
+izgradnju aplikacije te listu akcija nakon što je posao završen~\citep{pathania2016learning}.
+Jenkins posao ne ovisi o programskom jeziku aplikacije koja se izgrađuje niti o VCS. Posao se može
+programirati, ali i izgraditi koristeći grafičko web sučelje. Primjer izgradnje posla preko web
+sučelja prikazan je slikom~\ref{fig:02jenkinsjob}.
 
 \begin{figure}[h]
     \centering
@@ -541,17 +550,17 @@ slikom~\ref{fig:02jenkinsjob}
     \label{fig:02jenkinsjob}
 \end{figure}
 
-Jenkins parametri se najčešće koriste za Jenkins poslove. Jenkins podržava velik broj tipova
-parametara, kao što su riječi, brojevi, izbornici, jedno-bitni podaci (da/ne odgovor). Parametri se
+Jenkins parametri često se koriste za Jenkins poslove. Jenkins podržava velik broj tipova
+parametara, kao što su riječi, brojevi, izbornici, jedno-bitni podatci (da/ne odgovor). Parametri se
 mogu automatski predavati poslu ili ručno. Primjer automatskog predavanja parametara je kada jedan
 Jenkins posao pokreće drugi te predaje informacije o prethodnom izvršavanju. Primjer ručnog
 predavanja parametara je kada korisnik odabere verziju koju želi pokrenuti.
 
 Većina Jenkins poslova sadrže barem jednu Jenkins građu. Jenkins građa je jedinica posla koja se
-izvršava kada se posao izvršava. Može biti jednostavna Linux Bash ili Windows batch naredba, a preko
-dodataka može izvršavati i kompleksne stvari kao što su Python skripte, Groovy, preuzimanje Android
-dodataka. Primjer Jenkins posla s jednom građom prikazan je slikom~\ref{fig:02jenkins_pipeline}.
-Jedan Jenkins posao može imati više Jenkins građi.
+izvršava kada se Jenkins posao izvršava. Može biti jednostavna Linux Bash ili Windows batch naredba,
+a preko dodataka može izvršavati i kompleksne stvari kao što su Python skripte, Groovy, preuzimanje
+Android dodataka, itd. Primjer Jenkins posla s jednom građom prikazan je
+slikom~\ref{fig:02jenkins_pipeline}.  Jedan Jenkins posao može imati više Jenkins građi.
 
 \begin{figure}[h]
     \centering
@@ -560,34 +569,29 @@ Jedan Jenkins posao može imati više Jenkins građi.
     \label{fig:02jenkins_pipeline}
 \end{figure}
 
-Jenkins linija omogućuje umrežavanje više Jenkins poslova. Linija može pokrenuti Jenkins poslove
+Jenkins linija omogućava umrežavanje više Jenkins poslova. Linija može pokrenuti Jenkins poslove
 sekvencijalno ili paralelno te može sadržavati logiku. Na primjer, Jenkins linija može odlučiti da
 se linija prekida ukoliko jedan od paralelnih poslova bude neuspješan. Pomoću akcija nakon građe
-(\textit{engl. Post-Build}), korisnici mogu biti obaviješteni o rezultatima građe.
+(\textit{engl. Post-Build}) korisnici mogu biti obaviješteni o rezultatima građe.
 
-Jedna od velik prednosti Jenkins alata jest upravo u dodacima. Dodaci mogu mijenjati vizualno web
-sučelje, mijenjati način povezivanja Jenkins gazde s Jenkins slugom, dodati podršku za nove
+Jedna od velikih prednosti Jenkins alata jest upravo u dodatcima. Dodatci mogu mijenjati vizualno
+web sučelje, mijenjati način povezivanja Jenkins gazde s Jenkins slugom, dodati podršku za nove
 programske jezike i VSC. U službenom Jenkins repositoriju registrirano je preko tisuću različitih
 dodataka~\citep{JenkisPlugins}.
 
 \section{Docker}
 Docker je projekt otvorenog koda napisan u Go programskom jeziku koji pojednostavljuje objavljivanje
 programa tako što koristi programske kontejnere (\textit{engl. Software Containers}). Unutar
-\texttt{Unix} okruženja često se koristio izraz zatvor (~\textit{engl. jail}) prilikom izmjene
-okoline radi sigurnosne izolacije procesa i zaštičenih resursa. S izlaskim Solaris Linux 2005.
-godine i izmjene u sustavu izolacije počinje se upotrebljavati izraz
-kontejneri~\citep{nickoloff2016docker}. Kontejneri po početnoj vrijednosti su totalni izolirani. To
-uključuje diskovne, memorijske, sabirničke, mrežne resurse. Korisnik može dozvoliti određene resurse
-ukoliko je to potrebno. Iako kontejneri postoje već dugi niz godina, korištenje istih nije bilo
-jednostavno sve do pojave Docker projekta.
-
-Docker slika pakira program unutar cjelokupnog datotečnog sustava koji ima sve potrebne komponente
-kako bi se takav program mogao izvoditi - od dinamičkih modula, biblioteka, sve do programskog
-sučelja operativnoga sustava. Stoga, Docker garantira da će izvršavanje takvog sustava bit uvijek
-jednako, neovisno o računalo na kojem se izvodi.
+\texttt{Unix} okruženja često se koristio izraz zatvor (\textit{engl. jail}) prilikom izmjene
+okoline radi sigurnosne izolacije procesa i resursa. S izlaskom Solaris Linux 2005.  godine i
+izmjene u sustavu izolacije počinje se upotrebljavati izraz kontejneri~\citep{nickoloff2016docker}.
+Po zadanoj vrijednosti (\textit{engl. default value}) kontejneri nemaju pristup nikakvih resursima,
+što uključuje diskovne, memorijske, sabirničke te mrežne resurse. Korisnik može dozvoliti određene
+resurse ukoliko je to potrebno. Iako kontejneri postoje već dugi niz godina, korištenje istih nije
+bilo jednostavno sve do pojave Docker projekta.
 
 Docker je konceptno sličan virtualizaciji, kao što je VMWare i VirtualBox. No, za razliku od
-virtualizacije, Docker ima prednosti u tome što je brži i koristi manje
+virtualizacije, prednost Dockera je u tome što je brži i koristi manje
 resursa~\citep{leszko2017continuous}. Docker koristi Linux jezgru glavnog računala. Na
 slici~\ref{fig:02vm} prikazana je arhitektura kod tipične virtualizacije, dok je na
 slici~\ref{fig:02docker} prikazana Docker arhitektura.
@@ -694,15 +698,18 @@ Docker slika (\textit{engl. Docker Image}) je preslika datotečnog sustava koja 
 Docker slojeva (\textit{engl. Docker layers}). Slojevi predstavljaju promjene u datotečnom sustavu
 naspram prijašnjeg sloja. Docker kontejner koristi Docker sliku te pokreće određenu aplikaciju koja
 se već nalazi unutar Docker slike. Promjene unutar Docker kontejnera, kao što je zapis novih
-datoteka, ne mijenjaju Docker sliku koja je korištena za pokretanje tog kontejnera. Kada se Docker
-kontejner zaustavi i obriše, svi podaci su također obrisani.
+datoteka, ne mijenjaju Docker sliku korištenu za pokretanje tog kontejnera. Kada se Docker
+kontejner zaustavi i obriše, svi podatci su također obrisani.
 
-Docker slike mogu se spremiti u Docker repositorij koji može biti privatni ili javni. Jedan od
-najčešće korištenih je službeni repositorij firme koja stoji iza Docker-a - Docker, Inc, a koji se
-nalazi na Web stranici \textit{https://hub.docker.com}.
+Docker slika pakira program unutar cjelokupnog datotečnog sustava koji ima sve potrebne komponente
+kako bi se takav program mogao izvoditi - od dinamičkih modula, biblioteka, sve do programskog
+sučelja operativnoga sustava. Stoga Docker garantira da će izvršavanje takvog sustava bit uvijek
+jednako, neovisno o računalo na kojemu se izvodi. Slike mogu se spremiti u Docker repositorij
+koji može biti privatni ili javni. Jedan od najčešće korištenih je službeni repositorij firme koja
+stoji iza Docker-a - Docker, Inc, a koji se nalazi na Web stranici \textit{https://hub.docker.com}.
 
-Kako bi se Docker slika pokrenula, potrebno je imati pokrenut Docker servis (~\textit{engl.
-daemon}) te imati Docker komandni program. Korisnik zatim pokreće Docker komandni program koji zatim
+Kako bi se Docker slika pokrenula, potrebno je imati pokrenuti Docker servis (~\textit{engl.
+daemon}) te imati Docker komandni program. Korisnik zatim pokreće Docker komandni program koji potom
 komunicira s Docker servisom. Docker servis može biti pokrenut na lokalnom ili udaljenom računalu.
 
 \subsection{Docker komandni program}
@@ -729,18 +736,18 @@ ENTRYPOINT ["java", "-jar", "/usr/share/jenkins/jenkins.war"]
 \end{lstlisting}
 
 U danom primjeru korištene su četiri naredbe. Naredbna \texttt{FROM} definira Docker sliku na kojoj
-će se nova slika temeljiti. Na primjeru, temelji se na \textit{openjdk} slici pod oznakom
+će se nova slika temeljiti. Na primjeru ona se temelji na \textit{openjdk} slici pod oznakom
 \textit{8-jdk-alpine}. Naredba \texttt{RUN} pokreće program koji je definiran iza te naredbne. U
-danom primjeru, pokrenuta je komanda \texttt{addgroup} koja stvara Jenkins groupu, komada
+danom primjeru pokrenuta je komanda \texttt{addgroup} koja stvara Jenkins groupu, naredba
 \texttt{adduser} koja stvara Jenkins korisnika te \texttt{curl} koja dohvaća Jenkins alat s
 udaljenog računala.  Naredba \texttt{USER} definira pod kojim korisnikom se pokreće Docker
-kontejner. U danom primjeru, to je korisnik "jenkins". Zadnja korištena naredba \texttt{ENTRYPOINT}
-koja definira koji će se program pokrenuti unutar Docker kontejnera, a u danom primjer je
-\texttt{java -jar /usr/share/jenkins/jenkins.war}.
+kontejner. U danom primjeru riječ je o  korisniku \textit{jenkins}. Zadnja korištena naredba
+\texttt{ENTRYPOINT} definira koji će se program pokrenuti unutar Docker kontejnera, a u danom
+primjer je \texttt{java -jar /usr/share/jenkins/jenkins.war}.
 
 Nakon što je Docker slika izgrađena, korisnik može pokrenuti Docker kontejner koristeći
 novoizgrađenu sliku pomoću naredbe \texttt{docker~run}. Prilikom pokretanja takve naredbe, korisnik
-može podesiti mrežne postakve, montirati direktorije, ograničiti procesorske, diskovne i memorijske
+može podesiti mrežne postavke, montirati direktorije, ograničiti procesorske, diskovne i memorijske
 resurse, izmjeniti sigurnosne postavke te mnoge druge parametre.
 
 Jedan od najčešće korištenih parametera za mrežne aplikacije jeste parametar \texttt{-p}. Prilikom
@@ -750,49 +757,46 @@ da objavi mrežni port unutar kontejnera na glavnom računalu. Na primjer, param
 8080:80} preusmjerava mrežne zahtjeve porta 8080 na glavnom računalu prema mrežnom portu 80 unutar
 Docker kontejnera. Promjena mrežnog načina rada moguća je preko parametra \texttt{-{}-network}.
 
-Svi podaci koji su spremljeni unutar kontejnera su trajno obrisani pri brisanju istoga. Montiranje
+Svi podacti koji su spremljeni unutar kontejnera su trajno obrisani pri brisanju istoga. Montiranje
 direktorija koristi se ukoliko aplikacija sprema bitne podatke na tvrdi disk te nije dopušteno
 brisanje. Svi zapisi na montirani direktorij spremaju se na tvrdi disk glavnog računala, a Docker
 kontejner ima puni pristup njima. Na primjer, parametar \texttt{-v /glavno/racunalo:/data} montira
 direktorij glavnog računala pod nazivom \texttt{/glavno/racunalo} na direktorij Docker kontejnera
 pod nazivom \texttt{/data}. Kada Docker kontejner napravi izmjenu unutar \texttt{/data} direktorija,
-takva izmjena biti će automatski dostupna unutar glavnom računala pod direktorijom
+takva izmjena bit će automatski dostupna unutar glavnog računala pod direktorijem
 \texttt{/glavno/racunalo}.
 
-Zaustavljanje pokrenutog Docker kontejnera izvršava se pomoću naredbe \texttt{docker~stop} koja
+Zaustavljanje pokrenutog Docker kontejnera izvršava se pomoću naredbe \texttt{docker~stop} koji
 prihvaća listu Docker kontejnera koje se želi ugasiti. Docker servis prvo šalje \texttt{SIGTERM}
 signal aplikaciji. Ukoliko aplikacija nije zaustavljane unutar perioda milosti (\textit{engl. grace
 period}), tada Docker šalje \texttt{SIGKILL} signal.
 
 Zaustavljeni Docker kontejner može se ponovno pokrenuti naredbom \texttt{docker~start}. Naredbom
-\texttt{docker~rm} briše se kontejner zajedno sa svim podacima spremljenim unutar kontejnera.
+\texttt{docker~rm} briše se kontejner zajedno sa svim podatcima spremljenima unutar kontejnera.
 
 \subsection{Docker servis}
-Logika i algoritmi za izgradnju slika, pokretanje kontejnera se nalaze unutar Docker servis. Docker
-komandna linija omogućava korisniku jednostavnu komunikaciju s Docker servisom. Komunikacija između
-komandne linije i servisa odvija se preko RESTful API koji je dokumentiran i otvoren. Docker također
-podržava SDK (~\textit{engl. Software Development Kit}) za Go i Python programski jezik. U ovom radu
-korišten je Go SDK.
+Docker servis sadrži algoritame za izgradnju slika, pokretanje kontejnera i njihovo upravljanje.
+Docker komandna linija omogućava korisniku jednostavnu komunikaciju s Docker servisom, koja se
+odvija preko RESTful API koji je dokumentiran i otvoren. Docker također podržava SDK (\textit{engl.
+Software Development Kit}) za Go i Python programski jezik.
 
-Kontejneri po početnoj vrijednosti pružaju potpunu izolaciju. Na primjer, kontejner ne može
-pristupiti mreži (lokalnoj i internet), pristupiti tvrdom disku. Docker servis pojednostavljuje
-konfiguraciju izolacije pojedinačnih kontejnera koje se mogu svrstati u tri grupe:
+Postoje tri grupe izolacije pristupa pojedinih Docker kontejnera:
+
 \begin{itemize}
         \item podatkovni pristup
         \item mrežni pristup
         \item resursni pristup
 \end{itemize}
 
-Aplikacije koje spremaju podatke, kao što su baze podataka, moraju trajno spremiti dokumente na
-tvrdi disk. Ukoliko je Docker kontejner s takvom aplikacijom pokrenut bez podatkovnog pristupa, svi
-dokumenti spremaju se unutar Docker kontejnera sloja. Docker slojevi spremljeni su na tvrdi disk,
-a njihov format može korisnik izabrati. Neke od opcija su \texttt{aufs}, \texttt{devicemapper},
-\texttt{overlay2}, \texttt{zfs}.
-No, ukoliko korisnik želi promjeniti Docker sliku zbog nadogradnje ili promjene postavke potrebno je
-pokrenuti novi kontejner. Prebacivanje podataka s jednog kontejnera na drugi nije jednostavno. Stoga
-je preporuka korištenje Docker volumena (\textit{Docker Volume}). Docker volumen može se montirati
-na bilo koji direktorij. Na slici~\ref{fig:02docker_volume} prikazana je montaža na \texttt{/data}
-direktorij.
+Aplikacije koje spremaju podatke, poput baze podataka, moraju trajno spremiti dokumente na tvrdi
+disk. Ukoliko je Docker kontejner s takvom aplikacijom pokrenut bez podatkovnog pristupa, svi
+dokumenti spremaju se unutar radnog sloja Docker kontejnera. Docker slojevi spremljeni su na tvrdi
+disk, a njihov format može izabrati sam korisnik. Neke od opcija su \texttt{aufs},
+\texttt{devicemapper}, \texttt{overlay2}, \texttt{zfs}. No, ukoliko korisnik želi promjeniti Docker
+sliku zbog nadogradnje ili promjene postavke, potrebno je pokrenuti novi kontejner. Prebacivanje
+podataka s jednog kontejnera na drugi nije trivijalno, stoga je preporuka korištenje Docker volumena
+(\textit{engl. Docker Volume}). Docker volumen može se montirati na bilo koji direktorij, a na
+slici~\ref{fig:02docker_volume} prikazana je montaža na \texttt{/data} direktorij.
 
 \begin{figure}[h]
     \centering
@@ -804,24 +808,24 @@ direktorij.
 Postoje dvije vrste volumena: volumen vezne montaže (\textit{engl. Bind mount volume}) i Docker
 upravljani volumen (\textit{engl. Docker-managed volume}). Oba tipa volumena zahtjevaju montažni
 direktorij (\textit{engl.~mount point}) unutar Docker kontejnera, no razlika je u tome gdje se
-podaci spremaju. Volumen vezne montaže je vrsta volumena koja je direktno povezana s direktorijem na
-glavnom računalu. Takvi volumeni korisni su ako glavno računalo mora imati direktan pristup
-podacima. Na primjer, ukoliko korisnik koristi Docker kontejner za pokretanje web poslužitelja i
-želi biti u mogućnosti izmjeniti HTML datoteke. Montaža se odvija prilikom pokretanja Docker
-kontejnera s parametrom \texttt{-v /glavno/racunalo:/kontejner}. Za razliku od volumena vezne
-montaže, Docker upravljani volumeni su stvoreni i upravljani preko Docker servisa. Također se
-koristi paramtar \texttt{-v}, no za razliku od vezne montaže zadaje se samo lokacija na kontejneru.
-Na primjer, za naredbeni parametar \texttt{-v /direktorij} Docker će stvoriti volumen te će ga
-montirati na kontejner unutar \texttt{/direktorij}. Docker volumeni mogu se monitrati samo za
-čitanje, te isti mogu biti montirani na više Docker kontejnera u istom trenutku.
+podatci spremaju. Volumen vezne montaže je vrsta volumena koja je direktno povezana s direktorijem
+na glavnom računalu. Takvi volumeni korisni su ako glavno računalo mora imati direktan pristup
+podactima, u slučaju ako korisnik koristi Docker kontejner za pokretanje web poslužitelja i želi
+biti u mogućnosti izmjeniti HTML datoteke. Montaža se odvija prilikom pokretanja Docker kontejnera s
+parametrom \texttt{-v /glavno/racunalo:/kontejner}. Za razliku od volumena vezne montaže, Docker
+upravljani volumeni su stvoreni i upravljani preko Docker servisa. Također se koristi paramtar
+\texttt{-v}, no, za razliku od vezne montaže, zadaje se samo lokacija na kontejneru. Na primjer, za
+naredbeni parametar \texttt{-v /direktorij} Docker će stvoriti volumen te će ga montirati na
+kontejner unutar \texttt{/direktorij}. Docker volumeni mogu se monitrati samo za čitanje, te isti
+mogu biti montirani na više Docker kontejnera u istom trenutku.
 
-Aplikacije koje imaju potrebnu za mrežnim pristupom, kao što su web servisi, servisi elektroničke
-pošte mogu se pokrenuti unutar Docker kontejnera. Najčešće se koristi virtualna mreža po
+Aplikacije koje imaju potrebu za mrežnim pristupom, poput web servisa ili servisa elektroničke
+pošte, mogu se pokrenuti unutar Docker kontejnera. Najčešće se koristi virtualna mreža po
 kontejneru~(\textit{engl.~single-host virtual network}), prikazana na
-slici~\ref{fig:02docker_networking}. To omogućuje pojedinom kontejneru pravo
-pristupa na određene mrežne portove. Docker omogućuje i povezivanje više Docker kontejnera u
-virtualnoj mreži (\textit{multi-host network}) kod koje Docker kontejneri mogu slobodno komunicirati
-međusobno kao u lokalnoj mreži.
+slici~\ref{fig:02docker_networking}. To omogućava pojedinom kontejneru pravo pristupa na određene
+mrežne portove. Docker omogućava i povezivanje više Docker kontejnera u virtualnoj mreži
+(\textit{multi-host network}) kod koje Docker kontejneri mogu slobodno međusobno komunicirati kao u
+lokalnoj mreži.
 
 \begin{figure}[h]
     \centering
@@ -844,12 +848,12 @@ Docker kontejneri imaju četiri vrste mrežne izolacije:
 Docker omogućava ograničavanje pristupa resursima kao što su radna memorija, procesor, vanjski
 uređaji. Prilikom pokretanja Docker kontejnera korisnik može postaviti parametar \texttt{-m} koji
 ograničava količinu radne memorije. Na primjer, \texttt{-m 1g} ograničava radnu memoriju na 1 GB za
-taj kontejner. Bitno je naglasiti da taj parametar ne rezervira memoriju i memorija nije
+taj kontejner. Bitno je naglasiti da taj parametar ne rezervira memoriju te memorija nije
 garantirana.  Ograničenje pristupa procesoru postiže se parametrom \texttt{-{}-cpu-shares} i
 parametrom \texttt{-{}-cpuset-cpus}.  Parametar \texttt{-{}-cpuset-cpus} prihvaća listu CPU jezgara
 koje kontejner može koristiti. Češće korišten parametar \texttt{-{}-cpu-shares} omogućava korisniku
 da dodjeli relativnu količinu CPU resursa kontejneru.  Na primjer, ukoliko su pokrenuta dva
-kontejnera: jedan s \texttt{-{}-cpu-shares 512}, a drugi s \texttt{-{}-cpu-shares 1024} tada će
+kontejnera; jedan s \texttt{-{}-cpu-shares 512}, a drugi s \texttt{-{}-cpu-shares 1024}, tada će
 drugi kontejner dobiti dva CPU ciklusa za svaki CPU ciklus prvog kontejnera. Takva relacija može se
 opisati matematičkom jednadžbom~\ref{eq:02docker_cpu}.
 
@@ -866,14 +870,14 @@ gdje je:
 \end{itemize}
 
 \section{Nginx}
-Nginx je web poslužitelj otvorenog koda napisan u C programskom kodu koji se često koristi kao
-balansiranje opterećenja (\textit{engl. Load Balancer}) i obrnuti posrednik (\textit{engl. reverse
-proxy}). Nastao je s ciljem da ima bolje performanse nego Apache web poslužitelj. Prema analizi iz
-2017. godine, Nginx i dalje ima bolje performanse nego Apache~\citep{nguyen2017comparative}.
-Firma Netcraft, koja se bavi istraživanjem web stranica i servisa, obavlja istraživanje svakih
-mjesec dana. U veljači 2018. godine svaka četvrta internet stranica bila je posluživanja preko Nginx
-poslužitelja~\citep{Netcraft2018}. Udio pojedinih web servera prikazan je
-slikom~\ref{fig:02nginx_ratio}.
+Nginx je web poslužitelj otvorenog koda napisan 2004. godine u C programskom kodu koji se često
+koristi kao balansiranje opterećenja (\textit{engl. Load Balancer}) i obrnuti posrednik
+(\textit{engl. reverse proxy}). Nastao je kao zamjena za Apache web poslužitelj s boljim
+performansama,a prema analizi iz 2017. godine, Nginx i dalje ima bolje
+performanse~\citep{nguyen2017comparative}. Firma Netcraft koja se bavi istraživanjem web stranica
+i servisa, obavlja istraživanje svakih mjesec dana. U veljači 2018. godine svaka četvrta internet
+stranica bila je posluživana preko Nginx poslužitelja~\citep{Netcraft2018}. Udio pojedinih web
+servera prikazan je slikom~\ref{fig:02nginx_ratio}.
 
 \begin{figure}[h]
     \centering
@@ -883,24 +887,24 @@ slikom~\ref{fig:02nginx_ratio}.
 \end{figure}
 
 Nginx se sastoji od glavnog procesa koji raspodjeljuje posao radnicima. Radnik je proces koji prima
-naredbe od glavnog procesa te je baziran na asinkorniziranom principu~\citep{reese2008nginx} te se
-oslanja na Linux sistemske pozive \texttt{epoll/select/poll}. Stoga, radnik poslužuje više zahtjeva
+naredbe od glavnog procesa i baziran je na asinkorniziranom principu~\citep{reese2008nginx} te se
+oslanja na Linux sistemske pozive \texttt{epoll/select/poll}. Stoga radnik poslužuje više zahtjeva
 odjednom s izuzetno malo dodatnih resursa. Zbog toga se Nginx često koristi kao balanser
 opterećenja.
 
-Balansiranje opterećenja je potreban ukoliko jedan poslužitelj aplikacije nema dovoljno resursa kako
-bi poslužio sve klijente~\citep{soni2016load}. Nginx podržava pet algoritama balansiranja te je na
-korisniku da utvrdi koji je najbolji za aplikaciju. Prilikom korištenja balancera opterećenja, Nginx
-služi kao obrnuti posrednik. Klijenti se spajaju na Nginx koji zatim odlučuje, ovisno o definiranim
-pravilima, gdje će proslijediti takav zahtjev. Nginx ima mogućnost dodati i uređivati određene
-informacije na takav zahjev. Nakon primitka odgovora, Nginx također ima mogućost promjene
-informacija. Takav obrađeni odgovor se zatim šalje klijentu.
+Balansiranje opterećenja je potrebno ukoliko jedan poslužitelj aplikacije nema dovoljno resursa kako
+bi poslužio sve klijente~\citep{soni2016load}. Nginx podržava tri algoritama balansiranja, a na
+samom korisniku je da utvrdi koji je najbolji za aplikaciju. Prilikom korištenja balancera
+opterećenja, Nginx služi kao obrnuti posrednik; klijenti se spajaju na Nginx koji zatim odlučuje,
+ovisno o definiranim pravilima, gdje će proslijediti takav zahtjev. Nginx ima mogućnost dodati i
+uređivati određene informacije na takav zahjev. Nakon primitka odgovora, Nginx također ima mogućost
+promjene informacija. Takav se obrađeni odgovor zatim šalje klijentu.
 
 \subsection{Nginx konfiguracija}
-Pri pokretanju Nginx poslužitelja potrebno je zadati konfiguracijsku datoteku. Konfiguracijska
-datoteka sadrži informacije o mrežnim protokolima i mrežnim portovima. Ukoliko se Nginx koristi kao
-balanser opterećenja ili obrnuti posrednik, korisnik tada mora definirati gdje će se zahtjevi
-proslijediti. Primjer minimalne Nginx konfiguracije prikazan je kodom~\ref{02nginxconfig}
+Pri pokretanju Nginx poslužitelja potrebno je zadati konfiguracijsku datoteku koja sadrži
+informacije o mrežnim protokolima i mrežnim portovima. Ukoliko se Nginx koristi kao balanser
+opterećenja ili obrnuti posrednik, korisnik mora definirati gdje će se zahtjevi proslijediti.
+Primjer minimalne Nginx konfiguracije prikazan je kodom~\ref{02nginxconfig}
 
 \lstset{caption={Nginx konfiguracija}, label=02nginxconfig}
 \begin{lstlisting}[float=h]
@@ -922,35 +926,37 @@ http {
 }
 \end{lstlisting}
 
-Parametar \texttt{worker\_process} je broj radnih procesa kojih će Nginx poslužitelj pokrenuti.
+Parametar \texttt{worker\_process} je broj radnih procesa koje će Nginx poslužitelj pokrenuti.
 Svaki proces izvršava se samo na jednoj procesorskoj jezgri pa se preporuča vrijednost jednakoj
 broju dostupnih procesorskij jezgri. Blok \texttt{events} definira kako će se obraditi korisnički
-zahtjevi.  Unutar toga bloka, \texttt{worker\_connections} definira maksimalni broj paralelnih
+zahtjevi.  Unutar toga bloka, \texttt{worker\_connections} definira maksimalan broj paralelnih
 zahtjeva po radniku.
 
 Unutar \texttt{http} bloka nalazi se \texttt{server} blok koji naređuje Nginx da prihvaća zahtjeve
-na određenom mrežnom portu. U danom primjeru, to je port 80. \texttt{server\_name} je naziv domene
+na određenom mrežnom portu. U danom primjeru to je port 80. \texttt{server\_name} je naziv domene
 za koju će zahtjev biti obrađen. Domena je dostupna preko \texttt{HTTP} zaglavlja naziva
-\texttt{Host}, definiranog u RFC 2616~\citep{fielding1999hypertext}. Nadalje, \texttt{location} blok
-definira kako će se svi zahtjevi obraditi. Pomoću naredbe \texttt{proxy\_pass}, moguće je
-preusmjeriti zahjev na proizvoljni poslužitelj. Na primjeru danom kodom~\ref{02nginxconfig}, svi
-\texttt{HTTP} zahtjevi prosljeđeni su na \texttt{www.ferit.unios.hr} server.
+\texttt{Host} definiranog standardom \textit{RFC 2616}~\citep{fielding1999hypertext}. Nadalje,
+\texttt{location} blok definira kako će se svi zahtjevi obraditi. Pomoću naredbe
+\texttt{proxy\_pass} moguće je preusmjeriti zahjev na proizvoljni poslužitelj. Na primjeru danom
+kodom~\ref{02nginxconfig}, svi \texttt{HTTP} zahtjevi prosljeđeni su na \texttt{www.ferit.unios.hr}
+server.
 
-Nginx proces učitava konfiguracijsku datoteku prilikom pokretanja. Prilikom izmjene konfiguracijske
-datoteke potrebno je ponovno učitati konfiguracijsku datoteku. To se može pokretanjem nginx procesa
-s parametrom \texttt{-s reload}, ponovnim pokretanjem servisa pomoću \texttt{systemd reload nginx}
-ili slanjem Unix signala \texttt{SIGHUP}. Novu konfiguraciju moguće je učitati pomoću gašenja i
-ponovnog paljena Nginx servisa, no s takvom metodom aplikacije će nakratko biti nedostupna.
+Prilikom pokretanja Nginx proces učitava konfiguracijsku datoteku. Ukoliko dođe do izmjene
+konfiguracijske datoteke potrebno je ponovno učitati konfiguracijsku datoteku. To se može izvršiti
+pokretanjem nginx procesa s parametrom \texttt{-s reload}, ponovnim pokretanjem servisa pomoću
+\texttt{systemd reload nginx} ili slanjem Unix signala \texttt{SIGHUP}. Novu konfiguraciju moguće je
+učitati pomoću gašenja i ponovnog paljena Nginx servisa, no primjenom takve metode aplikacije će
+nakratko biti nedostupna.
 
 \section{Go programski jezik}
-Go je programski jezik otvorenog koda razvijen od firme Google. Projekt je nastao 2007. godine, a
-prva verzija javno je objavljena 2009. godine. Go jezik inspiriran je C programskim jezikom te manje
-poznatim Alef i Oberon-2 jezicima~\citep{donovan2015go}.
+Go je programski jezik otvorenog koda razvijen od strane firme Google. Projekt je nastao 2007.
+godine, dok je prva verzija javno objavljena 2009. godine. Go jezik inspiriran je C programskim
+jezikom te manje poznatim Alef i Oberon-2 jezicima~\citep{donovan2015go}.
 
 Od C programskog jezika Go je naslijedio sintaksu, način kontrole toka programa, osnovne tipove
 podataka, pokazivače te brzo izvođenje programa i neovisnost o trenutnom operativnom sustavu.
 Od Oberon-2 naslijeđena je sintaksa za programske pakete, uključivanje istih te deklaraciju metoda
-i funkcija. Od jezika Alef naslijeđeni su kanali kao način komunikacije između procesa bez potrebe
+i funkcija. Od jezika Alef naslijeđeni su kanali kao način komunikacije između procesa, bez potrebe
 za dijeljenom memorijom.
 
 Primjer jednostavne \textit{Hello, World} aplikacije dan je kodom~\ref{02goexample}.
@@ -975,17 +981,18 @@ biblioteke ili moduli. Go paket se sastoji od jednog ili više Go izvornih datot
 direktorija. U danom primjeru, naziv paketa je \texttt{main}.
 
 Go standardna biblioteka sadrži preko 100 paketa za uobičajne zadaće kao što su ulazi/izlazi,
-manipuliranje teksta, sortiranje, kriptografke funkcije. Paket \texttt{fmt} korišten u primjeru
-sadrži funkcije za obradu ulaza te ispis formatiranog izlaza. Funkcija \texttt{Println} ispisuje
-jednu ili više vrijednosti odvojenih zarezom na standardni izlaz s novim rednom na kraju ispisa.
+manipuliranje teksta, sortiranje, kriptografske funkcije, itd. Paket \texttt{fmt} korišten u
+primjeru sadrži funkcije za obradu ulaza te ispis formatiranog izlaza. Funkcija \texttt{Println}
+ispisuje jednu ili više vrijednosti odvojenih zarezom na standardni izlaz s novim redom na kraju
+ispisa.
 
 Go prevoditelj je strog oko pravila pisanja izvorne datoteke. Program \texttt{gofmt} koristi se za
 preoblikovanje izvorne datoteke. Na primjer, ukoliko je korišten razmak umjesto tabulatora,
 \texttt{gofmt} će zamjeniti razmake sa tabulatorom.
 
 \subsection{Go rutine i kanali}
-Često prilikom izgrade aplikacija, a pogotovo mrežne, potrebno obrađivati više zahtjeva u isto
-vrijeme. Go riješava taj problem s Go rutinama. Go rutina je slična dretvama operacijskog sustava,
+Često je prilikom izgrade aplikacija, pogotovo mrežnih, potrebno obrađivati više zahtjeva u isto
+vrijeme. Go rješava taj problem s Go rutinama. Go rutina je slična dretvama operacijskog sustava,
 no za razliku od njih koristi manje resursa. Moguće je pokrenuti na tisuće Go rutina bez usporavanja
 aplikacije. Pomoću ključne riječi \texttt{go} pokreće se funkcija u posebnoj Go rutini, kao što je
 prikazano na primjeru koda~\ref{02goroutine}.
@@ -1016,21 +1023,21 @@ Pozdrav iz Go rutine
 */
 \end{lstlisting}
 
-Na danom primjeru, pokrenute su dvije Go rutine. Prva Go rutina je glavni program, a druga je
+Na danom primjeru pokrenute su dvije Go rutine. Prva Go rutina je glavni program, a druga je
 pokrenuta eksplicitno s linijom \texttt{go pozdrav("iz Go rutine")}. Kao što je napisano unutar
-koda, prva linija koja će biti ispisana je "Pozdrav iz glavne rutine". Prilikom korištenja ključne
+koda, prva linija koja će biti ispisana je "Pozdrav iz glavne funkcije". Prilikom korištenja ključne
 riječi \texttt{go} rutina se stavlja u registar. Izvršavanje započinje tek kada je jedna od
 procesorskih jezgra slobodna. Bez linije \texttt{time.Sleep} funkcija \texttt{main} bi završila
 prije nego što bi se izvršila eksplicitna go rutina, a samim time i program te poruka "Pozdrav iz Go
 rutine" ne bi bio ispisana.
 
-Kanali omogućuju komunikaciju i sinkronizaciju između Go rutina. Podaci se mogu slati i primati
+Kanali omogućuju komunikaciju i sinkronizaciju između Go rutina. Podatci se mogu slati i primati
 preko kanala. Ključna riječ \texttt{chan} koristi se za stvaranje kanala, a potrebno je pri tome i
 odredit tip podatka. Postoje dvije vrste kanala: kanali bez memorije (\textit{unbuffered channels})
 i kanali s memorijom (\textit{engl.~buffered channels}). Kanali bez memorije su kanali koji
 blokiraju program sve dok neka Go rutina ne pročita takvu poruku. S druge strane, kanali s memorijom
-dopuštaju nastavk programa nakon pisanja u kanal, pod uvjetom da kanal ima dovoljno memorije.
-Primjer korištenja kanala i Go rutine prikazan i opisan je kodom~\ref{02gochan}.
+dopuštaju nastavak programa nakon zapisa u kanal, pod uvjetom da kanal ima dovoljno memorije.
+Primjer korištenja kanala i Go rutine prikazan je kodom~\ref{02gochan}.
 
 \lstset{caption={Go kanali}, label=02gochan}
 \begin{lstlisting}[float=h]
@@ -1057,24 +1064,26 @@ bok
 \end{lstlisting}
 
 
+% TODO opis
+
 \section{Cypress}
 Cypress je alat za integracijsko i \textit{end-to-end} testiranje web stranica i aplikacija. Za
-razliku od sličnih alata, kao što je Selenium, pokretanje Cypressa je vrlo jednostavno, ima potpuni
-pristup pregledniku koji vrši testiranje te pojednostavljeno programsko sučelje~\citep{Cypress}.
+razliku od sličnih alata kao što je Selenium, pokretanje Cypressa je vrlo jednostavno, ima potpuni
+pristup pregledniku koji vrši testiranje te sadrži pojednostavljeno programsko
+sučelje~\citep{Cypress}.
 
-End-to-end testiranje web stranica služi kao simuliranje stvarnih korisnika. Na primjer, ukoliko
-jedan od elemenata nije prikazan unutar internet preglednika jedino \textit{end-to-end} testiranje
-može otkriti takvu grešku. No, \textit{end-to-end} testiranje je vremenski zahtjevno za pisanje, a
-pogotovo za održavanje. Bilo kakva vizualna promjena na aplikaciji zahtjeva promjenu
-\textit{end-to-end} testova, a promjena u funkcionalnosti zahtjeva potpuno nove testove. Stoga je
-preporuka Googleovih inženjera da je 70\% testova jedinice, 20\% integracijski testova, a svega 10\%
-\textit{end-to-end} testovi~\citep{google-2015}.
+\textit{End-to-end} testiranje web stranica služi kao simuliranje stvarnih korisnika. Primjerice,
+ukoliko jedan od elemenata nije prikazan unutar internet preglednika, jedino \textit{end-to-end}
+testiranje može otkriti takvu grešku. No, \textit{end-to-end} testiranje je vremenski zahtjevno za
+pisanje, a pogotovo za održavanje. Bilo kakva vizualna promjena na aplikaciji zahtjeva promjenu
+\textit{end-to-end} testova, a promjena u funkcionalnosti zahtjeva potpuno nove testove. Preporuka
+je Googleovih inženjera 70\% testova jedinice, 20\% integracijskih testova, a svega 10\%
+\textit{end-to-end} testova~\citep{google-2015}.
 
 Otvaranje Cypress alata na lokalnom računalu odvija se preko naredbe \texttt{cypress~start} koja
-otvara program za pokretanje testova, kao što je prikazanom slikom~\ref{fig:02cypress}. Preko
+otvara program za pokretanje testova, kao što je prikazano slikom~\ref{fig:02cypress}. Preko
 aplikacije korisnik može pokrenuti testove te vidjeti rezultate. Cypress alat prati izmjene
-konfiguracije na
-tvrdom disku te ih automatski učitava ako dođe do izmjene.
+konfiguracija na tvrdom disku te ih automatski učitava ako dođe do izmjene.
 
 \begin{figure}[h]
     \centering
@@ -1083,10 +1092,10 @@ tvrdom disku te ih automatski učitava ako dođe do izmjene.
     \label{fig:02cypress}
 \end{figure}
 
-Cypress testovi se mogu pokrenuti i preko komandne linije što je poželjno prilikom pokretanja na
+Cypress testovi se mogu pokrenuti i preko komandne linije, što je poželjno prilikom pokretanja na
 Jenkins poslužitelju. Pokretanje testa izvršava se naredbom \texttt{cypress~run}. Cypress zatim
-pokreće preglednik u takozvanom \textit{headless} načinu rada, to jest bez grafičkog sučelja. Nakon
-završetka rada, Cypress izlazni rezultat sadrži informaciju o uspješnosti testa. Cypress može
+pokreće preglednik u takozvanom \textit{headless} načinu rada, odnosno bez grafičkog sučelja. Nakon
+završetka rada Cypress izlazni rezultat sadrži informaciju o uspješnosti testa. Cypress može
 spremiti sve rezultate u junit XML formatu. Primjer uspješnog rezultata dan je
 kodom~\ref{02cypressxml}.
 
