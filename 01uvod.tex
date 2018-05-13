@@ -10,26 +10,36 @@ Korištenjem kontinuiranog razvoja aplikacija te brzog razvoja (\textit{engl. ag
 moguće je objavljivati nadogradnje više puta dnevno~\citep{abrahamsson2017agile} bez potrebe za
 inženjerom za objavu aplikacija (\textit{engl. release engineer}). Takav sustav mora biti u
 mogućnosti otkriti promjene na sustavu za reviziju koda, pokrenuti testove jedinice, kompajlirati
-aplikaciju, provesti dodatna testiranja te poslužiti takvu aplikaciju krajnjim korisnicima.
+aplikaciju, provesti dodatna testiranja te poslužiti takvu aplikaciju krajnjim korisnicima. Sustav
+mora biti i u mogućnost pravovremeno vratiti prethodnu verziju aplikacije.
+
+Kontinuirani razvoj aplikacije zahtjeva određeni proces i arhitekturu. Potreban je sustav za
+reviziju koda te standardiziran tijek rada, odnosno izmjene aplikacije. Bez standardiziranog tijeka,
+nije moguće u potpunosti automatizirati proces izgradnje nove verzije. Zatim, potreban je i alat za
+kontunuiranu integraciju koji pokreće određene zadatke nakon svake izmjene aplikacije. Isto tako,
+potreban je i sustav koji može pokrenuti novu verziju aplikacije ili je napraviti dostupnom, ovisno
+o tipu iste. U slučaju mrežne aplikacije, potrebno je prethodnu verziju aplikacije ukloniti nakon
+određenog vremena.
 
 Firma Facebook objavila je članak o korištenju kontinuiranog razvoja u kojem nepobitno dokazuju da
 brzina i kvaliteta koda ne opada s povećanjem broja inženjera razvojnih
 timova~\citep{rossi2016continuous}. Broj grešaka (\textit{engl. bugs}) u kodu linearno raste s
 brojem objavljivanja koda, kao što je i očekivano. Također, neovisno o broju inženjera, u prosjeku
 se pojavljuje jedna greška srednjeg prioriteta na oko 3000 pojedinačnih objava koda. Facebook tvrdi
-da je jedan od razloga kontinuirano testiranje.
+da je jedan od razloga upravo kontinuirani razvoj aplikacija koji sadrži komponentu testiranja.
 
 U drugom poglavlju opisana je korištena infrastruktura kontinuiranog razvoja aplikacija. Uspoređeni
 su tipovi sustava za reviziju koda te njihov povijesni razvoj. Prikazane su osnove korištenja i
 arhitektura izabranog sustava za reviziju koda -- Git. Zatim je opisan sustav za kontinuiranu
-integraciju te osnove alata Jenkins. U istom poglavlju opisan je Docker alat i uspoređen s
-virtualizacijom; Nginx web server, Go programski jezik te Cypress alat za integracijsko testiranje.
+integraciju te osnove alata Jenkins. U istom poglavlju opisan je Docker -- alat za upravljanje
+kontejnerima te je uspoređen s virtualizacijom; Nginx -- web server, Go -- programski jezik te
+Cypress -- alat za integracijsko testiranje.
 
 U trećem poglavlju opisan je proces i izrada jednostavne internet aplikacije u Go programskom jeziku
 zajedno s testovima jedinice i testovima funkcionalnosti. Opisana je izrada Jenkins posla koji
 pokreće testove i kompajliranje te izradu i spremanje Docker slike; program za
 menadžment Docker kontejnera koji je zadužen za pokretanje zadnje verzije aplikacije; korištenje
-Nginx programa zaduženog za posluživanje HTTP zahtjeva; proces objavljivanja nove verzije te proces
-vraćanja na prethodnu verziju.
+Nginx programa zaduženog za posluživanje HTTP zahtjeva; proces objavljivanja nove verzije aplikacije
+te proces vraćanja na prethodnu verziju.
 
-Četvrto poglavlje zaključuje rad.
+Četvrto poglavlje zaključuje rad te opisuje moguće daljnje nadrogradnje rada.

@@ -4,9 +4,12 @@ Postoji velik izbor aplikacija i servisa koji se mogu koristiti u tu svrhu.  Na 
 verzioniranje koda može se koristiti Git, Subversion, Mercurial, Microsoft TFS, a za kontinuiranu
 integraciju programskog koda Jenkins, Hudson, TeamCity.
 
-% TODO vise teksta?
+U ovom poglavlju opisani su različite vrste kontrole verzije te izabrani sustav Git; alat za
+kontinuiranu integraciju Jenkins; Docker alat za upravljanje kontejnerima te razlika između
+kontejnera i virtualizacije; Nginx web servis; Go programski jezik razvijen od strane Google te
+Cypress -- alat za \textit{end-to-end} testiranje.
 
-\section{Git - sustav kontrole verzija}
+\section{Git -- sustav kontrole verzija}
 Sustav kontrole verzija je sustav koji sprema promjene datoteka kroz vrijeme. Najčešće se koristi za
 pohranjivanje programskog koda, no takav sustav može se koristiti i za druge stvari kao što su
 pisanje knjige, dokumenata, dizajn i slično.
@@ -142,8 +145,7 @@ ili pohranili novu verziju.  Administratori u pravilu mogu ograničiti radnje po
 
         \begin{scope}[on background layer]
             \node [draw=black!50, fill=yellow!5, fit={(server) (sp1)}] (serverbox) {};
-        \end{scope}
-        \begin{scope}[on background layer]
+        \end{scope} \begin{scope}[on background layer]
             \node [draw=black!50, fill=white!50, fit={(db) (version1)}] (dbbox) {};
         \end{scope}
 
@@ -308,7 +310,7 @@ slučaju sukoba datoteka (\textit{engl.~conflict}), korisnik je obaviješten te 
 takav sukob i ponovno testirati aplikaciju.
 
 Korištenje Git uvelike je pojednostavljeno ukoliko se korisnik odluči koristiti servis kao što je
-GitHub, Gitlab ili Bitbucket. Takvi servisi omogućuju jednostavno kreiranje Git baze te operacije
+GitHub, Gitlab ili Bitbucket. Takvi servisi omogućuju jednostavno stvaranje Git baze te operacije
 spajanja \texttt{git-merge}. Također, većina integriranih sustava za razvoj (IDE,
 \textit{engl.~Integrated Development Environment}) podržava Git operacije, tako da korisnik ne mora
 koristiti komandnu liniju.
@@ -333,7 +335,7 @@ takva baza postala dostupna drugim računalima, potrebno je poslati bazu na Git 
 najpopularnijih servisa koji pruža Git poslužitelj kao uslugu je GitHub.  U travnju 2017. godine
 GitHub je objavio da je registrirano skoro 20 milijuna korisnika i 57 milijuna Git
 projekata~\citep{github2017}. Korisnik se more registrirati na github.com kako bi mogao koristiti
-usluge. Nakon uspješne registracije, Git projekt se može kreirati kao što je vidljivo na
+usluge. Nakon uspješne registracije, Git projekt se može kreirati kao što je prikazano na
 slici~\ref{fig:02hgreg}.
 
 \begin{figure}[h]
@@ -364,7 +366,7 @@ grane u bilo kojem trenutku.
 
 Git ima prednost nad drugim VSC sustavima jer su stvaranje i mijenjanje grana izuzetno brze
 operacije. Samim time, Git potiče na često korištenje grana. Nova grana stvara se operacijom
-\texttt{git-branch} te ima iste datoteke kao i grana prije nego što je operacija kreiranja grane
+\texttt{git-branch} te ima iste datoteke kao i grana prije nego što je operacija stvaranja grane
 bila pozvana. Operacija \texttt{git-checkout} koristi se za prebacivanje u drugu granu. Trenutna
 grana zapisana je u specijalnoj referenci koja se zove \textit{HEAD}. Na
 slici~\ref{fig:02gitexample} prikazan je Git projekt s dvije grane, \textit{master} i

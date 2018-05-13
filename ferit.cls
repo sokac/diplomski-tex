@@ -121,7 +121,7 @@
 
 \LoadClass[12pt, onecolumn]{report}
 
-\RequirePackage[a4paper, left=2.5cm, right=2cm, bottom=2cm, top=2cm]{geometry}
+\RequirePackage[a4paper, left=2.5cm, right=2cm, bottom=2.5cm, top=2cm]{geometry}
 
 % Postavljanje encodinga
 \if@encutf \RequirePackage[utf8]{inputenc}
