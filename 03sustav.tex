@@ -454,3 +454,30 @@ http {
     }
 }
 \end{lstlisting}
+
+\section{Proces kontinuiranog razvoja aplikacije}
+Proces objave nove aplikacije započinje s izmjenama unutar Git repositorija. Jenkins periodički
+provjerava izmjene unutar \textit{master} grane Git repositorija te na svakoj izmjeni pokreće
+Jenkins posao zadužen za testiranje i objavu nove verzije aplikacije. Nakon što Jenkins objavi novu
+verziju, servis za menadžment ju dohvaća te pokreće algoritam za izmjenu verzija. Na slici
+\ref{fig:03workflow} prikazan je pojednostavljani proces.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{img/03/workflow.png}
+    \caption{Proces objave nove aplikacije}%
+    \label{fig:03workflow}
+\end{figure}
+
+Iz slike je vidljivo da inženjer komunicira isključivo s Git poslužiteljem. Takva komunikacija može
+biti pomoću Git komandne linije i naredbe \texttt{git-push} ili preko grafičkog sučelja programa za
+pregleda koda, kao što su \textit{Github Pull Request}, \textit{Gerrit Code Review} i
+\textit{Phabricator Differential}. Iako je sustav potpuno automatizitran potrebno je pratiti proces
+objave nove aplikacije. Ukoliko neki od testova nije bio uspješan, na inženjeru je da vrati
+aplikaciju u prethodno stanje ili ispravi grešku. Također, postoji mogućnost i da svi testovi budu
+uspješni, a da aplikacija ne radi ispravno.
+
+Iz slike je vidljivo i da krajnji korisnik komunicira isključivo s Nginx poslužiteljem koji
+komunicira isključivo s fibonacci aplikacijom. Korisnik neće biti u mogućnosti korisitit aplikaciju
+samo ako ili Nginx poslužitelj ili fibonacci aplikacija nije dostupna. Ispad bilo kojeg drugog
+sustava ili servisa ne utječe na dostupnost aplikacije, već samo na mogućnost objave nove verzije.
