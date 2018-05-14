@@ -30,6 +30,41 @@ func fibonacci(n uint64) uint64 {
     \label{fig:04redesign}
 \end{figure}
 
+Nakon što su napravljene izmjene unutar aplikacije, potrebno je spremiti izmjene unutar Git
+repositorija te poslati izmjene na servis za pregled koda. Primjer za spremanje izmjena i slanje na
+udaljeni Git poslužitelj pomoću komandne linije prikazan je kodom~\ref{04gitreview}.
+
+\lstset{caption={Spremanje i slanje izmjena na Git poslužitelj}, label=04gitreview}
+\begin{lstlisting}[float=h]
+# nova git grana pod nazivom optimizacija
+git checkout -b optimizacija
+
+# dodaj datoteku main.go koja sadrzi izmjene
+git add main.go
+
+# dodaj izmjenu
+git commit -m "Optimizacija fibonacci funkcije"
+
+# posalji izmjene na server i prati udaljenu granu
+git push -u origin optimizacija
+\end{lstlisting}
+
+Kada je kod pregledan i odobren tada se prebacuje u \textit{master} granu. Sustavi za reviziju koda
+u pravilu to automatski odrađuju nakon što je kod potvrđen za spajanje. Ručno prebacivanje prikazano
+je kodom~\ref{04gitmerge}.
+
+\lstset{caption={Spremanje i slanje izmjena na Git poslužitelj}, label=04gitmerge}
+\begin{lstlisting}[float=h]
+# prelazak u master git granu
+git checkout master
+
+# spajanje grane optimizacija u granu master
+git merge optimizacija
+
+# posalji izmjene na server, master grana
+git push origin master
+\end{lstlisting}
+
 Jenkins pokreće izgradnju nove aplikacije čim je nekakva izmjena dostupna na Git poslužitelju unutar
 glavne, \textit{master} grane. Ukoliko su svi testovi uspješni objavljuje se Docker slika. Zatim
 servis za menadžment dohvaća novu verziju te počinje posluživati korisnike s novom verzijom.
@@ -163,13 +198,17 @@ verzija aplikacije s greškom se više ne poslužuje korisnicima.
 \begin{lstlisting}[float=h]
 pipeline {
     agent any
-    stages { stage('Objava slike') { steps {
-        script {
-            docker.withRegistry('https://docker.io', 'dockerhub') {
-                def i = docker.image("sokac/fibonacci:${VERZIJA_NUMBER}")
-                i.push('latest')
+    stages {
+        stage('Objava slike') {
+            steps {
+                script {
+                    docker.withRegistry('https://docker.io', 'dockerhub') {
+                        def i = docker.image("sokac/fibonacci:${VERZIJA_NUMBER}")
+                        i.push('latest')
+                    }
+                }
             }
         }
-    } } }
+    }
 }
 \end{lstlisting}
