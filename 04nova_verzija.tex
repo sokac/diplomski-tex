@@ -1,7 +1,7 @@
 \section{Razvoj nove verzije fibonacci aplikacije}
 U drugoj verziji poboljšana je vremenska kompleksnost tako što je uklonjena rekurzija te dodana
 memoizacija. Nova vremenska kompleksnost je $O(N)$, dok je memorijska kompleksnost $O(1)$. Nova
-verzija prikazana je kodom~\ref{04fibv2}. U novoj je verziji također izmjenjen dizajn kao što je
+verzija prikazana je kodom~\ref{04fibv2}. U novoj je verziji također izmijenjen dizajn kao što je
 prikazano slikom~\ref{fig:04redesign}
 
 \lstset{caption={Fibonacci v2}, label=04fibv2}
@@ -57,7 +57,7 @@ aplikacije.
     \label{fig:04stresstest}
 \end{figure}
 
-\section{Tipični problemi s objavnom nove verzije aplikacije}
+\section{Tipični problemi s objavom nove verzije aplikacije}
 Bilo koja izmjena aplikacije može uzrokovati neočekivanu pogrešku, stoga svaka izmjena aplikacije
 predstavlja rizik. Osim logičkih grešaka unutar aplikacije, koje se mogu otkriti testovima jedinice
 i \textit{end-to-end} testovima, moguće se i greške koje se događaju samo prilikom objavljivanja
@@ -66,19 +66,19 @@ formatu koji nije kompatibilan s novom verzijom aplikacije. Vraćanje na prethod
 može dovesti i do dodatnih komplikacija ukoliko korisnik u trenutku ima novu verziju s novom bazom
 podataka.
 
-Tipični problemi s objavnom nove verzije aplikacija su:
+Tipični problemi s objavom nove verzije aplikacija su:
 \begin{itemize}
     \item nekompatibilnost privremene memorije (\textit{engl. cache})
     \item nekompatibilnost baze podataka
     \item nekompatibilnost programskog sučelja klijenta i poslužitelja
 \end{itemize}
 
-Nekompatibilist privremene memorije javlja se kada nova verzija aplikacije promjeni strukturu
+Nekompatibilnost privremene memorije javlja se kada nova verzija aplikacije promjeni strukturu
 privremene memorije te očita neočekivan podatak generiran iz prijašnje verzije aplikacije. Situacija
 se može dodatno zakomplicirati ako su u danom trenutku pokrenute dvije verzije. Kako bi se izbjegla
 takva situacija najčešće se preporuča novi ključ za privremenu memoriju ili progresivna izmjena
 podataka privremene memorije. Prilikom korištenjem novog ključa nova aplikacija piše u novu
-privremenu memoriju te ne ovisi o prethodnoj verziji. Ovako rješenje ima problem s hladnom
+privremenu memoriju te ne ovisi o prethodnoj verziji. Ovakvo rješenje ima problem s hladnom
 predmemorijom (\textit{engl. cold cache}) koje uzrokuje s povećanim vremenom odaziva. Druga opcija
 je progresivna izmjena podataka koja zahtjeva dodatni kod kako bi stari i novi unos bio kompatibilan
 s obje verzije aplikacije. Potrebne su barem dvije verzije i neko vrijeme kako bi se mogla ispustiti
@@ -86,13 +86,13 @@ podrška za prethodnu strukturu predmemorije.
 
 Na primjeru fibonacci aplikacije, zamislimo da koristimo sustav za memoriju, kao na primjer
 \textit{memcached}. U trenutnoj verziji aplikacija sprema vrijednost N-tog fibonaccijev broja pod
-ključem \textit{fibonnaci-N}. U trenutnoj verziji aplikacije odlučeno je da je prvi fibonaccijev
-broj nula, a drugi broj jedan. No u novoj verziji aplikacije odlučeno je korisitit originalnu
+ključem \textit{fibonacci-N}. U trenutnoj verziji aplikacije odlučeno je da je prvi fibonaccijev
+broj nula, a drugi broj jedan. No u novoj verziji aplikacije odlučeno je koristiti originalnu
 verziju algoritma, tako da su i prvi i drugi fibonaccijevi brojevi jednaki broju jedan. Ukoliko se
-rezultati memorije ne uklone ili spreme pod drugim ključem, tada će nova verzija fibonaccijeva
+rezultati memorije ne uklone ili spreme pod drugim ključem, tada će nova verzija fibonacci
 aplikacije i dalje vraćati stare rezultate.
 
-Nekompatibilist baze podataka je slična nekompatibilisti privremene memorije. No za razliku od
+Nekompatibilnost baze podataka je slična nekompatibilnosti privremene memorije. No za razliku od
 privremene memorije, nije moguće izabrati novi ključ jer u tom slučaju stari podaci neće biti
 dostupni korisniku. Inženjer može izabrati migraciju sa stankom aplikacije ili bez stanke. Migracija
 sa stankom aplikacije je u pravilu jednostavnija izvedba. No, takva stanka je negativno korisničko
@@ -100,18 +100,18 @@ iskustvo. Firme poput Google i Facebook uvijek koriste migracije bez stanke. Kak
 mogla napraviti bez stanke potrebno je nekoliko faza i verzija aplikacija. Često se takva migracija
 svodi na:
 \begin{itemize}
-    \item izmjene scheme baze podataka, ali takve izmjene da su kompatibilne sa prethodnom verzijom
+    \item izmjene sheme baze podataka, ali takve izmjene da su kompatibilne sa prethodnom verzijom
         aplikacije
-    \item izmjene aplikacije koja omogućava zapis u izmjenjenu bazu podataka bez da utjeće na
+    \item izmjene aplikacije koja omogućava zapis u izmijenjenu bazu podataka bez da utječe na
         prethodnu verziju aplikacije
-    \item prijepis povjesnih podataka u novu schemu (\textit{engl. backfill})
-    \item izmjene aplikacije tako da se ne zapisuju podaci u staru schemu baze podataka
-    \item izmjene scheme baze podataka gdje se stare vrijednosti uništavaju.
+    \item prijepis povijesnih podataka u novu shemu (\textit{engl. backfill})
+    \item izmjene aplikacije tako da se ne zapisuju podaci u staru shemu baze podataka
+    \item izmjene sheme baze podataka gdje se stare vrijednosti uništavaju.
 \end{itemize}
 
-Kod nekompatibilisti programskog sučelja klijenta i poslužitelja dolazi prilikom objave nove
+Kod nekompatibilnosti programskog sučelja klijenta i poslužitelja dolazi prilikom objave nove
 aplikacije i promjenom sučelja na poslužitelju, to jest aplikaciji. Slika \ref{fig:04request_flow}
-prikazuje pojednostavljani primjer korisničke interakcije s fibonacci aplikacijom prilikom objave
+prikazuje pojednostavljeni primjer korisničke interakcije s fibonacci aplikacijom prilikom objave
 nove verzije aplikacije.
 
 \begin{figure}[h]
@@ -129,13 +129,13 @@ uspjeti te će korisniku biti poslana greška. Jedini način da web aplikacija p
 da korisnik ručno osvježi (\textit{engl. refresh}) web stranicu, što je negativno korisničko
 iskustvo.
 
-Kako bi se to izbjeglo, potrebno je zadržati kompatibilost programskog sučelja trenutne i nove
+Kako bi se to izbjeglo, potrebno je zadržati kompatibilnost programskog sučelja trenutne i nove
 verzije aplikacije. Nakon određenog vremena se može očekivati da će korisnici imati novu klijentsku
-verziju aplikacije te se kompatibilost može maknuti. U praksi se zna i pitati korisnika za
-ovježavanjem stranice.
+verziju aplikacije te se kompatibilnost može maknuti. U praksi se zna i pitati korisnika za
+osvježavanje stranice.
 
 \section{Vraćanje na staru aplikaciju}
-Kao što je rečeno u prethodnom poglavju, svaka izmjena aplikacije može uzrokovati s neočekivanom
+Kao što je rečeno u prethodnom poglavlju, svaka izmjena aplikacije može uzrokovati s neočekivanom
 pogreškom. Korištenjem testova jedinica i \textit{end-to-end} testova povećana je vjerojatnost
 otkrivanja greške prilikom razvoja aplikacije. No, ukoliko novoobjavljena verzija aplikacije sadrži
 neku grešku, potreban je dobar sustav kako bi se takva pogreška mogla brzo otkloniti. Često je
