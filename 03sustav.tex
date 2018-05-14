@@ -83,6 +83,31 @@ servis zadužen za posluživanje HTTP zahtjeva. Pokretanje HTTP servisa dan je k
 
 \lstset{caption={HTTP servis}, label=03fibhttp}
 \begin{lstlisting}[float=h]
+func main() {
+	http.HandleFunc("/", homePageHandler)
+	http.HandleFunc("/api/fibonacci", fibonacciHandler)
+	log.Fatal(http.ListenAndServe(":8888", nil))
+}
+\end{lstlisting}
+
+Unutar $main$ funkcije stvorena su dva HTTP rukovoditelja~(\textit{engl.~handlers}). Prvi
+rukovoditelj obrađuje zahtjeve za početnu stranicu te, neovisno o bilo kojim argumentima, poslužuje
+statičnu datoteku koja se nalazi na lokaciji \texttt{static/index.html}. Funkcija rukovoditelja je
+prikazana kodom kodom~\ref{03fibhttp_static}.
+\lstset{caption={Rukovoditelj za statičku HTML datoteku}, label=03fibhttp_static}
+\begin{lstlisting}[float=h]
+func homePageHandler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "./static/index.html")
+}
+\end{lstlisting}
+
+Drugi rukovoditelj prikazan kodom~\ref{03fibhttp_fib_handler} obrađuje zahtjeve za stranicu
+\texttt{/api/fibonacci}. Preko GET parametra očekuje varijablu $n$ te ju pretvara u ne-negativni
+cijeli broj. Ukoliko program nije u mogućnosti to napraviti, vraća grešku korisniku. U protivnom
+poziva fibonacci funkciju s dobivenim brojem te vraća vrijednost korisniku u tekstualnom obliku.
+
+\lstset{caption={Rukovoditelj za izračun fibonaccijevog broja}, label=03fibhttp_fib_handler}
+\begin{lstlisting}[float=h]
 func fibonacciHandler(w http.ResponseWriter, r *http.Request) {
 	n, err := strconv.ParseUint(r.URL.Query().Get("n"), 10, 64)
 	if err != nil {
@@ -97,22 +122,7 @@ func fibonacciHandler(w http.ResponseWriter, r *http.Request) {
 func homePageHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "./static/index.html")
 }
-
-func main() {
-	http.HandleFunc("/", homePageHandler)
-	http.HandleFunc("/api/fibonacci", fibonacciHandler)
-	log.Fatal(http.ListenAndServe(":8888", nil))
-}
 \end{lstlisting}
-
-Unutar $main$ funkcije stvorena su dva HTTP rukovoditelja~(\textit{engl.~handlers}). Prvi
-rukovoditelj obrađuje zahtjeve za početnu stranicu te, neovisno o bilo kojim argumentima, poslužuje
-statičnu datoteku koja se nalazi na lokaciji \texttt{static/index.html}.
-
-Drugi rukovoditelj obrađuje zahtjeve za stranicu \texttt{/api/fibonacci}. Preko GET parametra
-očekuje varijablu $n$ te ju pretvara u ne-negativni cijeli broj. Ukoliko program nije u mogućnosti
-to napraviti, vraća grešku korisniku. U protivnom poziva fibonacci funkciju s dobivenim brojem te
-vraća vrijednost korisniku u tekstualnom obliku.
 
 \textit{End-to-end} testovi prikazani kodom~\ref{03fibe2e} sastoje se od dva testa. Prvi test je
 test u kojem se zadaje ispravan argument i zadaje izračun 11.~fibonaccijevog broja. Cypress alat
@@ -135,15 +145,12 @@ dostupni preko standardnog izlaza i izlaznog stanja.
 describe('Fibonacci test', function() {
     it("Ispravna forma", function() {
         cy.visit('/');
-
         cy.get('#number').type('11');
         cy.get('form').contains('Racunaj').click();
         cy.contains('89');
     });
-
     it("Neispravna forma", function() {
         cy.visit('/');
-
         cy.get('#number').type("-1");
         cy.get('form').contains('Racunaj').click();
         cy.contains('Parametar n mora biti prirodni broj.');
@@ -154,10 +161,24 @@ describe('Fibonacci test', function() {
 \section{Jenkins posao za izgradnju i objavu Docker slike}
 Za Jenkins posao koji izrađuje Docker sliku i objavljuje u Docker repositorij odabrana je Jenkins
 linija. Jenkins linija je isprogramirana i spremljena u datoteci~\texttt{Jenkinsfile} unutar
-fibonacci projekta. Jenkins linija se sastoji od šest faza: dohvaćanje koda preko Git projekta,
-pokretanje testova jedinica, izgradnja Docker slike, pokretanje \textit{end-to-end} testova,
-objava Docker slike u javni Docker repositorij te objava rezultata. Na
-slici~\ref{fig:03jenkins_pipeline} prikazana je Jenkins linija.
+fibonacci projekta, djelomično prikazana kodom~\ref{03jenkinsfile_main}. Jenkins linija se sastoji
+od šest faza: dohvaćanje koda preko Git projekta, pokretanje testova jedinica, izgradnja Docker
+slike, pokretanje \textit{end-to-end} testova, objava Docker slike u javni Docker repositorij te
+objava rezultata. Na slici~\ref{fig:03jenkins_pipeline} prikazana je Jenkins linija.
+
+\lstset{caption={Struktura \textit{Jenkinsfile}}, label=03jenkinsfile_main}
+\begin{lstlisting}[float=h]
+pipeline {
+    agent any
+    stages {
+        stage('Testovi jedinice') { /* implementacija */ }
+        stage('Izgradnja slike') { /* implementacija */ }
+        stage('Testiranje slike') { /* implementacija */ }
+        stage('Objava slike') { /* implementacija */ }
+    }
+    post { /* implementacija */ }
+}
+\end{lstlisting}
 
 \begin{figure}[h]
     \centering
@@ -173,25 +194,77 @@ U prvoj fazi Jenkins kopira Git projekt koji se poslužuje preko Github servisa.
 dostupan, stoga nije potrebno podesiti autorizaciju. Nakon što je Git projekt kopiran, Jenkins
 uspoređuje razliku između prijašnje i trenutnačne verzije te ih prikazuje korisniku.
 
-U drugoj fazi pokreću se testovi jedinice unutar Docker kontejnera. Fibonacci aplikacija sastoji se
-od jednog testa jedinice koji ispituje tri ulaza. Ukoliko dođe do greške, Jenkins linija se prekida.
-Pomoću ~\textit{junit} skripte Jenkins objavljuje rezultate testova, kao i vrijeme njihovog
-izvođenja.
+U drugoj fazi pokreću se testovi jedinice unutar Docker kontejnera, prikazano
+kodom~\ref{03:jenkinsfile_unittest}. Fibonacci aplikacija sastoji se od jednog testa jedinice koji
+ispituje tri ulaza. Ukoliko dođe do greške, Jenkins linija se prekida.  Pomoću ~\textit{junit}
+skripte Jenkins objavljuje rezultate testova, kao i vrijeme njihovog izvođenja.
 
-U trećoj fazi aplikacija se kompajlira i sprema unutar Docker slike. Druga i treća faza dijele istu
-baznu Docker sliku. Stoga inženjer može biti siguran da su sve biblioteke dostupne ukoliko su
-pokrivene testovima jedinice. Docker slika se označava s trenutnom verzijom izgradnje (\textit{engl.
-build number}) te se objavljuje na Docker repositorij. Kako bi se slika mogla objaviti, potrebno je
-podesiti Docker autorizaciju unutar Jenkins sustava.
+\lstset{caption={Testiranje jedinice unutar \textit{Jenkinsfile}}, label=03:jenkinsfile_unittest}
+\begin{lstlisting}[float=h]
+steps {
+    sh 'docker build -f fibonacci/Dockerfile.test -t go_test fibonacci'
+    sh 'docker run --rm go_test > tests.xml'
+}
+\end{lstlisting}
 
-U četvrtoj fazi pokreće se \textit{end-to-end} testiranje pomoću Cypress alata. Jenkins pokreće
-Docker kontejner koji pokreće zadnju verziju aplikacije izgrađenu u prethodnom koraku. Zatim u
-drugom Docker kontejernu pokreće Cypress alat, koji dalje pokreće testove koji komuniciraju s
-novom verzijom aplikacije. Rezultati se objavljuju pomoću \textit{junit} skripte.
+U trećoj fazi aplikacija se kompajlira i sprema unutar Docker slike, što je prikazano
+kodom~\ref{03:jenkinsfile_build}. Druga i treća faza dijele istu baznu Docker sliku. Stoga inženjer
+može biti siguran da su sve biblioteke dostupne ukoliko su pokrivene testovima jedinice. Docker
+slika se označava s trenutnom verzijom izgradnje (\textit{engl.  build number}) te se objavljuje na
+Docker repositorij. Kako bi se slika mogla objaviti, potrebno je podesiti Docker autorizaciju unutar
+Jenkins sustava.
 
-U petoj fazi Docker slika se označava sa specijalnom oznakom \textit{latest}. Ta oznaka označava
-da je Docker slika spremna za uporabu od strane klijenata. Tu sliku dohvatit će servis za
-menadžment.
+\lstset{caption={Izgradnja docker slike unutar \textit{Jenkinsfile}}, label=03:jenkinsfile_build}
+\begin{lstlisting}[float=h]
+steps {
+    script {
+        docker.withRegistry('https://docker.io', 'dockerhub') {
+            def i = docker.build("sokac/fibonacci:${BUILD_NUMBER}", '-f fibonacci/Dockerfile fibonacci/')
+            i.push()
+        }
+    }
+}
+\end{lstlisting}
+
+U četvrtoj fazi pokreće se \textit{end-to-end} testiranje pomoću Cypress alata, prikazano
+kodom~\ref{03:jenkinsfile_test}. Jenkins pokreće Docker kontejner koji pokreće zadnju verziju
+aplikacije izgrađenu u prethodnom koraku. Zatim u drugom Docker kontejernu pokreće Cypress alat,
+koji dalje pokreće testove koji komuniciraju s novom verzijom aplikacije. Rezultati se objavljuju
+pomoću \textit{junit} skripte.
+
+\lstset{caption={Pokretanje \textit{end-to-end} testova unutar \textit{Jenkinsfile}}, label=03:jenkinsfile_test}
+\begin{lstlisting}[float=h]
+steps {
+    script {
+        docker.withRegistry('https://docker.io', 'dockerhub') {
+            def i = docker.image("sokac/fibonacci:${BUILD_NUMBER}")
+            i.withRun { c->
+                sleep 1 // cekaj sekundu
+                def ii = docker.build('sokac/fibonacci_integration', '-f fibonacci/Dockerfile.integration fibonacci/')
+                ii.inside("--shm-size=1g --link ${c.id}:app") {
+                    sh 'cd fibonacci && CYPRESS_baseUrl=http://app:8888/ /node_modules/.bin/cypress run -r junit'
+                }
+            }
+        }
+    }
+}
+\end{lstlisting}
+
+U petoj fazi, prikazanom kodom~\ref{03:jenkinsfile_publish} Docker slika se označava sa specijalnom
+oznakom \textit{latest}. Ta oznaka označava da je Docker slika spremna za uporabu od strane
+klijenata. Tu sliku dohvatit će servis za menadžment.
+
+\lstset{caption={Objava Docke slike unutar \textit{Jenkinsfile}}, label=03:jenkinsfile_publish}
+\begin{lstlisting}[float=h]
+steps {
+    script {
+        docker.withRegistry('https://docker.io', 'dockerhub') {
+            def i = docker.image("sokac/fibonacci:${BUILD_NUMBER}")
+            i.push('latest')
+        }
+    }
+}
+\end{lstlisting}
 
 U zadnjoj fazi, koja se bezuvjetno izvršava, prikupljaju se rezultati testova jedinica i
 \textit{end-to-end} testiranja. Rezultati su vidljivi korisniku preko Jenkins web sučelja kao što je
