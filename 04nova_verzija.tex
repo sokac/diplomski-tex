@@ -146,11 +146,11 @@ verzija aplikacije.
 
 Proces vraćanja na staru verziju mora biti brz i intuitivan. U ovom radu korišten je
 parametrizitrani Jenkins posao za vraćanje na prethodno objavljenu verziju, prikazan
-slikom~\ref{fig:04jenkins_rollback}. Prilikom pokretanja takvog posla korisniku je dan padajući
-izbornik sa svim verzijama aplikacije. Nakon što korisnik izabere željenu verziju, Jenkins označava
-tu verziju aplikacije kao zadnju. Unutar trideset sekundi servis za menadžment pokreće novoizabranu
-verziju aplikacije i počinje ju posluživati. U tom trenutku verzija aplikacije s greškom se više ne
-poslužuje korisnicima.
+slikom~\ref{fig:04jenkins_rollback} i kodom~\ref{04:jenkins_revert}. Prilikom pokretanja takvog
+posla korisniku je dan padajući izbornik sa svim verzijama aplikacije. Nakon što korisnik izabere
+željenu verziju, Jenkins označava tu verziju aplikacije kao zadnju. Unutar trideset sekundi servis
+za menadžment pokreće novoizabranu verziju aplikacije i počinje ju posluživati. U tom trenutku
+verzija aplikacije s greškom se više ne poslužuje korisnicima.
 
 \begin{figure}[h]
     \centering
@@ -158,3 +158,18 @@ poslužuje korisnicima.
     \caption{Jenkins posao za vraćanje verzije aplikacije}%
     \label{fig:04jenkins_rollback}
 \end{figure}
+
+\lstset{caption={\textit{Jenkinsfile} za vraćanje na prethodnu verziju}, label=04:jenkins_revert}
+\begin{lstlisting}[float=h]
+pipeline {
+    agent any
+    stages { stage('Objava slike') { steps {
+        script {
+            docker.withRegistry('https://docker.io', 'dockerhub') {
+                def i = docker.image("sokac/fibonacci:${VERZIJA_NUMBER}")
+                i.push('latest')
+            }
+        }
+    } } }
+}
+\end{lstlisting}
