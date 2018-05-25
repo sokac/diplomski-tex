@@ -7,8 +7,11 @@ aplikacije pomoću servisa za menadžment. Zatim je opisan i proces vraćanje na
 aplikacije.
 
 \section{Aplikacija za izračun Fibonaccijevog broja}
-Za testiranje sustava kontinuiranog razvoja izrađen je web program za izračun Fibonaccijevog broja
-u Go programskom jeziku. Fibonaccijev broj definiran je formulom~\ref{eq:03fibonacci}.
+Za testiranje sustava kontinuiranog razvoja izrađen je web program za izračun Fibonaccijevog broja u
+Go programskom jeziku. Fibonaccijev broj definiran je formulom~\ref{eq:03fibonacci}.  U prvoj
+iteraciji programa koristi se naivno, rekurzivno rješenje vremenske i memorijske kompleksnosti
+$O(2^N)$. Prilikom primitka HTTP zahtjeva, program pokreće računanje Fibonaccijevog broja, kao što
+je prikazano programskim kodom~\ref{03fibv1}.
 
 \begin{equation}
     f(n) = \begin{cases}
@@ -18,10 +21,6 @@ u Go programskom jeziku. Fibonaccijev broj definiran je formulom~\ref{eq:03fibon
            \end{cases}
    \label{eq:03fibonacci}
 \end{equation}
-
-U prvoj iteraciji programa koristi se naivno, rekurzivno rješenje vremenske i memorijske
-kompleksnosti $O(2^N)$. Prilikom primitka HTTP zahtjeva, program pokreće računanje Fibonaccijevog
-broja, kao što je prikazano programskim kodom~\ref{03fibv1}.
 
 \lstset{caption={Fibonacci v1}, label=03fibv1}
 \begin{lstlisting}[float=h]
@@ -62,14 +61,16 @@ func TestFibonacci(t *testing.T) {
 
 Za sustav testiranja korišten je $testing$ paket koji se nalazi u standardnoj Go biblioteci. Testovi
 jedinice se sastoje od jednog testa s tri provjere gdje se provjerava vrijednost petog, šestog i
-jedanaestog Fibonaccijevog broja.  Unutar svakog testa poziva se pomoćna funkcija koja prima tri
+jedanaestog Fibonaccijevog broja. Unutar svakog testa poziva se pomoćna funkcija koja prima tri
 vrijednosti: trenutni test, očekivana vrijednost te dobivena vrijednost. Ukoliko dobivena vrijednost
 nije jednaka očekivanoj vrijendosti, funkcija će označiti takav test netočnim.
 
 Za pozivanje Fibonacci funkcije kreirana je web aplikacija, kao što je prikazano
 slikom~\ref{fig:03fibv1png}. Web aplikacija se sastoji od obrasca koji sadrži prostor za unos teksta
 te gumb za izvršavanje operacije. Pritiskom na gumb izvršava se HTTP XHR zahtjev te se po završetku
-istoga prikazuje rezultat ili greška ako je do nje došlo.
+istoga prikazuje rezultat ili greška ako je do nje došlo. U glavnoj funkciji koja se poziva
+prilikom pokretanja programa, \texttt{main}, pokrenut je HTTP servis zadužen za posluživanje HTTP
+zahtjeva. Pokretanje HTTP servisa dan je kodom~\ref{03fibhttp}.
 
 \begin{figure}[h]
     \centering
@@ -77,9 +78,6 @@ istoga prikazuje rezultat ili greška ako je do nje došlo.
     \caption{Izgled Fibonacci web aplikacije}%
     \label{fig:03fibv1png}
 \end{figure}
-
-U glavnoj funkciji koja se poziva prilikom pokretanja programa, \texttt{main}, pokrenut je HTTP
-servis zadužen za posluživanje HTTP zahtjeva. Pokretanje HTTP servisa dan je kodom~\ref{03fibhttp}.
 
 \lstset{caption={HTTP servis}, label=03fibhttp}
 \begin{lstlisting}[float=h]
@@ -134,7 +132,6 @@ izračunati, očekivanje je da će stranica prikazati grešku da broj mora biti 
 Ukoliko Cypress ne može pronaći traženi element unutar zadanog intervala, takav test je označen kao
 neuspješan. Na primjer, ukoliko na stranici ne postoji element s identifikacijom \texttt{number},
 test će biti neuspješan. Test će također biti neuspješan ukoliko HTTP XHR zahtjev ne bude uspješan.
-
 Cypress testovi se mogu pokrenuti na lokalnom računalu pomoću naredbe $cypress~open$. Izmjena
 testova će automatski biti dostupna unutar grafičkog sučelja Cypress. Testovi se također mogu
 pokrenuti naredbom $cypress~run$ koja pokreće testove te izlazi po završetku svih. Rezultati su
@@ -188,16 +185,14 @@ pipeline {
 \end{figure}
 
 Jenkins linija podešena je da periodički provjerava Git projekt, točnije svake minute. Ukoliko je
-došlo do promjene u Git projektu, pokreće Jenkins liniju.
-
-U prvoj fazi Jenkins kopira Git projekt koji se poslužuje preko Github servisa. Git projekt javno je
-dostupan, stoga nije potrebno podesiti autorizaciju. Nakon što je Git projekt kopiran, Jenkins
-uspoređuje razliku između prijašnje i trenutnačne verzije te ih prikazuje korisniku.
-
-U drugoj fazi pokreću se testovi jedinice unutar Docker kontejnera, prikazano
-kodom~\ref{03:jenkinsfile_unittest}. Fibonacci aplikacija sastoji se od jednog testa jedinice koji
-ispituje tri ulaza. Ukoliko dođe do greške, Jenkins linija se prekida.  Pomoću ~\textit{junit}
-skripte Jenkins objavljuje rezultate testova, kao i vrijeme njihovog izvođenja.
+došlo do promjene u Git projektu, pokreće Jenkins liniju. U prvoj fazi Jenkins kopira Git projekt
+koji se poslužuje preko Github servisa. Git projekt javno je dostupan, stoga nije potrebno podesiti
+autorizaciju. Nakon što je Git projekt kopiran, Jenkins uspoređuje razliku između prijašnje i
+trenutnačne verzije te ih prikazuje korisniku. U drugoj fazi pokreću se testovi jedinice unutar
+Docker kontejnera, prikazano kodom~\ref{03:jenkinsfile_unittest}. Fibonacci aplikacija sastoji se od
+jednog testa jedinice koji ispituje tri ulaza. Ukoliko dođe do greške, Jenkins linija se prekida.
+Pomoću ~\textit{junit} skripte Jenkins objavljuje rezultate testova, kao i vrijeme njihovog
+izvođenja.
 
 \lstset{caption={Testiranje jedinice unutar \textit{Jenkinsfile}}, label=03:jenkinsfile_unittest}
 \begin{lstlisting}[float=h]
@@ -210,9 +205,13 @@ steps {
 U trećoj fazi aplikacija se kompajlira i sprema unutar Docker slike, što je prikazano
 kodom~\ref{03:jenkinsfile_build}. Druga i treća faza dijele istu baznu Docker sliku. Stoga inženjer
 može biti siguran da su sve biblioteke dostupne ukoliko su pokrivene testovima jedinice. Docker
-slika se označava s trenutnom verzijom izgradnje (\textit{engl.  build number}) te se objavljuje na
+slika se označava s trenutnom verzijom izgradnje (\textit{engl. build number}) te se objavljuje na
 Docker repositorij. Kako bi se slika mogla objaviti, potrebno je podesiti Docker autorizaciju unutar
-Jenkins sustava.
+Jenkins sustava. U četvrtoj fazi pokreće se \textit{end-to-end} testiranje pomoću Cypress alata,
+prikazano kodom~\ref{03:jenkinsfile_test}. Jenkins pokreće Docker kontejner koji pokreće zadnju
+verziju aplikacije izgrađenu u prethodnom koraku. Zatim u drugom Docker kontejernu pokreće Cypress
+alat, koji dalje pokreće testove koji komuniciraju s novom verzijom aplikacije. Rezultati se
+objavljuju pomoću \textit{junit} skripte.
 
 \lstset{caption={Izgradnja docker slike unutar \textit{Jenkinsfile}}, label=03:jenkinsfile_build}
 \begin{lstlisting}[float=h]
@@ -225,12 +224,6 @@ steps {
     }
 }
 \end{lstlisting}
-
-U četvrtoj fazi pokreće se \textit{end-to-end} testiranje pomoću Cypress alata, prikazano
-kodom~\ref{03:jenkinsfile_test}. Jenkins pokreće Docker kontejner koji pokreće zadnju verziju
-aplikacije izgrađenu u prethodnom koraku. Zatim u drugom Docker kontejernu pokreće Cypress alat,
-koji dalje pokreće testove koji komuniciraju s novom verzijom aplikacije. Rezultati se objavljuju
-pomoću \textit{junit} skripte.
 
 \lstset{caption={Pokretanje \textit{end-to-end} testova unutar \textit{Jenkinsfile}}, label=03:jenkinsfile_test}
 \begin{lstlisting}[float=h]
@@ -252,7 +245,9 @@ steps {
 
 U petoj fazi, prikazanom kodom~\ref{03:jenkinsfile_publish} Docker slika se označava sa specijalnom
 oznakom \textit{latest}. Ta oznaka označava da je Docker slika spremna za uporabu od strane
-klijenata. Tu sliku dohvatit će servis za menadžment.
+klijenata. Tu sliku dohvatit će servis za menadžment. U zadnjoj fazi, koja se bezuvjetno izvršava,
+prikupljaju se rezultati testova jedinica i \textit{end-to-end} testiranja. Rezultati su vidljivi
+korisniku preko Jenkins web sučelja kao što je prikazano na slici~\ref{fig:03jenkins_result}.
 
 \lstset{caption={Objava Docker slike unutar \textit{Jenkinsfile}}, label=03:jenkinsfile_publish}
 \begin{lstlisting}[float=h]
@@ -265,10 +260,6 @@ steps {
     }
 }
 \end{lstlisting}
-
-U zadnjoj fazi, koja se bezuvjetno izvršava, prikupljaju se rezultati testova jedinica i
-\textit{end-to-end} testiranja. Rezultati su vidljivi korisniku preko Jenkins web sučelja kao što je
-prikazano na slici~\ref{fig:03jenkins_result}.
 
 \begin{figure}[h]
     \centering
@@ -296,15 +287,12 @@ rotiranja verzije aplikacije. Primjer konfiguracije prikazan je kodom~\ref{03jso
 \end{lstlisting}
 
 Informacija o nazivu Docker slike spremljena je pod ključem \texttt{dockerImage}. Servis
-zahtjeva da zadnja inačica slike ima oznaku \textit{latest}, što je ujedno i Docker standard.
-
-Nginx PID datoteka, spremljena pod ključem \texttt{nginxPIDfile}, sadrži indentitet Nginx procesa.
-Pomoću tog indentiteta moguće je poslati zahtjev Nginx procesu da ponovno učita konfiguracije
-datoteke bez prekida posluživanja korisnika.
-
-Nginx datotečna konfiguracija sprema postavke potrebne da Nginx može proslijediti informacije
-aplikaciji, to jest Docker kontejneru. Vrijednost je spremljena pod ključem
-\texttt{nginxConfiguration}. Primjer generirane konfiguracije prikazan je
+zahtjeva da zadnja inačica slike ima oznaku \textit{latest}, što je ujedno i Docker standard. Nginx
+PID datoteka, spremljena pod ključem \texttt{nginxPIDfile}, sadrži indentitet Nginx procesa. Pomoću
+tog indentiteta moguće je poslati zahtjev Nginx procesu da ponovno učita konfiguracije datoteke bez
+prekida posluživanja korisnika. Nginx datotečna konfiguracija sprema postavke potrebne da Nginx
+može proslijediti informacije aplikaciji, to jest Docker kontejneru. Vrijednost je spremljena pod
+ključem \texttt{nginxConfiguration}. Primjer generirane konfiguracije prikazan je
 kodom~\ref{03nginxconfig}.
 
 \lstset{caption={Nginx konfiguracija}, label=03nginxconfig}
@@ -400,13 +388,11 @@ func getFreePort() (int, error) {
 Nakon što je slobodan port pronađen, pokreće se Docker kontejner sa zadnjom verzijom aplikacije.
 Kontejner se pokreće u mostovnom mrežnom načinu rada te prosljeđuje zathjeve sa slobodnog porta
 glavnog računala prema aplikaciji koja se izvršava unutar Docker kontejnera. Također se zadaje
-naredba Docker servisu da obriše sliku po zaustavljanju Docker kontejnera.
-
-Nakon pokretanja Docker kontejnera, obavještavaju se svi pretplatnici. Pretplanik je struktura
-opisana \texttt{Subscriber} sučeljem, koji je prikazan kodom~\ref{03manager_subscriber}. Pretplanik
-može izvšiti bilo kakvu operaciju nakon što je obavješten, kao što je slanje elekroničke pošte za
-novu verziju, slanje \textit{IRC} poruke, promjena konfiguracije web servisa, rotacija log datoteka,
-itd.
+naredba Docker servisu da obriše sliku po zaustavljanju Docker kontejnera. Nakon pokretanja Docker
+kontejnera, obavještavaju se svi pretplatnici. Pretplanik je struktura opisana \texttt{Subscriber}
+sučeljem, koji je prikazan kodom~\ref{03manager_subscriber}. Pretplanik može izvšiti bilo kakvu
+operaciju nakon što je obavješten, kao što je slanje elekroničke pošte za novu verziju, slanje
+\textit{IRC} poruke, promjena konfiguracije web servisa, rotacija log datoteka, itd.
 
 \lstset{caption={Sučelje pretplatnika}, label=03manager_subscriber}
 \begin{lstlisting}[float=h]
@@ -437,13 +423,16 @@ Docker kontejner koji prihvaća zahtjeve na nekorištenom \textit{TCP portu}. Za
 Nginx konfiguraciju na tvrdi disk te šalje \textit{SIGHUP Unix} signal Nginx procesu. Takav signal
 služi za učitavanje promjena konfiguracije. Nakon korisnički definiranog vremena, stari Docker
 kontejner se gasi te automatski briše. Pojednostavljeni dijagram toka prikazan je
-slikom~\ref{fig:03servismanagement}.
+slikom~\ref{fig:03servismanagement}. Generirana Nginx konfiguracija sadrži samo informacije o
+Docker kontejeru te kao takva nije potpuna.  Glavna Nginx konfiguracija priključuje takvu
+konfiguraciju pomoću direktive \texttt{include}.  Primjer glavne Nginx konfiguracije prikazan je
+kodom~\ref{03nginxconfig2}.
 
 \begin{figure}[h]
     \centering
     \begin{tikzpicture}[
         scale=1.0,
-        node distance=1cm,
+        node distance=0.6cm,
         text width=3.5cm,
         text centered,
         block/.style={
@@ -500,27 +489,17 @@ slikom~\ref{fig:03servismanagement}.
     \label{fig:03servismanagement}
 \end{figure}
 
-Generirana Nginx konfiguracija sadrži samo informacije o Docker kontejeru te kao takva nije potpuna.
-Glavna Nginx konfiguracija priključuje takvu konfiguraciju pomoću direktive \texttt{include}.
-Primjer glavne Nginx konfiguracije prikazan je kodom~\ref{03nginxconfig2}.
-
 \lstset{caption={Nginx konfiguracija}, label=03nginxconfig2}
-\begin{lstlisting}[float=h]
+\begin{lstlisting}
 worker_processes 1; # broj radnika
-
 events {
     worker_connections  1024; # broj veza po radniku
 }
-
 http {
     include /tmp/nginx.conf; # Lokacija generirane Nginx konfiguracije
-
-    keepalive_timeout  60; # Vrijeme koliko dugo ce veza biti otvorena
-
     server {
         listen       80; # Port slusanja
         server_name  localhost; # Domena
-
         location / {
             proxy_pass http://manager_backend; # Proslijedi zahtjev
         }
@@ -548,9 +527,8 @@ pregleda koda, kao što su \textit{Github Pull Request}, \textit{Gerrit Code Rev
 \textit{Phabricator Differential}. Iako je sustav potpuno automatizitran potrebno je pratiti proces
 objave nove aplikacije. Ukoliko neki od testova nije bio uspješan, na inženjeru je da vrati
 aplikaciju u prethodno stanje ili ispravi grešku. Također, postoji mogućnost i da svi testovi budu
-uspješni, a da aplikacija ne radi ispravno.
-
-Iz slike je vidljivo i da krajnji korisnik komunicira isključivo s Nginx poslužiteljem koji
-komunicira isključivo s Fibonacci aplikacijom. Korisnik neće biti u mogućnosti korisitit aplikaciju
-samo ako ili Nginx poslužitelj ili Fibonacci aplikacija nije dostupna. Ispad bilo kojeg drugog
-sustava ili servisa ne utječe na dostupnost aplikacije, već samo na mogućnost objave nove verzije.
+uspješni, a da aplikacija ne radi ispravno. Iz slike je vidljivo i da krajnji korisnik komunicira
+isključivo s Nginx poslužiteljem koji komunicira isključivo s Fibonacci aplikacijom. Korisnik neće
+biti u mogućnosti korisitit aplikaciju samo ako ili Nginx poslužitelj ili Fibonacci aplikacija nije
+dostupna. Ispad bilo kojeg drugog sustava ili servisa ne utječe na dostupnost aplikacije, već samo
+na mogućnost objave nove verzije.

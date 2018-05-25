@@ -32,7 +32,10 @@ func fibonacci(n uint64) uint64 {
 
 Nakon što su napravljene izmjene unutar aplikacije, potrebno je spremiti izmjene unutar Git
 repositorija te poslati izmjene na servis za pregled koda. Primjer za spremanje izmjena i slanje na
-udaljeni Git poslužitelj pomoću komandne linije prikazan je kodom~\ref{04gitreview}.
+udaljeni Git poslužitelj pomoću komandne linije prikazan je kodom~\ref{04gitreview}.  Kada je kod
+pregledan i odobren tada se prebacuje u \textit{master} granu. Sustavi za reviziju koda u pravilu to
+automatski odrađuju nakon što je kod potvrđen za spajanje. Ručno prebacivanje prikazano je
+kodom~\ref{04gitmerge}.
 
 \lstset{caption={Spremanje i slanje izmjena na Git poslužitelj}, label=04gitreview}
 \begin{lstlisting}[float=h]
@@ -49,10 +52,6 @@ git commit -m "Optimizacija Fibonacci funkcije"
 git push -u origin optimizacija
 \end{lstlisting}
 
-Kada je kod pregledan i odobren tada se prebacuje u \textit{master} granu. Sustavi za reviziju koda
-u pravilu to automatski odrađuju nakon što je kod potvrđen za spajanje. Ručno prebacivanje prikazano
-je kodom~\ref{04gitmerge}.
-
 \lstset{caption={Spremanje i slanje izmjena na Git poslužitelj}, label=04gitmerge}
 \begin{lstlisting}[float=h]
 # prelazak u master git granu
@@ -68,21 +67,17 @@ git push origin master
 Jenkins pokreće izgradnju nove aplikacije čim je nekakva izmjena dostupna na Git poslužitelju unutar
 glavne, \textit{master} grane. Ukoliko su svi testovi uspješni objavljuje se Docker slika. Zatim
 servis za menadžment dohvaća novu verziju te počinje posluživati korisnike s novom verzijom.
-
 Prethodnu verziju aplikacije potrebno je ukloniti tek nakon što su svi zahtjevi obrađeni. Na
 primjer, ukoliko je potrebno dvije sekunde za obradu nekog zahtjeva, tada je potrebno pričekati
-barem toliko vremena prije nego što se prethodna verzija aplikacije može potpuno ugasiti.  U
-protivnom zahtjev korisnika će biti prekinut i neće biti potpuno ispunjen.
-
-Testiranje stabilnosti aplikacije prilikom izmjene koda provedeno je alatom \textit{Jmeter}. Jmeter
-je alat za stresno testiranje aplikacije, a razvija ga neprofitna organizacija \textit{Apache}. Može
-se koristiti za stresno testiranje FTP, LDAP, HTTP, baza podataka preko JDBC, i mnogih drugih
-protokola.
-
-Za testiranje infrastrukture ovog projekta korišten je HTTP protokol. Izvršeno je 10.000 zahtjeva
-za 34.~Fibonaccijev broj. U trenutku pokretanja stresnog testa korištena je stara verzija Fibonacci
+barem toliko vremena prije nego što se prethodna verzija aplikacije može potpuno ugasiti. U
+protivnom zahtjev korisnika će biti prekinut i neće biti potpuno ispunjen. Testiranje stabilnosti
+aplikacije prilikom izmjene koda provedeno je alatom \textit{Jmeter}. Jmeter je alat za stresno
+testiranje aplikacije, a razvija ga neprofitna organizacija \textit{Apache}. Može se koristiti za
+stresno testiranje FTP, LDAP, HTTP, baza podataka preko JDBC, i mnogih drugih protokola. Za
+testiranje infrastrukture ovog projekta korišten je HTTP protokol. Izvršeno je 10.000 zahtjeva za
+34.~Fibonaccijev broj. U trenutku pokretanja stresnog testa korištena je stara verzija Fibonacci
 aplikacije, a potom je objavljena nova verzija koja sadrži optimizaciju. Svi zahtjevi uspješno su
-izvršeni. Na slici~\ref{fig:04stresstest} prikazan je vremenski odaziv prve i druge verzije
+izvršeni te je na slici~\ref{fig:04stresstest} prikazan vremenski odaziv prve i druge verzije
 aplikacije.
 
 \begin{figure}[h]
@@ -128,19 +123,19 @@ rezultati memorije ne uklone ili spreme pod drugim ključem, tada će nova verzi
 aplikacije i dalje vraćati stare rezultate.
 
 Nekompatibilnost baze podataka je slična nekompatibilnosti privremene memorije. No za razliku od
-privremene memorije, nije moguće izabrati novi ključ jer u tom slučaju stari podaci neće biti
+privremene memorije, nije moguće izabrati novi ključ jer u tom slučaju stari podatci neće biti
 dostupni korisniku. Inženjer može izabrati migraciju sa stankom aplikacije ili bez stanke. Migracija
 sa stankom aplikacije je u pravilu jednostavnija izvedba. No, takva stanka je negativno korisničko
-iskustvo. Firme poput Google i Facebook uvijek koriste migracije bez stanke. Kako bi se migracija
-mogla napraviti bez stanke potrebno je nekoliko faza i verzija aplikacija. Često se takva migracija
-svodi na:
+iskustvo. Kompanije poput Google i Facebook uvijek koriste migracije bez stanke. Kako bi se
+migracija mogla napraviti bez stanke potrebno je nekoliko faza i verzija aplikacija. Često se takva
+migracija svodi na:
 \begin{itemize}
     \item izmjene sheme baze podataka, ali takve izmjene da su kompatibilne sa prethodnom verzijom
         aplikacije
     \item izmjene aplikacije koja omogućava zapis u izmijenjenu bazu podataka bez da utječe na
         prethodnu verziju aplikacije
     \item prijepis povijesnih podataka u novu shemu (\textit{engl. backfill})
-    \item izmjene aplikacije tako da se ne zapisuju podaci u staru shemu baze podataka
+    \item izmjene aplikacije tako da se ne zapisuju podatci u staru shemu baze podataka
     \item izmjene sheme baze podataka gdje se stare vrijednosti uništavaju.
 \end{itemize}
 
