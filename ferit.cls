@@ -179,8 +179,6 @@
       \def\bibname{LITERATURA}
 }
 
-\renewcommand{\bibsection}{XXX1\small} %natbib
-
 % Primjena naziva listing (programski kod)
 \addto\captionscroatian{%
   \def\lstlistingname{Programski kod}
@@ -437,6 +435,7 @@ Koristi \noexpand\hrtitle za definiranje}}
 \if@langeng\else\newpage\fi
 \vspace*{\fill}
 \thispagestyle{empty}
+\addcontentsline{toc}{chapter}{SA\v{Z}ETAK}
 \begin{center}
   {\bf \if@langeng\@hrtitle\else\@title\fi}
 \end{center}
@@ -472,6 +471,7 @@ Koristi \noexpand\engtitle za definiranje}}
 \if@langeng\newpage\fi
 \vspace*{\fill}
 \thispagestyle{empty}
+\addcontentsline{toc}{chapter}{ABSTRACT}
 \begin{center}
   {\bf \if@langeng\@title\else\@engtitle\fi}
 \end{center}
@@ -485,6 +485,7 @@ Koristi \noexpand\engtitle za definiranje}}
 \newenvironment{biografija} {
 \newpage
     {
+        \addcontentsline{toc}{chapter}{\strzivotopis}
         \noindent\large\bf \strzivotopis\
         \vskip 12\p@
     }

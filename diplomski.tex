@@ -17,10 +17,17 @@
     xrightmargin=1mm,
 }
 
-% indent first paragraph
+% sadrzaj margine (da stane na jednu stranicu)
+\usepackage{tocloft}
+\setlength\cftparskip{1pt}
+\setlength\cftbeforechapskip{1pt}
+\setlength\cftbeforetoctitleskip{0pt}
+\setlength\cftaftertoctitleskip{6pt}
+
+% uvlaka prvog paragrafa
 \usepackage{indentfirst}
 
-% font size
+% font velicina
 \usepackage{titlesec}
 \titleformat{\section}{\large\bfseries}{\thesection}{14pt}{}
 
