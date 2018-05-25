@@ -1,4 +1,4 @@
-\section{Razvoj nove verzije fibonacci aplikacije}
+\section{Razvoj nove verzije Fibonacci aplikacije}
 U drugoj verziji poboljšana je vremenska kompleksnost tako što je uklonjena rekurzija te dodana
 memoizacija. Nova vremenska kompleksnost je $O(N)$, dok je memorijska kompleksnost $O(1)$. Nova
 verzija prikazana je kodom~\ref{04fibv2}. U novoj je verziji također izmijenjen dizajn kao što je
@@ -26,7 +26,7 @@ func fibonacci(n uint64) uint64 {
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.5\textwidth]{img/04/new_app.png}
-    \caption{Novi dizajn fibonacci aplikacije}%
+    \caption{Novi dizajn Fibonacci aplikacije}%
     \label{fig:04redesign}
 \end{figure}
 
@@ -43,7 +43,7 @@ git checkout -b optimizacija
 git add main.go
 
 # dodaj izmjenu
-git commit -m "Optimizacija fibonacci funkcije"
+git commit -m "Optimizacija Fibonacci funkcije"
 
 # posalji izmjene na server i prati udaljenu granu
 git push -u origin optimizacija
@@ -80,7 +80,7 @@ se koristiti za stresno testiranje FTP, LDAP, HTTP, baza podataka preko JDBC, i 
 protokola.
 
 Za testiranje infrastrukture ovog projekta korišten je HTTP protokol. Izvršeno je 10.000 zahtjeva
-za 34.~fibonaccijev broj. U trenutku pokretanja stresnog testa korištena je stara verzija fibonacci
+za 34.~Fibonaccijev broj. U trenutku pokretanja stresnog testa korištena je stara verzija Fibonacci
 aplikacije, a potom je objavljena nova verzija koja sadrži optimizaciju. Svi zahtjevi uspješno su
 izvršeni. Na slici~\ref{fig:04stresstest} prikazan je vremenski odaziv prve i druge verzije
 aplikacije.
@@ -119,12 +119,12 @@ je progresivna izmjena podataka koja zahtjeva dodatni kod kako bi stari i novi u
 s obje verzije aplikacije. Potrebne su barem dvije verzije i neko vrijeme kako bi se mogla ispustiti
 podrška za prethodnu strukturu predmemorije.
 
-Na primjeru fibonacci aplikacije, zamislimo da koristimo sustav za memoriju, kao na primjer
-\textit{memcached}. U trenutnoj verziji aplikacija sprema vrijednost N-tog fibonaccijev broja pod
-ključem \textit{fibonacci-N}. U trenutnoj verziji aplikacije odlučeno je da je prvi fibonaccijev
+Na primjeru Fibonacci aplikacije, zamislimo da koristimo sustav za memoriju, kao na primjer
+\textit{memcached}. U trenutnoj verziji aplikacija sprema vrijednost N-tog Fibonaccijev broja pod
+ključem \textit{fibonacci-N}. U trenutnoj verziji aplikacije odlučeno je da je prvi Fibonaccijev
 broj nula, a drugi broj jedan. No u novoj verziji aplikacije odlučeno je koristiti originalnu
-verziju algoritma, tako da su i prvi i drugi fibonaccijevi brojevi jednaki broju jedan. Ukoliko se
-rezultati memorije ne uklone ili spreme pod drugim ključem, tada će nova verzija fibonacci
+verziju algoritma, tako da su i prvi i drugi Fibonaccijevi brojevi jednaki broju jedan. Ukoliko se
+rezultati memorije ne uklone ili spreme pod drugim ključem, tada će nova verzija Fibonacci
 aplikacije i dalje vraćati stare rezultate.
 
 Nekompatibilnost baze podataka je slična nekompatibilnosti privremene memorije. No za razliku od
@@ -146,7 +146,7 @@ svodi na:
 
 Kod nekompatibilnosti programskog sučelja klijenta i poslužitelja dolazi prilikom objave nove
 aplikacije i promjenom sučelja na poslužitelju, to jest aplikaciji. Slika \ref{fig:04request_flow}
-prikazuje pojednostavljeni primjer korisničke interakcije s fibonacci aplikacijom prilikom objave
+prikazuje pojednostavljeni primjer korisničke interakcije s Fibonacci aplikacijom prilikom objave
 nove verzije aplikacije.
 
 \begin{figure}[h]
